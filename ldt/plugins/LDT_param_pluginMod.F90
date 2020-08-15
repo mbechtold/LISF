@@ -16,6 +16,7 @@ module LDT_param_pluginMod
 ! !REVISION HISTORY:
 !  11 Dec 2003:  Sujay Kumar  - Initial Specification
 !  11 Feb 2013:  KR Arsenault - Updated to accommodate new parameter types and options
+!  09 Mar 2018:  Michiel Maertens (MMI-KUL) - HWSD soil source
 !  01 Mar 2020:  Yeosang Yoon - Added MERIT DEM
 !
 !EOP
@@ -637,6 +638,10 @@ contains
     external read_FAO_soilfractions, read_FAO_texture, read_FAO_color, &
              read_FAO_porosity
 
+
+  ! HWSD-STATSGO2 soil data (adapted by MMI-KUL (2018/03/09 KU Leuven))         
+    external read_HWSD_soilfractions ! read_HWSD_texture
+
   ! STATSGO+FAO blended global product (NCAR/NCEP)
     external set_STATSGOFAO_LIS_texture_attribs
     external read_STATSGOFAO_texture
@@ -650,7 +655,9 @@ contains
     external set_STATSGOv1_texture_attribs
     external set_STATSGOv1_hsg_attribs
     external read_STATSGOv1_soilfractions, read_STATSGOv1_texture
-    external read_STATSGOv1_porosity, read_STATSGOv1_bedrockdepth
+    external read_STATSGOv1_porosity, read_STATSGOv1_bedrockdepth, &
+    read_ksat,read_psisat, read_bexp, read_weltingpoint, read_fieldcapacity,&
+    read_bulkdensity
     external read_STATSGOv1_hydrosoilgroup, ed_STATSGOv1_bulkdensity
     external read_STATSGOv1_domrockfrag, read_STATSGOv1_rockvolfrag
     external read_STATSGOv1_availwatcap
@@ -682,6 +689,9 @@ contains
     call registerreadsoiltexture(trim(LDT_faoSoilId)//char(0), read_FAO_texture)
     call registerreadcolor(trim(LDT_faoSoilId)//char(0),read_FAO_color)
     call registerreadporosity(trim(LDT_faoSoilId)//char(0),read_FAO_porosity)
+
+!== HWSD-STATSGO2 (adapted by MMI-KUL (2018/03/09 KU Leuven))
+    call registerreadsoilfrac(trim(LDT_HWSDsoilId)//char(0),read_HWSD_soilfractions)
 
 !== STATSGO.v1 and FAO (merged STATSGOv1+FAO global maps): ==
   ! Original LIS domain:
@@ -768,6 +778,14 @@ contains
     call registersettextureattribs(trim(LDT_specialSoilId)//char(0),set_Special_texture_attribs)
     call registerreadsoiltexture(trim(LDT_specialSoilId)//char(0),read_Special_texture)
     call registerreadsoilfrac(trim(LDT_specialSoilId)//char(0),read_Special_soilfractions)
+!== parameter readers added by MMI-KUL (2018/03/09 KU Leuven))
+    call registerreadksat(trim(LDT_faoSoilID)//char(0),read_ksat) !added by mmi
+    call registerreadpsisat(trim(LDT_faoSoilID)//char(0),read_psisat)
+    call registerreadbexp(trim(LDT_faoSoilID)//char(0),read_bexp)
+    call registerreadweltingpoint(trim(LDT_faoSoilID)//char(0),read_weltingpoint)
+    call registerreadfieldcapacity(trim(LDT_faoSoilID)//char(0),read_fieldcapacity)
+    call registerreadbulkdensity(trim(LDT_faoSoilID)//char(0),read_bulkdensity)
+
 !=== ISRIC soils
 
     call registersettextureattribs(trim(LDT_ISRICsoilId)//char(0),&

@@ -13,6 +13,7 @@ module LDT_PRIV_rcMod
 !
 ! !REVISION HISTORY:
 !  07 Jul 2010; Sujay Kumar; Initial Specification
+!  03 Mar 2018; Michiel Maertens (MMI-KUL); Changes for hydr param reader
 !
 ! The variables specified in this module include: 
 !
@@ -256,6 +257,9 @@ module LDT_PRIV_rcMod
      character*140, allocatable :: psisatfile(:) 
      character*140, allocatable :: ksatfile(:) 
      character*140, allocatable :: bexpfile(:) 
+     character*140, allocatable :: weltingpointfile(:)
+     character*140, allocatable :: fieldcapacityfile(:)
+     character*140, allocatable :: bulkdensityfile(:)
      character*140, allocatable :: qzfile(:)   
      character*140, allocatable :: dsoilfile(:)
      character*140, allocatable :: bdrckdepfile(:)

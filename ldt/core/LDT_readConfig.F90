@@ -9,7 +9,7 @@
 ! !REVISION HISTORY:
 !
 !  02 Oct 2008: Sujay Kumar; Initial Specification
-!
+!  03 Mar 2018: Michiel Maertens; MMI-KUL, changes for hydraulic parameter readers
 ! !INTERFACE:
 subroutine LDT_readConfig(configfile)
 
@@ -483,6 +483,9 @@ subroutine LDT_readConfig(configfile)
   allocate(LDT_rc%psisatfile(LDT_rc%nnest))
   allocate(LDT_rc%ksatfile(LDT_rc%nnest))
   allocate(LDT_rc%bexpfile(LDT_rc%nnest))
+  allocate(LDT_rc%weltingpointfile(LDT_rc%nnest))
+  allocate(LDT_rc%fieldcapacityfile(LDT_rc%nnest))
+  allocate(LDT_rc%bulkdensityfile(LDT_rc%nnest))
   allocate(LDT_rc%qzfile(LDT_rc%nnest))
   allocate(LDT_rc%dsoilfile(LDT_rc%nnest))
   allocate(LDT_rc%bdrckdepfile(LDT_rc%nnest))

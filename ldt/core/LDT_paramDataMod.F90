@@ -87,6 +87,12 @@ module LDT_paramDataMod
      type(LDT_paramEntry) :: gravel
      type(LDT_paramEntry) :: soilsfgrd   ! Soils tile gridcell fraction
      type(LDT_paramEntry) :: sctdom      ! Dominent soil type
+     type(LDT_paramEntry) :: ksat
+     type(LDT_paramEntry) :: psisat
+     type(LDT_paramEntry) :: bexp
+     type(LDT_paramEntry) :: weltingpoint
+     type(LDT_paramEntry) :: fieldcapacity
+     type(LDT_paramEntry) :: bulkdensity
 
    ! Topographic parameters
      type(LDT_paramEntry) :: elevation

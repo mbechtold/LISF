@@ -94,6 +94,81 @@ struct porosnode
 struct porosnode* poros_table = NULL; 
 
 
+
+
+ struct ksatnode
+{ 
+	  char *name;
+		  void (*func)(int*, float*);
+
+			  struct ksatnode* next;
+} ;
+
+struct ksatnode* ksat_table = NULL;
+
+
+
+
+  struct psisatnode
+{ 
+    char *name;
+      void (*func)(int*, float*);
+
+        struct psisatnode* next;
+} ;
+
+struct psisatnode* psisat_table = NULL;
+
+
+    struct bexpnode
+{ 
+    char *name;
+      void (*func)(int*, float*);
+
+        struct bexpnode* next;
+} ;
+
+struct bexpnode* bexp_table = NULL;
+
+
+    struct weltingpointnode
+{ 
+    char *name;
+      void (*func)(int*, float*);
+
+        struct weltingpointnode* next;
+} ;
+
+struct weltingpointnode* weltingpoint_table = NULL;
+
+      struct fieldcapacitynode
+{ 
+    char *name;
+      void (*func)(int*, float*);
+
+        struct fieldcapacitynode* next;
+} ;
+
+struct fieldcapacitynode* fieldcapacity_table = NULL;
+
+
+         struct bulkdensitynode
+{ 
+    char *name;
+      void (*func)(int*, float*);
+
+        struct bulkdensitynode* next;
+} ;
+
+struct bulkdensitynode* bulkdensity_table = NULL;
+ 
+
+
+
+
+
+
+
 //struct drootnode
 //{ 
 //  char *name;
@@ -553,6 +628,513 @@ void FTN(readporosity)(char *j,int *n, float *array, float *marray, int len)
   }
   current->func(n,array,marray); 
 }
+
+
+void FTN(registerreadksat)(char *j,void (*func)(int*, float*),int len)
+//  
+// !DESCRIPTION:
+//  Creates an entry in the registry for the routine to 
+//  read the rootdepth fraction data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[j]
+//   index of the soils source
+//  \end{description}
+  //EOP
+{ 
+
+ struct ksatnode* current;
+ struct ksatnode* pnode; 
+  // create node
+  
+pnode=(struct ksatnode*) malloc(sizeof(struct ksatnode));
+pnode->name=(char*) malloc(len*sizeof(char));
+strcpy(pnode->name,j);
+pnode->func = func;
+pnode->next = NULL; 
+
+if(ksat_table == NULL){
+  ksat_table = pnode;
+ }
+  else{
+    current = ksat_table; 
+    while(current->next!=NULL){
+      current = current->next;
+    }
+    current->next = pnode; 
+  }
+}
+
+//BOP
+// !ROUTINE: readporosity
+// \label{readksat}
+// 
+// !INTERFACE:
+void FTN(readksat)(char *j,int *n,float *array, int len)
+//  
+// !DESCRIPTION: 
+//  Invokes the routine from the registry to read the
+//  ksat data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[n]
+//   index of the nest
+//  \item[j]
+//   index of the soils source
+//  \item[array]
+//   pointer to the rootdepth data
+//  \end{description}
+//EOP
+{ 
+
+struct ksatnode* current;
+  
+current = ksat_table;
+while(strcmp(current->name,j)!=0){
+    current = current->next;
+    if(current==NULL) {
+      printf("****************Error****************************\n"); 
+      printf("ksat reading routine for source %s is not defined\n",j); 
+      printf("Please refer to configs/ldt.config_master or LDT User's Guide for options.\n");
+      printf("program will seg fault.....\n"); 
+      printf("****************Error****************************\n"); 
+    }
+  }
+  current->func(n,array); 
+}
+
+//  
+
+
+
+//BOP
+// !ROUTINE: registerreadrootdepth
+// \label{registerreadrootdepth}
+// 
+// !INTERFACE:
+void FTN(registerreadpsisat)(char *j,void (*func)(int*, float*),int len)
+//  
+// !DESCRIPTION:
+//  Creates an entry in the registry for the routine to 
+//  read the rootdepth fraction data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[j]
+//   index of the soils source
+//  \end{description}
+  //EOP
+{
+
+ struct psisatnode* current;
+ struct psisatnode* pnode;
+  // create node
+
+pnode=(struct psisatnode*) malloc(sizeof(struct psisatnode));
+pnode->name=(char*) malloc(len*sizeof(char));
+strcpy(pnode->name,j);
+pnode->func = func;
+pnode->next = NULL;
+
+if(psisat_table == NULL){
+  psisat_table = pnode;
+ }
+  else{
+    current = psisat_table;
+    while(current->next!=NULL){
+      current = current->next;
+    }
+    current->next = pnode;
+  }
+}
+
+
+//
+
+
+
+ //BOP
+// !ROUTINE: readporosity
+// \label{readksat}
+// 
+// !INTERFACE:
+void FTN(readpsisat)(char *j,int *n,float *array, int len)
+//  
+// !DESCRIPTION: 
+//  Invokes the routine from the registry to read the
+//  ksat data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[n]
+//   index of the nest
+//  \item[j]
+//   index of the soils source
+//  \item[array]
+//   pointer to the rootdepth data
+//  \end{description}
+//EOP
+{
+
+struct psisatnode* current;
+
+current = psisat_table;
+while(strcmp(current->name,j)!=0){
+    current = current->next;
+    if(current==NULL) {
+      printf("****************Error****************************\n");
+      printf("psisat reading routine for source %s is not defined\n",j);
+      printf("Please refer to configs/ldt.config_master or LDT User's Guide for options.\n");
+      printf("program will seg fault.....\n");
+      printf("****************Error****************************\n");
+    }
+  }
+  current->func(n,array);
+}
+
+
+//
+  //BOP
+// !ROUTINE: registerreadrootdepth
+// \label{registerreadrootdepth}
+// 
+// !INTERFACE:
+void FTN(registerreadbexp)(char *j,void (*func)(int*, float*),int len)
+//  
+// !DESCRIPTION:
+//  Creates an entry in the registry for the routine to 
+//  read the rootdepth fraction data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[j]
+//   index of the soils source
+//  \end{description}
+  //EOP
+{
+
+ struct bexpnode* current;
+ struct bexpnode* pnode;
+  // create node
+
+pnode=(struct bexpnode*) malloc(sizeof(struct bexpnode));
+pnode->name=(char*) malloc(len*sizeof(char));
+strcpy(pnode->name,j);
+pnode->func = func;
+pnode->next = NULL;
+
+if(bexp_table == NULL){
+  bexp_table = pnode;
+ }
+  else{
+    current = bexp_table;
+    while(current->next!=NULL){
+      current = current->next;
+    }
+    current->next = pnode;
+  }
+}
+
+//
+   //BOP
+// !ROUTINE: readporosity
+// \label{readksat}
+// 
+// !INTERFACE:
+void FTN(readbexp)(char *j,int *n,float *array, int len)
+//  
+// !DESCRIPTION: 
+//  Invokes the routine from the registry to read the
+//  ksat data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[n]
+//   index of the nest
+//  \item[j]
+//   index of the soils source
+//  \item[array]
+//   pointer to the rootdepth data
+//  \end{description}
+//EOP
+{
+
+struct bexpnode* current;
+
+current = bexp_table;
+while(strcmp(current->name,j)!=0){
+    current = current->next;
+    if(current==NULL) {
+      printf("****************Error****************************\n");
+      printf("bexp reading routine for source %s is not defined\n",j);
+      printf("Please refer to configs/ldt.config_master or LDT User's Guide for options.\n");
+      printf("program will seg fault.....\n");
+      printf("****************Error****************************\n");
+    }
+  }
+  current->func(n,array);
+}
+
+//
+
+  //
+  //BOP
+// !ROUTINE: registerreadrootdepth
+// \label{registerreadrootdepth}
+// 
+// !INTERFACE:
+void FTN(registerreadweltingpoint)(char *j,void (*func)(int*, float*),int len)
+//  
+// !DESCRIPTION:
+//  Creates an entry in the registry for the routine to 
+//  read the rootdepth fraction data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[j]
+//   index of the soils source
+//  \end{description}
+  //EOP
+{
+
+ struct weltingpointnode* current;
+ struct weltingpointnode* pnode;
+  // create node
+
+pnode=(struct weltingpointnode*) malloc(sizeof(struct weltingpointnode));
+pnode->name=(char*) malloc(len*sizeof(char));
+strcpy(pnode->name,j);
+pnode->func = func;
+pnode->next = NULL;
+
+if(weltingpoint_table == NULL){
+  weltingpoint_table = pnode;
+ }
+  else{
+    current = weltingpoint_table;
+    while(current->next!=NULL){
+      current = current->next;
+    }
+    current->next = pnode;
+  }
+}
+//
+    //BOP
+// !ROUTINE: readporosity
+// \label{readksat}
+// 
+// !INTERFACE:
+void FTN(readweltingpoint)(char *j,int *n,float *array, int len)
+//  
+// !DESCRIPTION: 
+//  Invokes the routine from the registry to read the
+//  ksat data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[n]
+//   index of the nest
+//  \item[j]
+//   index of the soils source
+//  \item[array]
+//   pointer to the rootdepth data
+//  \end{description}
+//EOP
+{
+
+struct weltingpointnode* current;
+
+current = weltingpoint_table;
+while(strcmp(current->name,j)!=0){
+    current = current->next;
+    if(current==NULL) {
+      printf("****************Error****************************\n");
+      printf("bexp reading routine for source %s is not defined\n",j);
+      printf("Please refer to configs/ldt.config_master or LDT User's Guide for options.\n");
+      printf("program will seg fault.....\n");
+      printf("****************Error****************************\n");
+    }
+  }
+  current->func(n,array);
+}
+
+//
+
+     //BOP
+// !ROUTINE: registerreadrootdepth
+// \label{registerreadrootdepth}
+// 
+// !INTERFACE:
+void FTN(registerreadfieldcapacity)(char *j,void (*func)(int*, float*),int len)
+//  
+// !DESCRIPTION:
+//  Creates an entry in the registry for the routine to 
+//  read the rootdepth fraction data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[j]
+//   index of the soils source
+//  \end{description}
+  //EOP
+{
+
+ struct fieldcapacitynode* current;
+ struct fieldcapacitynode* pnode;
+  // create node
+
+pnode=(struct fieldcapacitynode*) malloc(sizeof(struct fieldcapacitynode));
+pnode->name=(char*) malloc(len*sizeof(char));
+strcpy(pnode->name,j);
+pnode->func = func;
+pnode->next = NULL;
+
+if(fieldcapacity_table == NULL){
+  fieldcapacity_table = pnode;
+ }
+  else{
+    current = fieldcapacity_table;
+    while(current->next!=NULL){
+      current = current->next;
+    }
+    current->next = pnode;
+  }
+}
+//
+ 
+      //BOP
+// !ROUTINE: readporosity
+// \label{readksat}
+// 
+// !INTERFACE:
+void FTN(readfieldcapacity)(char *j,int *n,float *array, int len)
+//  
+// !DESCRIPTION: 
+//  Invokes the routine from the registry to read the
+//  ksat data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[n]
+//   index of the nest
+//  \item[j]
+//   index of the soils source
+//  \item[array]
+//   pointer to the rootdepth data
+//  \end{description}
+//EOP
+{
+
+struct fieldcapacitynode* current;
+
+current = fieldcapacity_table;
+while(strcmp(current->name,j)!=0){
+    current = current->next;
+    if(current==NULL) {
+      printf("****************Error****************************\n");
+      printf("bexp reading routine for source %s is not defined\n",j);
+      printf("Please refer to configs/ldt.config_master or LDT User's Guide for options.\n");
+      printf("program will seg fault.....\n");
+      printf("****************Error****************************\n");
+    }
+  }
+  current->func(n,array);
+}
+
+//
+
+        //BOP
+// !ROUTINE: registerreadrootdepth
+// \label{registerreadrootdepth}
+// 
+// !INTERFACE:
+void FTN(registerreadbulkdensity)(char *j,void (*func)(int*, float*),int len)
+//  
+// !DESCRIPTION:
+//  Creates an entry in the registry for the routine to 
+//  read the rootdepth fraction data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[j]
+//   index of the soils source
+//  \end{description}
+  //EOP
+{
+
+ struct bulkdensitynode* current;
+ struct bulkdensitynode* pnode;
+  // create node
+
+pnode=(struct bulkdensitynode*) malloc(sizeof(struct bulkdensitynode));
+pnode->name=(char*) malloc(len*sizeof(char));
+strcpy(pnode->name,j);
+pnode->func = func;
+pnode->next = NULL;
+
+if(bulkdensity_table == NULL){
+  bulkdensity_table = pnode;
+ }
+  else{
+    current = bulkdensity_table;
+    while(current->next!=NULL){
+      current = current->next;
+    }
+    current->next = pnode;
+  }
+}
+//
+
+
+      
+
+       //BOP
+// !ROUTINE: readporosity
+// \label{readksat}
+// 
+// !INTERFACE:
+void FTN(readbulkdensity)(char *j,int *n,float *array, int len)
+//  
+// !DESCRIPTION: 
+//  Invokes the routine from the registry to read the
+//  ksat data
+// 
+//  The arguments are: 
+//  \begin{description}
+//  \item[n]
+//   index of the nest
+//  \item[j]
+//   index of the soils source
+//  \item[array]
+//   pointer to the rootdepth data
+//  \end{description}
+//EOP
+{
+
+struct bulkdensitynode* current;
+
+current = bulkdensity_table;
+while(strcmp(current->name,j)!=0){
+    current = current->next;
+    if(current==NULL) {
+      printf("****************Error****************************\n");
+      printf("bulk density reading routine for source %s is not defined\n",j);
+      printf("Please refer to configs/ldt.config_master or LDT User's Guide for options.\n");
+      printf("program will seg fault.....\n");
+      printf("****************Error****************************\n");
+    }
+  }
+  current->func(n,array);
+}
+
+//
+
+ 
+
+
+
 
 //BOP
 // !ROUTINE: registerreadrootdepth

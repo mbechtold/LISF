@@ -18,6 +18,7 @@ module LDT_pluginIndices
 ! !REVISION HISTORY:
 !  23 Oct 2008: Sujay Kumar  -- Initial Specification
 !  17 Jul 2012: KR Arsenault -- Updated entries with capitalization rules
+!  09 Mar 2018: Michiel Maertens (MMI-KUL) -- HWSD soil source added
 !  01 Mar 2020: Yeosang Yoon -- Added MERIT DEM
 !
 !EOP
@@ -250,6 +251,7 @@ module LDT_pluginIndices
    character*50, public,  parameter :: LDT_statsgov2Id       = "STATSGOv2"       ! STATSGO v2 only
    character*50, public,  parameter :: LDT_ALMIPIIsoilId     = "ALMIPII"
    character*50, public,  parameter :: LDT_specialsoilId     = "Special"
+   character*50, public,  parameter :: LDT_HWSDsoilId        = "HWSD"            ! implemented by MMI-KUL on 2018/03/09
    character*50, public,  parameter :: LDT_ISRICsoilId       = "ISRIC"
    character*50, public,  parameter :: LDT_ukmofracId        = "UKMOFRAC"        ! UKMO
 

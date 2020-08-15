@@ -4,7 +4,7 @@
 #include "LDT_misc.h"
 !BOP
 !
-! !ROUTINE: read_FAO_soilfractions
+! !ROUTINE: read_HWSD_soilfractions
 ! \label{read_FAO_soilfractions}
 !
 ! !REVISION HISTORY:
@@ -13,7 +13,7 @@
 !  09 Mar  2018: Michiel Maertens (MMI-KUL); HWSD related change for sand fractions <0 (-9999)
 !
 ! !INTERFACE:
-subroutine read_FAO_soilfractions(n, num_bins, soilsfgrd, &
+subroutine read_HWSD_soilfractions(n, num_bins, soilsfgrd, &
                                   sandave, clayave, siltave )
 ! !USES:
   use LDT_coreMod,     only : LDT_rc
@@ -169,6 +169,7 @@ subroutine read_FAO_soilfractions(n, num_bins, soilsfgrd, &
                read(ftn_cl,rec=line) read_clay_sub(c,r)
                if( read_sand_sub(c,r) < 0. ) read_sand_sub(c,r) = LDT_rc%udef
                if( read_clay_sub(c,r) < 0. ) read_clay_sub(c,r) = LDT_rc%udef
+              ! write(*,*) c,r, read_sand_sub(c,r), lat_line(c,r), lon_line(c,r)
             enddo
          enddo
          mi = subpnc*subpnr
@@ -225,4 +226,4 @@ subroutine read_FAO_soilfractions(n, num_bins, soilsfgrd, &
 
    write(LDT_logunit,*) "[INFO] Done reading FAO soil fraction files."
 
-end subroutine read_FAO_soilfractions
+end subroutine read_HWSD_soilfractions

@@ -35,6 +35,7 @@ module LDT_soilsMod
 !
 !  21 Oct 2005: Sujay Kumar; Initial implementation
 !  21 Nov 2012: K. Arsenault; Include additional soil parameters
+!  09 Mar 2018: Michiel Maertens MMI-KUL; soil parameter readers added
 !
   use ESMF
 #if ( defined SPMD )
@@ -76,6 +77,12 @@ module LDT_soilsMod
      type(LDT_paramEntry) :: rockfragcls    ! Rock fragment class (STATSGO v1)
      type(LDT_paramEntry) :: permrate       ! Permeability rate (STATSGO v1)
      type(LDT_paramEntry) :: texture_nlyrs  ! Soil texture - Number of layers (STATSGO v1)
+     type(LDT_paramEntry) :: ksat
+     type(LDT_paramEntry) :: psisat
+     type(LDT_paramEntry) :: bexp
+     type(LDT_paramEntry) :: weltingpoint
+     type(LDT_paramEntry) :: fieldcapacity
+     type(LDT_paramEntry) :: bulkdensity
 
   end type soils_type_dec
 
@@ -257,6 +264,54 @@ module LDT_soilsMod
      enddo
 
 
+     ! MMI-KUL: soil parameter readers added
+     if( index(LDT_rc%lsm,"CLSM") == 0 ) then
+
+     call ESMF_ConfigFindLabel(LDT_config,"Porosity data source:",rc=rc)
+     do n=1,LDT_rc%nnest
+        call ESMF_ConfigGetAttribute(LDT_config,source,rc=rc)
+        call LDT_set_param_attribs(rc,LDT_soils_struc(n)%ksat,&
+             "KSAT",source)
+     enddo
+
+     call ESMF_ConfigFindLabel(LDT_config,"Porosity data source:",rc=rc)
+     do n=1,LDT_rc%nnest
+        call ESMF_ConfigGetAttribute(LDT_config,source,rc=rc)
+        call LDT_set_param_attribs(rc,LDT_soils_struc(n)%psisat,&
+             "PSISAT",source)
+     enddo
+
+     call ESMF_ConfigFindLabel(LDT_config,"Porosity data source:",rc=rc)
+     do n=1,LDT_rc%nnest
+        call ESMF_ConfigGetAttribute(LDT_config,source,rc=rc)
+        call LDT_set_param_attribs(rc,LDT_soils_struc(n)%bexp,&
+             "BEXP",source)
+     enddo
+
+         call ESMF_ConfigFindLabel(LDT_config,"Porosity data source:",rc=rc)
+     do n=1,LDT_rc%nnest
+        call ESMF_ConfigGetAttribute(LDT_config,source,rc=rc)
+        call LDT_set_param_attribs(rc,LDT_soils_struc(n)%weltingpoint,&
+             "WELTINGPOINT",source)
+     enddo
+
+
+  call ESMF_ConfigFindLabel(LDT_config,"Porosity data source:",rc=rc)
+     do n=1,LDT_rc%nnest
+        call ESMF_ConfigGetAttribute(LDT_config,source,rc=rc)
+        call LDT_set_param_attribs(rc,LDT_soils_struc(n)%fieldcapacity,&
+             "FIELDCAPACITY",source)
+     enddo
+
+      call ESMF_ConfigFindLabel(LDT_config,"Porosity data source:",rc=rc)
+     do n=1,LDT_rc%nnest
+        call ESMF_ConfigGetAttribute(LDT_config,source,rc=rc)
+        call LDT_set_param_attribs(rc,LDT_soils_struc(n)%bulkdensity,&
+             "BULKDENSITY",source)
+     enddo
+
+   endif
+
    end subroutine LDT_soils_readParamSpecs
 
 !BOP
@@ -326,6 +381,17 @@ module LDT_soilsMod
     type(LDT_fillopts)  :: soildepth
     type(LDT_fillopts)  :: rootdepth
     type(LDT_fillopts)  :: porosity
+
+    ! MMI-KUL soil parameter readers added
+    type(LDT_fillopts)  :: ksat
+    type(LDT_fillopts)  :: psisat
+    type(LDT_fillopts)  :: bexp
+    type(LDT_fillopts)  :: weltingpoint
+    type(LDT_fillopts)  :: fieldcapacity
+    type(LDT_fillopts)  :: bulkdensity
+
+
+
     logical             :: soil_select
     logical             :: check_data
     
@@ -454,6 +520,38 @@ module LDT_soilsMod
 !               LDT_rc%lnc(n),LDT_rc%lnr(n),&
 !               LDT_soils_struc(n)%rootdepth%num_bins))
 !       endif
+
+       ! MMI-KUL parameter readers added
+       if(LDT_soils_struc(n)%ksat%selectOpt.eq.1) then
+          allocate(LDT_soils_struc(n)%ksat%value(&
+               LDT_rc%lnc(n),LDT_rc%lnr(n),1))
+       endif
+
+       if(LDT_soils_struc(n)%psisat%selectOpt.eq.1) then 
+          allocate(LDT_soils_struc(n)%psisat%value(&
+               LDT_rc%lnc(n),LDT_rc%lnr(n),1))
+       endif
+
+      if(LDT_soils_struc(n)%bexp%selectOpt.eq.1) then
+          allocate(LDT_soils_struc(n)%bexp%value(&
+               LDT_rc%lnc(n),LDT_rc%lnr(n),1))
+       endif
+
+          if(LDT_soils_struc(n)%weltingpoint%selectOpt.eq.1) then
+          allocate(LDT_soils_struc(n)%weltingpoint%value(&
+               LDT_rc%lnc(n),LDT_rc%lnr(n),1))
+       endif
+
+       if(LDT_soils_struc(n)%fieldcapacity%selectOpt.eq.1) then
+          allocate(LDT_soils_struc(n)%fieldcapacity%value(&
+               LDT_rc%lnc(n),LDT_rc%lnr(n),1))
+       endif
+
+         if(LDT_soils_struc(n)%bulkdensity%selectOpt.eq.1) then
+          allocate(LDT_soils_struc(n)%bulkdensity%value(&
+               LDT_rc%lnc(n),LDT_rc%lnr(n),1))
+       endif
+
 
        if(LDT_soils_struc(n)%hsg%selectOpt.eq.1) then
           LDT_soils_struc(n)%hsg%vlevels = LDT_soils_struc(n)%hsg%num_bins
@@ -653,6 +751,141 @@ module LDT_soilsMod
          call LDT_verify(rc,"Porosity fill value: option not specified in the config file")
       endif
     endif
+
+    check_data = .false. 
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%hsg%selectOpt.eq.1) then 
+          check_data = .true. 
+       endif
+    enddo
+
+    ! MMI-KUL parameter reader added
+
+    check_data = .false.
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%ksat%selectOpt.eq.1) then
+          check_data = .true.
+       endif
+    enddo
+      if(check_data) then
+
+      call ESMF_ConfigFindLabel(LDT_config,"Saturated hydraulic conductivity map:", rc=rc)
+      do i=1,LDT_rc%nnest
+         call ESMF_ConfigGetAttribute(LDT_config,LDT_rc%ksatfile(i),rc=rc)
+      enddo
+      if( soilfrac%filltype == "neighbor" ) then 
+         call ESMF_ConfigGetAttribute(LDT_config, porosity%fillvalue, &
+              label="Soils fill value:",rc=rc)
+         call LDT_verify(rc,"Soils fill value: option not specified in the config file")
+      endif
+   endif
+
+    check_data = .false.
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%psisat%selectOpt.eq.1) then
+          check_data = .true.
+       endif
+    enddo
+      if(check_data) then
+
+      call ESMF_ConfigFindLabel(LDT_config,"Saturated matric potential map:", rc=rc)
+      do i=1,LDT_rc%nnest
+         call ESMF_ConfigGetAttribute(LDT_config,LDT_rc%psisatfile(i),rc=rc)
+      enddo
+      if( soilfrac%filltype == "neighbor" ) then
+         call ESMF_ConfigGetAttribute(LDT_config, porosity%fillvalue, &
+              label="Soils fill value:",rc=rc)
+         call LDT_verify(rc,"Soils fill value: option not specified in the config file")
+      endif
+    endif
+
+     check_data = .false.
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%bexp%selectOpt.eq.1) then
+          check_data = .true.
+       endif
+    enddo
+      if(check_data) then
+
+      call ESMF_ConfigFindLabel(LDT_config,"b parameter map:", rc=rc)
+      do i=1,LDT_rc%nnest
+         call ESMF_ConfigGetAttribute(LDT_config,LDT_rc%bexpfile(i),rc=rc)
+      enddo
+      if( soilfrac%filltype == "neighbor" ) then
+         call ESMF_ConfigGetAttribute(LDT_config, porosity%fillvalue, &
+              label="Soils fill value:",rc=rc)
+         call LDT_verify(rc,"Soils fill value: option not specified in the config file")
+      endif
+    endif
+
+     check_data = .false.
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%weltingpoint%selectOpt.eq.1) then
+          check_data = .true.
+       endif
+    enddo
+      if(check_data) then
+
+      call ESMF_ConfigFindLabel(LDT_config,"welting point map:", rc=rc)
+      do i=1,LDT_rc%nnest
+         call ESMF_ConfigGetAttribute(LDT_config,LDT_rc%weltingpointfile(i),rc=rc)
+      enddo
+      if( soilfrac%filltype == "neighbor" ) then
+         call ESMF_ConfigGetAttribute(LDT_config, porosity%fillvalue, &
+              label="Soils fill value:",rc=rc)
+         call LDT_verify(rc,"Soils fill value: option not specified in the config file")
+      endif
+    endif
+   
+     check_data = .false.
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%fieldcapacity%selectOpt.eq.1) then
+          check_data = .true.
+       endif
+    enddo
+      if(check_data) then
+
+      call ESMF_ConfigFindLabel(LDT_config,"field capacity map:", rc=rc)
+      do i=1,LDT_rc%nnest
+         call ESMF_ConfigGetAttribute(LDT_config,LDT_rc%fieldcapacityfile(i),rc=rc)
+      enddo
+      if( soilfrac%filltype == "neighbor" ) then
+         call ESMF_ConfigGetAttribute(LDT_config, fieldcapacity%fillvalue, &
+              label="Soils fill value:",rc=rc)
+         call LDT_verify(rc,"Soils fill value: option not specified in the config file")
+      endif
+    endif
+
+        check_data = .false.
+    do n=1,LDT_rc%nnest
+       if(LDT_soils_struc(n)%bulkdensity%selectOpt.eq.1) then
+          check_data = .true.
+       endif
+    enddo
+      if(check_data) then
+
+      call ESMF_ConfigFindLabel(LDT_config,"bulk density map:", rc=rc)
+      do i=1,LDT_rc%nnest
+         call ESMF_ConfigGetAttribute(LDT_config,LDT_rc%bulkdensityfile(i),rc=rc)
+      enddo
+      if( soilfrac%filltype == "neighbor" ) then
+         call ESMF_ConfigGetAttribute(LDT_config, bulkdensity%fillvalue, &
+              label="Soils fill value:",rc=rc)
+         call LDT_verify(rc,"Soils fill value: option not specified in the config file")
+      endif
+    endif
+    !!! end of change by MMI-KUL
+
+
+
+
+
+
+
+
+
+
+
 
     check_data = .false. 
     do n=1,LDT_rc%nnest
@@ -923,6 +1156,149 @@ module LDT_soilsMod
                  porosity%fillvalue, soilfrac%fillradius )
           endif
       endif
+
+
+!!! added by MMI-KUL for ksat
+     if(LDT_soils_struc(n)%ksat%selectOpt.eq.1) then 
+         call readksat(&
+              trim(LDT_soils_struc(n)%porosity%source)//char(0),&
+              n,LDT_soils_struc(n)%ksat%value)
+
+!         if( porosity%filltype == "average" .or. porosity%filltype == "neighbor" ) then
+         if( soilfrac%filltype == "average" .or. soilfrac%filltype == "neighbor" ) then 
+            write(LDT_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%ksat%short_name)
+            write(fill_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%ksat%short_name)
+            soilfrac%watervalue = LDT_rc%udef
+!    
+            call LDT_contIndivParam_Fill( n, LDT_rc%lnc(n), LDT_rc%lnr(n), &
+                 LDT_rc%soils_gridtransform(n),                               &    
+                 LDT_soils_struc(n)%ksat%num_times,                 &    
+                 LDT_soils_struc(n)%ksat%value, soilfrac%watervalue, &
+                 LDT_LSMparam_struc(n)%landmask2%value, soilfrac%filltype, &
+                 soilfrac%fillvalue, soilfrac%fillradius )
+          endif
+     endif
+
+
+        if(LDT_soils_struc(n)%psisat%selectOpt.eq.1) then 
+         call readpsisat(&
+              trim(LDT_soils_struc(n)%porosity%source)//char(0),&
+              n,LDT_soils_struc(n)%psisat%value)
+
+!         if( porosity%filltype == "average" .or. porosity%filltype == "neighbor" ) then
+         if( soilfrac%filltype == "average" .or. soilfrac%filltype == "neighbor" ) then
+            write(LDT_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%psisat%short_name)
+            write(fill_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%psisat%short_name)
+            soilfrac%watervalue = LDT_rc%udef
+!    
+            call LDT_contIndivParam_Fill( n, LDT_rc%lnc(n), LDT_rc%lnr(n), &
+                 LDT_rc%soils_gridtransform(n),                               &
+                 LDT_soils_struc(n)%psisat%num_times,                 &
+                 LDT_soils_struc(n)%psisat%value, soilfrac%watervalue, &
+                 LDT_LSMparam_struc(n)%landmask2%value, soilfrac%filltype, &
+                 soilfrac%fillvalue, soilfrac%fillradius )
+          endif
+     endif
+
+
+            if(LDT_soils_struc(n)%bexp%selectOpt.eq.1) then
+         call readbexp(&
+              trim(LDT_soils_struc(n)%porosity%source)//char(0),&
+              n,LDT_soils_struc(n)%bexp%value)
+
+!         if( porosity%filltype == "average" .or. porosity%filltype == "neighbor" ) then
+         if( soilfrac%filltype == "average" .or. soilfrac%filltype == "neighbor" ) then
+            write(LDT_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%bexp%short_name)
+            write(fill_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%bexp%short_name)
+            soilfrac%watervalue = LDT_rc%udef
+!    
+            call LDT_contIndivParam_Fill( n, LDT_rc%lnc(n), LDT_rc%lnr(n), &
+                 LDT_rc%soils_gridtransform(n),                               &
+                 LDT_soils_struc(n)%bexp%num_times,                 &
+                 LDT_soils_struc(n)%bexp%value, soilfrac%watervalue, &
+                 LDT_LSMparam_struc(n)%landmask2%value, soilfrac%filltype, &
+                 soilfrac%fillvalue, soilfrac%fillradius )
+          endif
+     endif
+
+
+         if(LDT_soils_struc(n)%weltingpoint%selectOpt.eq.1) then
+         call readweltingpoint(&
+              trim(LDT_soils_struc(n)%porosity%source)//char(0),&
+              n,LDT_soils_struc(n)%weltingpoint%value)
+
+!         if( porosity%filltype == "average" .or. porosity%filltype == "neighbor" ) then
+         if( soilfrac%filltype == "average" .or. soilfrac%filltype == "neighbor" ) then
+            write(LDT_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%weltingpoint%short_name)
+            write(fill_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%weltingpoint%short_name)
+            soilfrac%watervalue = LDT_rc%udef
+!    
+            call LDT_contIndivParam_Fill( n, LDT_rc%lnc(n), LDT_rc%lnr(n), &
+                 LDT_rc%soils_gridtransform(n),                               &
+                 LDT_soils_struc(n)%weltingpoint%num_times,                 &
+                 LDT_soils_struc(n)%weltingpoint%value, soilfrac%watervalue, &
+                 LDT_LSMparam_struc(n)%landmask2%value, soilfrac%filltype, &
+                 soilfrac%fillvalue, soilfrac%fillradius )
+          endif
+     endif
+
+
+
+
+
+          if(LDT_soils_struc(n)%fieldcapacity%selectOpt.eq.1) then
+         call readfieldcapacity(&
+              trim(LDT_soils_struc(n)%porosity%source)//char(0),&
+              n,LDT_soils_struc(n)%fieldcapacity%value)
+
+!         if( porosity%filltype == "average" .or. porosity%filltype == "neighbor" ) then
+         if( soilfrac%filltype == "average" .or. soilfrac%filltype == "neighbor" ) then
+            write(LDT_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%fieldcapacity%short_name)
+            write(fill_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%fieldcapacity%short_name)
+            soilfrac%watervalue = LDT_rc%udef
+!    
+            call LDT_contIndivParam_Fill( n, LDT_rc%lnc(n), LDT_rc%lnr(n), &
+                 LDT_rc%soils_gridtransform(n),                               &
+                 LDT_soils_struc(n)%fieldcapacity%num_times,                 &
+                 LDT_soils_struc(n)%fieldcapacity%value, soilfrac%watervalue, &
+                 LDT_LSMparam_struc(n)%landmask2%value, soilfrac%filltype, &
+                 soilfrac%fillvalue, soilfrac%fillradius )
+          endif
+     endif
+
+
+
+       if(LDT_soils_struc(n)%bulkdensity%selectOpt.eq.1) then
+         call readbulkdensity(&
+              trim(LDT_soils_struc(n)%porosity%source)//char(0),&
+              n,LDT_soils_struc(n)%bulkdensity%value)
+
+!         if( porosity%filltype == "average" .or. porosity%filltype == "neighbor" ) then
+         if( soilfrac%filltype == "average" .or. soilfrac%filltype == "neighbor" ) then
+            write(LDT_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%bulkdensity%short_name)
+            write(fill_logunit,*) "Checking/filling mask values for: ", &
+                               trim(LDT_soils_struc(n)%bulkdensity%short_name)
+            soilfrac%watervalue = LDT_rc%udef
+!    
+            call LDT_contIndivParam_Fill( n, LDT_rc%lnc(n), LDT_rc%lnr(n), &
+                 LDT_rc%soils_gridtransform(n),                               &
+                 LDT_soils_struc(n)%bulkdensity%num_times,                 &
+                 LDT_soils_struc(n)%bulkdensity%value, soilfrac%watervalue, &
+                 LDT_LSMparam_struc(n)%landmask2%value, soilfrac%filltype, &
+                 soilfrac%fillvalue, soilfrac%fillradius )
+          endif
+     endif
 
    != Read in hydrological soils group (HSG):
       if(LDT_soils_struc(n)%hsg%selectOpt.eq.1) then
@@ -1796,6 +2172,46 @@ module LDT_soilsMod
             LDT_soils_struc(n)%soildepth)
     endif
 
+ if(LDT_soils_struc(n)%ksat%selectOpt.eq.1) then 
+  
+    !! added for parameter readers, MMI-KUL
+       call LDT_writeNETCDFdataHeader(n,ftn,tdimID,&
+            LDT_soils_struc(n)%ksat)
+   endif
+
+ if(LDT_soils_struc(n)%psisat%selectOpt.eq.1) then 
+
+
+       call LDT_writeNETCDFdataHeader(n,ftn,tdimID,&
+            LDT_soils_struc(n)%psisat)
+   endif
+
+
+
+
+    if(LDT_soils_struc(n)%bexp%selectOpt.eq.1) then
+            call LDT_writeNETCDFdataHeader(n,ftn,tdimID,&
+            LDT_soils_struc(n)%bexp)
+   endif
+
+
+      if(LDT_soils_struc(n)%weltingpoint%selectOpt.eq.1) then
+            call LDT_writeNETCDFdataHeader(n,ftn,tdimID,&
+            LDT_soils_struc(n)%weltingpoint)
+   endif
+
+
+   if(LDT_soils_struc(n)%fieldcapacity%selectOpt.eq.1) then
+            call LDT_writeNETCDFdataHeader(n,ftn,tdimID,&
+            LDT_soils_struc(n)%fieldcapacity)
+   endif
+
+     if(LDT_soils_struc(n)%bulkdensity%selectOpt.eq.1) then
+            call LDT_writeNETCDFdataHeader(n,ftn,tdimID,&
+            LDT_soils_struc(n)%bulkdensity)
+   endif
+
+
     call LDT_verify(nf90_put_att(ftn,NF90_GLOBAL,"SOILTEXT_SCHEME", &
          LDT_rc%soil_classification(1)))
 
@@ -2028,6 +2444,40 @@ module LDT_soilsMod
     if(LDT_soils_struc(n)%porosity%selectOpt.eq.1) then
        call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%porosity)
     endif
+
+     ! MMI-KUL added for hydraul parameters
+  if(LDT_soils_struc(n)%ksat%selectOpt.eq.1) then
+       call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%ksat)
+   endif
+
+
+     if(LDT_soils_struc(n)%psisat%selectOpt.eq.1) then
+       call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%psisat)
+     endif
+
+    
+
+      if(LDT_soils_struc(n)%bexp%selectOpt.eq.1) then
+       call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%bexp)
+     endif
+
+
+      if(LDT_soils_struc(n)%weltingpoint%selectOpt.eq.1) then
+       call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%weltingpoint)
+     endif
+
+
+         if(LDT_soils_struc(n)%fieldcapacity%selectOpt.eq.1) then
+       call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%fieldcapacity)
+     endif
+
+
+               
+         if(LDT_soils_struc(n)%bulkdensity%selectOpt.eq.1) then
+       call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%bulkdensity)
+     endif
+
+
     if(LDT_soils_struc(n)%soildepth%selectOpt.eq.1) then
        call LDT_writeNETCDFdata(n,ftn,LDT_soils_struc(n)%soildepth)
     endif
