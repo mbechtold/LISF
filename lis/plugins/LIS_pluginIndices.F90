@@ -243,6 +243,23 @@ module LIS_pluginIndices
    character*50, public,  parameter :: LIS_S1_sigmaVHSM_obsId      = "S1 backscatter VHSM"
    character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_obsId      = "S1 backscatter VHSMLAI"
    character*50, public,  parameter :: LIS_S1_sigmaVVVHSMLAI_obsId      = "S1 backscatter VVVHSMLAI"
+   character*50, public,  parameter :: LIS_S1_sigmaVVVHSMLAI_037_D_obsId      = "S1 backscatter VVVHSMLAI_037_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVVVHSMLAI_088_A_obsId      = "S1 backscatter VVVHSMLAI_088_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVVVHSMLAI_110_D_obsId      = "S1 backscatter VVVHSMLAI_110_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVVVHSMLAI_139_D_obsId      = "S1 backscatter VVVHSMLAI_139_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVVVHSMLAI_161_A_obsId      = "S1 backscatter VVVHSMLAI_161_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVVSMLAI_015_A_obsId      = "S1 backscatter VVSMLAI_015_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_015_A_obsId      = "S1 backscatter VHSMLAI_015_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVVSMLAI_037_D_obsId      = "S1 backscatter VVSMLAI_037_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_037_D_obsId      = "S1 backscatter VHSMLAI_037_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVVSMLAI_088_A_obsId      = "S1 backscatter VVSMLAI_088_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_088_A_obsId      = "S1 backscatter VHSMLAI_088_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVVSMLAI_110_D_obsId      = "S1 backscatter VVSMLAI_110_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_110_D_obsId      = "S1 backscatter VHSMLAI_110_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVVSMLAI_139_D_obsId      = "S1 backscatter VVSMLAI_139_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_139_D_obsId      = "S1 backscatter VHSMLAI_139_D"
+   character*50, public,  parameter :: LIS_S1_sigmaVVSMLAI_161_A_obsId      = "S1 backscatter VVSMLAI_161_A"
+   character*50, public,  parameter :: LIS_S1_sigmaVHSMLAI_161_A_obsId      = "S1 backscatter VHSMLAI_161_A"
    character*50, public,  parameter :: LIS_SSMISNWDsnowobsId   = "SSMI snow depth"
    character*50, public,  parameter :: LIS_AMSREsweobsId       = "AMSR-E SWE"
 !   character*50, public,  parameter :: LIS_AMSREsnowobsId      = "AMSR-E snow" !yliu
@@ -350,6 +367,7 @@ module LIS_pluginIndices
    character*50, public, parameter :: LIS_cmem3Id = "CMEM"
    character*50, public, parameter :: LIS_tauomegaRTMId = "Tau Omega"
    character*50, public, parameter :: LIS_wcmRTMId = "WCM"
+   character*50, public, parameter :: LIS_wcmmultiRTMId = "WCM_multi"
 !-------------------------------------------------------------------------
 ! Land Slide Models
 !-------------------------------------------------------------------------

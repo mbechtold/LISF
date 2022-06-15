@@ -237,6 +237,74 @@ subroutine LIS_DAobs_plugin
    use S1_sigmaVVVHSMLAI_Mod,       only : S1_sigmaVVVHSMLAI_setup
 #endif 
 
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_037_D )
+   use S1_sigmaVVVHSMLAI_037_D_Mod,       only : S1_sigmaVVVHSMLAI_037_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_088_A )
+   use S1_sigmaVVVHSMLAI_088_A_Mod,       only : S1_sigmaVVVHSMLAI_088_A_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_110_D )
+   use S1_sigmaVVVHSMLAI_110_D_Mod,       only : S1_sigmaVVVHSMLAI_110_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_139_D )
+   use S1_sigmaVVVHSMLAI_139_D_Mod,       only : S1_sigmaVVVHSMLAI_139_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_161_A )
+   use S1_sigmaVVVHSMLAI_161_A_Mod,       only : S1_sigmaVVVHSMLAI_161_A_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_015_A )
+   use S1_sigmaVHSMLAI_015_A_Mod,       only : S1_sigmaVHSMLAI_015_A_setup 
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_015_A )
+   use S1_sigmaVVSMLAI_015_A_Mod,       only : S1_sigmaVVSMLAI_015_A_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_037_D )
+   use S1_sigmaVHSMLAI_037_D_Mod,       only : S1_sigmaVHSMLAI_037_D_setup 
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_037_D )
+   use S1_sigmaVVSMLAI_037_D_Mod,       only : S1_sigmaVVSMLAI_037_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_088_A )
+   use S1_sigmaVHSMLAI_088_A_Mod,       only : S1_sigmaVHSMLAI_088_A_setup 
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_088_A )
+   use S1_sigmaVVSMLAI_088_A_Mod,       only : S1_sigmaVVSMLAI_088_A_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_110_D )
+   use S1_sigmaVHSMLAI_110_D_Mod,       only : S1_sigmaVHSMLAI_110_D_setup 
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_110_D )
+   use S1_sigmaVVSMLAI_110_D_Mod,       only : S1_sigmaVVSMLAI_110_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_139_D )
+   use S1_sigmaVHSMLAI_139_D_Mod,       only : S1_sigmaVHSMLAI_139_D_setup 
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_139_D )
+   use S1_sigmaVVSMLAI_139_D_Mod,       only : S1_sigmaVVSMLAI_139_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_161_A )
+   use S1_sigmaVHSMLAI_161_A_Mod,       only : S1_sigmaVHSMLAI_161_A_setup 
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_161_A )
+   use S1_sigmaVVSMLAI_161_A_Mod,       only : S1_sigmaVVSMLAI_161_A_setup
+#endif 
+
 #if ( defined DA_OBS_SSMI_SNWD )
    use SSMISNWDsnow_Mod,        only : SSMISNWDsnow_setup
 #endif
@@ -425,6 +493,74 @@ subroutine LIS_DAobs_plugin
 
 #if ( defined DA_OBS_S1_sigmaVVVHSMLAI)    
    external read_S1_sigmaVVVHSMLAI, write_S1_sigmaVVVHSMLAIobs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_037_D)    
+   external read_S1_sigmaVVVHSMLAI_037_D, write_S1_sigmaVVVHSMLAI_037_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_088_A)    
+   external read_S1_sigmaVVVHSMLAI_088_A, write_S1_sigmaVVVHSMLAI_088_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_110_D)    
+   external read_S1_sigmaVVVHSMLAI_110_D, write_S1_sigmaVVVHSMLAI_110_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_139_D)    
+   external read_S1_sigmaVVVHSMLAI_139_D, write_S1_sigmaVVVHSMLAI_139_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_161_A)    
+   external read_S1_sigmaVVVHSMLAI_161_A, write_S1_sigmaVVVHSMLAI_161_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_015_A)    
+   external read_S1_sigmaVVSMLAI_015_A, write_S1_sigmaVVSMLAI_015_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_015_A)    
+   external read_S1_sigmaVHSMLAI_015_A, write_S1_sigmaVHSMLAI_015_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_037_D)    
+   external read_S1_sigmaVVSMLAI_037_D, write_S1_sigmaVVSMLAI_037_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_037_D)    
+   external read_S1_sigmaVHSMLAI_037_D, write_S1_sigmaVHSMLAI_037_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_088_A)    
+   external read_S1_sigmaVVSMLAI_088_A, write_S1_sigmaVVSMLAI_088_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_088_A)    
+   external read_S1_sigmaVHSMLAI_088_A, write_S1_sigmaVHSMLAI_088_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_110_D)    
+   external read_S1_sigmaVVSMLAI_110_D, write_S1_sigmaVVSMLAI_110_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_110_D)    
+   external read_S1_sigmaVHSMLAI_110_D, write_S1_sigmaVHSMLAI_110_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_139_D)    
+   external read_S1_sigmaVVSMLAI_139_D, write_S1_sigmaVVSMLAI_139_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_139_D)    
+   external read_S1_sigmaVHSMLAI_139_D, write_S1_sigmaVHSMLAI_139_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_161_A)    
+   external read_S1_sigmaVVSMLAI_161_A, write_S1_sigmaVVSMLAI_161_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_161_A)    
+   external read_S1_sigmaVHSMLAI_161_A, write_S1_sigmaVHSMLAI_161_A_obs  
 #endif 
 
 #if ( defined DA_OBS_SSMI_SNWD )
@@ -734,6 +870,193 @@ subroutine LIS_DAobs_plugin
         read_S1_sigmaVVVHSMLAI)
    call registerwritedaobs(trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0), &
         write_S1_sigmaVVVHSMLAIobs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_037_D )
+!S1 backscatter obs VVVHSMLAI_037_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0), &
+        S1_sigmaVVVHSMLAI_037_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),  &
+        read_S1_sigmaVVVHSMLAI_037_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0), &
+        write_S1_sigmaVVVHSMLAI_037_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_088_A )
+!S1 backscatter obs VVVHSMLAI_088_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0), &
+        S1_sigmaVVVHSMLAI_088_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),  &
+        read_S1_sigmaVVVHSMLAI_088_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0), &
+        write_S1_sigmaVVVHSMLAI_088_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_110_D )
+!S1 backscatter obs VVVHSMLAI_110_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0), &
+        S1_sigmaVVVHSMLAI_110_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),  &
+        read_S1_sigmaVVVHSMLAI_110_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0), &
+        write_S1_sigmaVVVHSMLAI_110_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_139_D )
+!S1 backscatter obs VVVHSMLAI_139_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0), &
+        S1_sigmaVVVHSMLAI_139_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),  &
+        read_S1_sigmaVVVHSMLAI_139_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0), &
+        write_S1_sigmaVVVHSMLAI_139_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVVHSMLAI_161_A )
+!S1 backscatter obs VVVHSMLAI_161_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0), &
+        S1_sigmaVVVHSMLAI_161_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),  &
+        read_S1_sigmaVVVHSMLAI_161_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0), &
+        write_S1_sigmaVVVHSMLAI_161_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_015_A )
+!S1 backscatter obs VVSMLAI_015_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSMLAI_015_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0), &
+        S1_sigmaVVSMLAI_015_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),  &
+        read_S1_sigmaVVSMLAI_015_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0), &
+        write_S1_sigmaVVSMLAI_015_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_015_A )
+!S1 backscatter obs VHSMLAI_015_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVHSMLAI_015_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0), &
+        S1_sigmaVHSMLAI_015_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),  &
+        read_S1_sigmaVHSMLAI_015_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0), &
+        write_S1_sigmaVHSMLAI_015_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_037_D )
+!S1 backscatter obs VVSMLAI_037_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSMLAI_037_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0), &
+        S1_sigmaVVSMLAI_037_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),  &
+        read_S1_sigmaVVSMLAI_037_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0), &
+        write_S1_sigmaVVSMLAI_037_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_037_D )
+!S1 backscatter obs VHSMLAI_037_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVHSMLAI_037_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0), &
+        S1_sigmaVHSMLAI_037_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),  &
+        read_S1_sigmaVHSMLAI_037_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0), &
+        write_S1_sigmaVHSMLAI_037_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_088_A )
+!S1 backscatter obs VVSMLAI_088_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSMLAI_088_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0), &
+        S1_sigmaVVSMLAI_088_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),  &
+        read_S1_sigmaVVSMLAI_088_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0), &
+        write_S1_sigmaVVSMLAI_088_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_088_A )
+!S1 backscatter obs VHSMLAI_088_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVHSMLAI_088_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0), &
+        S1_sigmaVHSMLAI_088_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),  &
+        read_S1_sigmaVHSMLAI_088_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0), &
+        write_S1_sigmaVHSMLAI_088_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_110_D )
+!S1 backscatter obs VVSMLAI_110_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSMLAI_110_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0), &
+        S1_sigmaVVSMLAI_110_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),  &
+        read_S1_sigmaVVSMLAI_110_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0), &
+        write_S1_sigmaVVSMLAI_110_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_110_D )
+!S1 backscatter obs VHSMLAI_110_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVHSMLAI_110_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0), &
+        S1_sigmaVHSMLAI_110_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),  &
+        read_S1_sigmaVHSMLAI_110_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0), &
+        write_S1_sigmaVHSMLAI_110_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_139_D )
+!S1 backscatter obs VVSMLAI_139_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSMLAI_139_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0), &
+        S1_sigmaVVSMLAI_139_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),  &
+        read_S1_sigmaVVSMLAI_139_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0), &
+        write_S1_sigmaVVSMLAI_139_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_139_D )
+!S1 backscatter obs VHSMLAI_139_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVHSMLAI_139_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0), &
+        S1_sigmaVHSMLAI_139_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),  &
+        read_S1_sigmaVHSMLAI_139_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0), &
+        write_S1_sigmaVHSMLAI_139_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSMLAI_161_A )
+!S1 backscatter obs VVSMLAI_161_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSMLAI_161_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0), &
+        S1_sigmaVVSMLAI_161_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),  &
+        read_S1_sigmaVVSMLAI_161_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0), &
+        write_S1_sigmaVVSMLAI_161_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVHSMLAI_161_A )
+!S1 backscatter obs VHSMLAI_161_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVHSMLAI_161_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0), &
+        S1_sigmaVHSMLAI_161_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),  &
+        read_S1_sigmaVHSMLAI_161_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0), &
+        write_S1_sigmaVHSMLAI_161_A_obs)
 #endif
 
 #if ( defined DA_OBS_SSMI_SNWD )

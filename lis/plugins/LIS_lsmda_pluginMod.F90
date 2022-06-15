@@ -410,10 +410,25 @@ subroutine LIS_lsmda_plugin
    external noahmp36_descale_soilm
    external noahmp36_updatesoilm
    external noahmp36_getSig0VVpred
+   external noahmp36_getSig0VVpred_037_D
+   external noahmp36_getSig0VVpred_088_A
+   external noahmp36_getSig0VVpred_110_D
+   external noahmp36_getSig0VVpred_139_D
+   external noahmp36_getSig0VVpred_161_A
    external noahmp36_qc_Sig0VVobs
    external noahmp36_getSig0VHpred
+   external noahmp36_getSig0VHpred_037_D
+   external noahmp36_getSig0VHpred_088_A
+   external noahmp36_getSig0VHpred_110_D
+   external noahmp36_getSig0VHpred_139_D
+   external noahmp36_getSig0VHpred_161_A
    external noahmp36_qc_Sig0VHobs
    external noahmp36_getSig0VVVHpred
+   external noahmp36_getSig0VVVHpred_037_D
+   external noahmp36_getSig0VVVHpred_088_A
+   external noahmp36_getSig0VVVHpred_110_D
+   external noahmp36_getSig0VVVHpred_139_D
+   external noahmp36_getSig0VVVHpred_161_A
    external noahmp36_qc_Sig0VVVHobs
 
    external noahmp36_getsoilmLAI           
@@ -2031,6 +2046,413 @@ subroutine LIS_lsmda_plugin
    call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
         trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp36_map_veg)
 
+! S1 backscatter DA VVVHSMLAI_037_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_getSig0VVVHpred_037_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_qc_Sig0VVVHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_037_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVVHSMLAI_088_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_getSig0VVVHpred_088_A)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_qc_Sig0VVVHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_088_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVVHSMLAI_110_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_getSig0VVVHpred_110_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_qc_Sig0VVVHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_110_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVVHSMLAI_139_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_getSig0VVVHpred_139_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_qc_Sig0VVVHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_139_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVVHSMLAI_161_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_getSig0VVVHpred_161_A)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_qc_Sig0VVVHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVVHSMLAI_161_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVSMLAI_015_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_getSig0VVpred)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_qc_Sig0VVobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_015_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VHSMLAI_015_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_getSig0VHpred)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_qc_Sig0VHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_015_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVSMLAI_037_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_getSig0VVpred_037_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_qc_Sig0VVobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_037_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VHSMLAI_037_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_getSig0VHpred_037_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_qc_Sig0VHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_037_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVSMLAI_088_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_getSig0VVpred_088_A)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_qc_Sig0VVobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_088_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VHSMLAI_088_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_getSig0VHpred_088_A)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_qc_Sig0VHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_088_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVSMLAI_110_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_getSig0VVpred_110_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_qc_Sig0VVobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_110_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VHSMLAI_110_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_getSig0VHpred_110_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_qc_Sig0VHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_110_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVSMLAI_139_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_getSig0VVpred_139_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_qc_Sig0VVobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_139_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VHSMLAI_139_D
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_getSig0VHpred_139_D)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_qc_Sig0VHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_139_D_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VVSMLAI_161_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_getSig0VVpred_161_A)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_qc_Sig0VVobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVVSMLAI_161_A_obsId)//char(0),noahmp36_map_veg)
+
+! S1 backscatter DA VHSMLAI_161_A
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_dasoilmLAI_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_getsoilmLAI)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_setsoilmLAI)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_getSig0VHpred_161_A)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_qcsoilmLAI)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_qc_Sig0VHobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_scale_soilmLAI)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_descale_soilmLAI)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_updatesoilmLAI)
+   call registerlsmdaobstransform(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_transform_veg)
+   call registerlsmdamapobstolsm(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0),noahmp36_map_veg)
 
 ! Noahmp-3.6 synthetic soil moisture
    call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&

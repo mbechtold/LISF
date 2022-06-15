@@ -82,6 +82,12 @@ subroutine LIS_RTM_plugin
        WCMRTM_run
 #endif
 
+#if ( defined RTMS_WCM_multi )
+   use WCMRTM_multi_Mod, only : WCMRTM_multi_initialize, WCMRTM_multi_f2t,&
+       WCMRTM_multi_geometry, &
+       WCMRTM_multi_run
+#endif
+
 #if ( defined RTMS_CRTM )
 ! CRTM 1.x
 !   call registerrtminit(trim(LIS_crtmId)//char(0), CRTM_Kmatrix_initialize)
@@ -132,6 +138,15 @@ subroutine LIS_RTM_plugin
    call registergeometry2rtm(trim(LIS_wcmrtmId)//char(0), &
                              WCMRTM_geometry)
    call registerrtmrun(trim(LIS_wcmrtmId)//char(0),WCMRTM_run)
+#endif
+
+#if ( defined RTMS_WCM_multi )
+!WCMRTM
+   call registerrtminit(trim(LIS_wcmmultirtmId)//char(0),WCMRTM_multi_initialize)
+   call registerrtmf2t(trim(LIS_wcmmultirtmId)//char(0),WCMRTM_multi_f2t)
+   call registergeometry2rtm(trim(LIS_wcmmultirtmId)//char(0), &
+                             WCMRTM_multi_geometry)
+   call registerrtmrun(trim(LIS_wcmmultirtmId)//char(0),WCMRTM_multi_run)
 #endif
 #endif
 end subroutine LIS_RTM_plugin
