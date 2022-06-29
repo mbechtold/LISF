@@ -305,6 +305,26 @@ subroutine LIS_DAobs_plugin
    use S1_sigmaVVSMLAI_161_A_Mod,       only : S1_sigmaVVSMLAI_161_A_setup
 #endif 
 
+#if ( defined DA_OBS_S1_sigmaVVSM_037_D )
+   use S1_sigmaVVSM_037_D_Mod,       only : S1_sigmaVVSM_037_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_088_A )
+   use S1_sigmaVVSM_088_A_Mod,       only : S1_sigmaVVSM_088_A_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_110_D )
+   use S1_sigmaVVSM_110_D_Mod,       only : S1_sigmaVVSM_110_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_139_D )
+   use S1_sigmaVVSM_139_D_Mod,       only : S1_sigmaVVSM_139_D_setup
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_161_A )
+   use S1_sigmaVVSM_161_A_Mod,       only : S1_sigmaVVSM_161_A_setup
+#endif 
+
 #if ( defined DA_OBS_SSMI_SNWD )
    use SSMISNWDsnow_Mod,        only : SSMISNWDsnow_setup
 #endif
@@ -561,6 +581,26 @@ subroutine LIS_DAobs_plugin
 
 #if ( defined DA_OBS_S1_sigmaVHSMLAI_161_A)    
    external read_S1_sigmaVHSMLAI_161_A, write_S1_sigmaVHSMLAI_161_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_037_D)    
+   external read_S1_sigmaVVSM_037_D, write_S1_sigmaVVSM_037_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_088_A)    
+   external read_S1_sigmaVVSM_088_A, write_S1_sigmaVVSM_088_A_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_110_D)    
+   external read_S1_sigmaVVSM_110_D, write_S1_sigmaVVSM_110_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_139_D)    
+   external read_S1_sigmaVVSM_139_D, write_S1_sigmaVVSM_139_D_obs  
+#endif 
+
+#if ( defined DA_OBS_S1_sigmaVVSM_161_A)    
+   external read_S1_sigmaVVSM_161_A, write_S1_sigmaVVSM_161_A_obs  
 #endif 
 
 #if ( defined DA_OBS_SSMI_SNWD )
@@ -1057,6 +1097,61 @@ subroutine LIS_DAobs_plugin
         read_S1_sigmaVHSMLAI_161_A)
    call registerwritedaobs(trim(LIS_S1_sigmaVHSMLAI_161_A_obsId)//char(0), &
         write_S1_sigmaVHSMLAI_161_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSM_037_D )
+!S1 backscatter obs VVSM_037_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSM_037_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSM_037_D_obsId)//char(0), &
+        S1_sigmaVVSM_037_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSM_037_D_obsId)//char(0),  &
+        read_S1_sigmaVVSM_037_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSM_037_D_obsId)//char(0), &
+        write_S1_sigmaVVSM_037_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSM_088_A )
+!S1 backscatter obs VVSM_088_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSM_088_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSM_088_A_obsId)//char(0), &
+        S1_sigmaVVSM_088_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSM_088_A_obsId)//char(0),  &
+        read_S1_sigmaVVSM_088_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSM_088_A_obsId)//char(0), &
+        write_S1_sigmaVVSM_088_A_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSM_110_D )
+!S1 backscatter obs VVSM_110_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSM_110_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSM_110_D_obsId)//char(0), &
+        S1_sigmaVVSM_110_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSM_110_D_obsId)//char(0),  &
+        read_S1_sigmaVVSM_110_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSM_110_D_obsId)//char(0), &
+        write_S1_sigmaVVSM_110_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSM_139_D )
+!S1 backscatter obs VVSM_139_D
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSM_139_D_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSM_139_D_obsId)//char(0), &
+        S1_sigmaVVSM_139_D_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSM_139_D_obsId)//char(0),  &
+        read_S1_sigmaVVSM_139_D)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSM_139_D_obsId)//char(0), &
+        write_S1_sigmaVVSM_139_D_obs)
+#endif
+
+#if ( defined DA_OBS_S1_sigmaVVSM_161_A )
+!S1 backscatter obs VVSM_161_A
+   call registerdaobsclass(trim(LIS_S1_sigmaVVSM_161_A_obsId),"LSM")
+   call registerdaobssetup(trim(LIS_S1_sigmaVVSM_161_A_obsId)//char(0), &
+        S1_sigmaVVSM_161_A_setup)
+   call registerreaddaobs(trim(LIS_S1_sigmaVVSM_161_A_obsId)//char(0),  &
+        read_S1_sigmaVVSM_161_A)
+   call registerwritedaobs(trim(LIS_S1_sigmaVVSM_161_A_obsId)//char(0), &
+        write_S1_sigmaVVSM_161_A_obs)
 #endif
 
 #if ( defined DA_OBS_SSMI_SNWD )

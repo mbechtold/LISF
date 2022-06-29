@@ -90,7 +90,7 @@ subroutine LIS_lsmrtm_plugin
 #if ( defined RTMS_CMEM )
    external noahmp36_sfc2cmem3
 #endif
-#if ( defined RTMS_WCM )
+#if ( defined RTMS_WCM ) || ( defined RTMS_WCM_multi )
    external noahmp36_sfc2wcm
 #endif
 #endif
@@ -184,8 +184,13 @@ subroutine LIS_lsmrtm_plugin
         //trim(LIS_RTMforwardId)//char(0),NoahMP36_f2t)
 #endif
 
-#if ( defined RTMS_WCM)
+#if ( defined RTMS_WCM) 
    call registerlsm2rtm(trim(LIS_wcmRTMId)//"+"//&
+        trim(LIS_noahmp36Id)//char(0), noahmp36_sfc2wcm)
+#endif
+
+#if ( defined RTMS_WCM_multi)
+   call registerlsm2rtm(trim(LIS_wcmmultiRTMId)//"+"//&
         trim(LIS_noahmp36Id)//char(0), noahmp36_sfc2wcm)
 #endif
 #endif
