@@ -646,7 +646,11 @@ subroutine Ac70_setup()
                 call set_project_input(l, 'Soil_Filename', '(External)')
                 call set_project_input(l, 'Soil_Directory', '(External)')
                 call set_project_input(l, 'SWCIni_Info', '(None)')
-                call set_project_input(l, 'SWCIni_Filename', '(None)')
+                if (l == 1) then
+                    call set_project_input(l, 'SWCIni_Filename', '(None)')
+                else
+                    call set_project_input(l, 'SWCIni_Filename', 'KeepSWC')
+                end if
                 call set_project_input(l, 'SWCIni_Directory', '(None)')
                 call set_project_input(l, 'OffSeason_Info', '(None)')
                 call set_project_input(l, 'OffSeason_Filename', '(None)')
