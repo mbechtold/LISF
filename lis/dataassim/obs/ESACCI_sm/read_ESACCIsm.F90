@@ -161,7 +161,9 @@ subroutine read_ESACCIsm(n,k,  OBS_State, OBS_Pert_State)
            grid_index = c+(r-1)*LIS_rc%obs_lnc(k)
 
            dt = (LIS_rc%gmt - ESACCI_sm_struc(n)%smtime(c,r))*3600.0
-           if(dt.ge.0.and.dt.lt.LIS_rc%ts) then 
+           ! MB: AquaCrop runs at daily resolution, check of ts=86400
+           if((dt.ge.0.and.dt.lt.LIS_rc%ts) .or. &
+               (LIS_rc%ts .eq. 86400.0)) then 
               sm_current(c,r) = & 
                    ESACCI_sm_struc(n)%smobs(c,r)
               if(LIS_obs_domain(n,k)%gindex(c,r).ne.-1) then 

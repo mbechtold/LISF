@@ -446,7 +446,9 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             if(LIS_obs_domain(n,k)%gindex(c,r).ne.-1) then
                grid_index = c+(r-1)*LIS_rc%obs_lnc(k)
                dt = (NASASMAPsm_struc(n)%smtime(c,r)-time1)
-               if(dt.ge.0.and.dt.lt.(time3-time1)) then
+               ! MB: AquaCrop runs at daily resolution, check of ts=86400
+               if((dt.ge.0.and.dt.lt.(time3-time1)) .or. &
+                   (LIS_rc%ts .eq. 86400.0)) then 
                   sm_current(c,r) = &
                        NASASMAPsm_struc(n)%smobs(c,r)
                   if(LIS_obs_domain(n,k)%gindex(c,r).ne.-1) then
