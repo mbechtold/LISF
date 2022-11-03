@@ -446,6 +446,10 @@ module LIS_histDataMod
   public :: LIS_MOC_CCiprev
   public :: LIS_MOC_WCMV1V2
   public :: LIS_MOC_AC70FC
+  public :: LIS_MOC_AC70Irrigation
+  public :: LIS_MOC_AC70StressTot_Temp
+  public :: LIS_MOC_AC70StressTot_Sto
+  public :: LIS_MOC_AC70RootZoneWC_Actual
   
   ! RUC 
   public :: LIS_MOC_QVG
@@ -951,6 +955,10 @@ module LIS_histDataMod
    integer :: LIS_MOC_CCiprev  = -9999
    integer :: LIS_MOC_WCMV1V2  = -9999
    integer :: LIS_MOC_AC70FC  = -9999
+   integer :: LIS_MOC_AC70Irrigation  = -9999
+   integer :: LIS_MOC_AC70StressTot_Temp  = -9999
+   integer :: LIS_MOC_AC70StressTot_Sto  = -9999
+   integer :: LIS_MOC_AC70RootZoneWC_Actual  = -9999
 
 !   <- RUC -> 
    integer :: LIS_MOC_QVG = -9999
@@ -4616,6 +4624,54 @@ contains
          "AC70FC",rc)
     if ( rc == 1 ) then
        call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70FC,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70Irrigation:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70Irrigation",&
+         "AC70_Irrigation",&
+         "AC70 Irrigation",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70Irrigation,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70StressTot_Temp:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70StressTot_Temp",&
+         "AC70_StressTot_Temp",&
+         "AC70 StressTot_Temp",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70StressTot_Temp,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70StressTot_Sto:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70StressTot_Sto",&
+         "AC70_StressTot_Sto",&
+         "AC70 StressTot_Sto",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70StressTot_Sto,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70RootZoneWC_Actual:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70RootZoneWC_Actual",&
+         "AC70_RootZoneWC_Actual",&
+         "AC70 RootZoneWC_Actual",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70RootZoneWC_Actual,&
             LIS_histData(n)%head_lsm_list,&
             n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
             model_patch=.true.)

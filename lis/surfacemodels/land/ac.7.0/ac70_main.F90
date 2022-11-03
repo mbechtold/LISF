@@ -994,6 +994,14 @@ subroutine Ac70_main(n)
                                               vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
             call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70FC, value = real(AC70_struc(n)%ac70(t)%AC70FC,kind=sp), &
                                               vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70Irrigation, value = real(AC70_struc(n)%ac70(t)%Irrigation,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70StressTot_Temp, value = real(AC70_struc(n)%ac70(t)%StressTot%Temp,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70StressTot_Sto, value = real(AC70_struc(n)%ac70(t)%StressTot%Sto,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70RootZoneWC_Actual, value = real(AC70_struc(n)%ac70(t)%RootZoneWC_Actual,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
             !call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_PREC_ac, value = real(AC70_struc(n)%ac70(t)%PREC_ac,kind=sp), &
             !                                  vlevel=1, unit="mm/d", direction="-", surface_type = LIS_rc%lsm_index)
             
