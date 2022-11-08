@@ -821,7 +821,7 @@ subroutine Ac70_setup()
                  
 
                 !call InitializeProject(iproject, TheProjectFile, TheProjectType)
-                call InitializeSettings(use_default_soil_file=.false.)
+                call InitializeSettings(use_default_soil_file=.false.,use_default_crop_file=.false.)
 
                 AC70_struc(n)%ac70(t)%SoilLayer = GetSoilLayer()
                 AC70_struc(n)%ac70(t)%Soil = GetSoil()
