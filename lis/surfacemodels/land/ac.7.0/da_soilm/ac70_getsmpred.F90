@@ -14,7 +14,8 @@
 ! !REVISION HISTORY:
 ! 27Feb2005: Sujay Kumar; Initial Specification
 ! 25Jun2006: Sujay Kumar: Updated for the ESMF design
-! 9 Sep 2016: Mahdi Navari; Modified for Ac70 
+! 9 Sep 2016: Mahdi Navari 
+! 23 Nov 2022: Michel Bechtold, Modified for Ac70 
 !
 ! !INTERFACE:
 subroutine ac70_getsmpred(n, k,obs_pred)
@@ -48,12 +49,18 @@ subroutine ac70_getsmpred(n, k,obs_pred)
   real                   :: obs_tmp
   integer                :: i,t,m,gid,kk
   real                   :: inputs_tp(6), sm_out
+  real                   :: w1, w2, w3
   character*50           :: units_tp(6)
   real                   :: smc1(LIS_rc%npatch(n,LIS_rc%lsm_index))
 
 
   do t=1, LIS_rc%npatch(n,LIS_rc%lsm_index)
-     smc1(t) = AC70_struc(n)%ac70(t)%smc(1)
+     w2 = 0.15
+     w3 = 0.1
+     w1 = 1 - w2 - w3 
+     smc1(t) = w1*AC70_struc(n)%ac70(t)%smc(1) + & 
+               w2*AC70_struc(n)%ac70(t)%smc(2) + &
+               w3*AC70_struc(n)%ac70(t)%smc(3)
   enddo
   call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
        LIS_rc%lsm_index, &

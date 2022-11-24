@@ -731,6 +731,7 @@ module Ac70_module
      ! WCM
      real               :: Tmin_ac_Julyref
      real               :: WCMV1V2
+     real               :: AC70ssmc_weighted
      real               :: AC70FC
      real, allocatable  :: TMIN_ac_antecedent(:)
      !!!

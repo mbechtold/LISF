@@ -449,6 +449,7 @@ subroutine Ac70_main(n)
     real                 :: lat, lon
     real                 :: Tmin_movmean
     real                 :: Tmin_mplr
+    real                 :: w1, w2, w3
     integer              :: row, col
     integer              :: year, month, day, hour, minute, second
     logical              :: alarmCheck
@@ -965,6 +966,13 @@ subroutine Ac70_main(n)
                 AC70_struc(n)%ac70(t)%WCMV1V2 = 0.0
             end if
             AC70_struc(n)%ac70(t)%AC70FC = AC70_struc(n)%ac70(t)%SoilLayer(1)%fc
+            !!! SMC Top Weighted for DA
+            w2 = 0.15
+            w3 = 0.1
+            w1 = 1 - 0.15 - 0.1
+            AC70_struc(n)%ac70(t)%AC70ssmc_weighted = w1*AC70_struc(n)%ac70(t)%smc(1) + &
+                     w2*AC70_struc(n)%ac70(t)%smc(2) + &
+                     w3*AC70_struc(n)%ac70(t)%smc(3)
 
     if ((LIS_rc%mo .eq. 12) .AND. (LIS_rc%da .eq. 31)) then
         AC70_struc(n)%ac70(t)%InitializeRun = 1
@@ -1002,6 +1010,9 @@ subroutine Ac70_main(n)
                                               vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
             call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70RootZoneWC_Actual, value = real(AC70_struc(n)%ac70(t)%RootZoneWC_Actual,kind=sp), &
                                               vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70ssmc_weighted, value = real(AC70_struc(n)%ac70(t)%AC70ssmc_weighted,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+
             !call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_PREC_ac, value = real(AC70_struc(n)%ac70(t)%PREC_ac,kind=sp), &
             !                                  vlevel=1, unit="mm/d", direction="-", surface_type = LIS_rc%lsm_index)
             

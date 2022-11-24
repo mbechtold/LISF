@@ -42,20 +42,46 @@ subroutine ac70_getsoilm(n, LSM_State)
 !  \end{description}
 !EOP
   type(ESMF_Field)       :: sm1Field
+  real, pointer          :: soilm1(:)
+  type(ESMF_Field)       :: sm2Field
+  real, pointer          :: soilm2(:)
+  type(ESMF_Field)       :: sm3Field
+  real, pointer          :: soilm3(:)
   integer                :: t
   integer                :: status
-  real, pointer          :: soilm1(:)
-  character*100          :: lsm_state_objs(1)
+  !character*100          :: lsm_state_objs(1)
 
+  !Layer 1
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
   call LIS_verify(status,'ESMF_StateGet failed for sm1 in ac70_getsoilm')
 
   call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
   call LIS_verify(status,'ESMF_FieldGet failed for sm1 in ac70_getsoilm')
 
-
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
      soilm1(t) = AC70_struc(n)%ac70(t)%smc(1)
+  enddo
+  
+  !Layer 2
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 2",sm2Field,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for sm2 in ac70_getsoilm')
+
+  call ESMF_FieldGet(sm2Field,localDE=0,farrayPtr=soilm2,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for sm2 in ac70_getsoilm')
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     soilm2(t) = AC70_struc(n)%ac70(t)%smc(2)
+  enddo
+
+  !Layer 3
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 3",sm3Field,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for sm3 in ac70_getsoilm')
+
+  call ESMF_FieldGet(sm3Field,localDE=0,farrayPtr=soilm3,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for sm3 in ac70_getsoilm')
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     soilm3(t) = AC70_struc(n)%ac70(t)%smc(3)
   enddo
 
 end subroutine ac70_getsoilm

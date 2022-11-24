@@ -13,6 +13,7 @@
 !
 ! !REVISION HISTORY:
 !  4 Sep 2020: Sara Modanesi; Initial Specification
+!  23 Nov 2022: Michel Bechtold; Soil moisture aggregation needed for Aquacrop physics
 ! !INTERFACE:
 subroutine ac70_sfc2wcm(n, sfcState)
 ! !USES:      
@@ -38,6 +39,7 @@ subroutine ac70_sfc2wcm(n, sfcState)
 !EOP
   type(ESMF_Field)    :: smcField, laiField
   real, pointer       :: soil_moisture_content(:), leaf_area_index(:)
+  real                :: w1, w2, w3
   integer             :: t,status
 
   call ESMF_StateGet(sfcState,"Soil Moisture Content",smcField,rc=status)
@@ -51,7 +53,12 @@ subroutine ac70_sfc2wcm(n, sfcState)
   call LIS_verify(status)
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-     soil_moisture_content(t) = AC70_struc(n)%ac70(t)%smc(1)
+     w2 = 0.15
+     w3 = 0.1
+     w1 = 1 - w2 - w3
+     soil_moisture_content(t) = w1*AC70_struc(n)%ac70(t)%smc(1) + &
+                                w2*AC70_struc(n)%ac70(t)%smc(2) + &
+                                w3*AC70_struc(n)%ac70(t)%smc(3)
      Leaf_Area_Index(t) = AC70_struc(n)%ac70(t)%WCMV1V2
   enddo
 
