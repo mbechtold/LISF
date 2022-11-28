@@ -78,7 +78,7 @@ subroutine ac70_updatesoilm(n, LSM_State, LSM_Incr_State)
   enddo
 
   ! Layer 2
-  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 2",sm1Field,rc=status)
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 2",sm2Field,rc=status)
   call LIS_verify(status,&
        "ESMF_StateGet: Soil Moisture Layer 2 failed in ac70_updatesoilm")
 
@@ -99,7 +99,7 @@ subroutine ac70_updatesoilm(n, LSM_State, LSM_Incr_State)
   enddo
 
   ! Layer 3
-  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 3",sm1Field,rc=status)
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 3",sm3Field,rc=status)
   call LIS_verify(status,&
        "ESMF_StateGet: Soil Moisture Layer 3 failed in ac70_updatesoilm")
 

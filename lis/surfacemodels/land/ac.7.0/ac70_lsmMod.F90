@@ -248,6 +248,7 @@ module Ac70_lsmMod
         integer            :: max_No_compartments
         integer            :: Tmin_windowsize
         real, pointer      :: Thickness(:)
+        logical            :: QC_opt
         !!! MB: AC70
         type(Ac70dec), pointer :: ac70(:)
     end type Ac70_type_dec

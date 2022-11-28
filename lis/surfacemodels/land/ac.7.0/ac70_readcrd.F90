@@ -349,6 +349,19 @@ subroutine Ac70_readcrd()
     enddo
  
     ! MB: AC70
+    ! ZH: not applying the recommended QC to avoid out of bounds soil
+    ! moisture;
+    ! can be useful when performing a run excluding the increment
+    ! updates (e.g., before CDF matching)
+    call ESMF_ConfigFindLabel(LIS_config, &
+         "Aquacrop.7.0 apply soil moisture observation QC:", rc=rc)
+    do n=1, LIS_rc%nnest
+         call ESMF_ConfigGetAttribute(LIS_config, AC70_struc(n)%QC_opt, &
+              default=.true., rc=rc)
+         write(LIS_logunit,*) "applying QC:", &
+              AC70_struc(n)%QC_opt
+    enddo
+
     ! thickness of soil layers
     call ESMF_ConfigFindLabel(LIS_config, "Thickness:", rc = rc)
     do n=1, LIS_rc%nnest

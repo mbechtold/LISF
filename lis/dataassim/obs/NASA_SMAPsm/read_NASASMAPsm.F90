@@ -203,7 +203,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             if (LIS_rc%ts .ne. 86400.0) then
                 mn_ind = index(fname,trim(yyyymmdd)//'T'//trim(hh))+11
             else
-                mn_ind = index(fname,trim(yyyymmdd)//'T')+13
+                mn_ind = index(fname,trim(yyyymmdd)//'T')+11
             end if 
             read(fname(mn_ind:mn_ind+1),'(i2.2)') mn
             ss=0

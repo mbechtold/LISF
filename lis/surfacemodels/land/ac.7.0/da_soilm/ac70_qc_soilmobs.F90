@@ -150,10 +150,12 @@ subroutine ac70_qc_soilmobs(n,k,OBS_State)
         if(TMIN_ac_obs(t) .lt. 1.0) then 
            smobs(t) = LIS_rc%udef
 !too close to the tails, could be due to scaling, so reject. 
-        elseif(smcmax_obs(t)-smobs(t).lt.0.02) then 
-           smobs(t) = LIS_rc%udef
-        elseif(smobs(t) - smcwlt_obs(t).lt.0.02) then 
-           smobs(t) = LIS_rc%udef
+        elseif(AC70_struc(n)%QC_opt.eq..true.) then
+            if(smcmax_obs(t)-smobs(t).lt.0.02) then 
+               smobs(t) = LIS_rc%udef
+            elseif(smobs(t) - smcwlt_obs(t).lt.0.02) then 
+               smobs(t) = LIS_rc%udef
+           endif
         endif
      endif
   enddo
