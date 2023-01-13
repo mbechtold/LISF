@@ -178,6 +178,11 @@ subroutine Ac70_readcrd()
         if ( rc == 0) then
             call ESMF_ConfigGetAttribute(LIS_config, &
                  AC70_struc(n)%Irrigation_Filename, rc=rc)
+             ! change lis none to AquaCrop (None)
+             if ((AC70_struc(n)%Irrigation_Filename .eq. 'none') .or. &
+                 (AC70_struc(n)%Irrigation_Filename .eq. 'None')) then
+                 AC70_struc(n)%Irrigation_Filename = '(None)'
+             endif 
         else
             print*,'Irrigation_Filename: not defined --> set to (None)'
             AC70_struc(n)%Irrigation_Filename = '(None)'
