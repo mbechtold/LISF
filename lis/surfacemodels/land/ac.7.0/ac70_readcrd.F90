@@ -172,6 +172,23 @@ subroutine Ac70_readcrd()
         call LIS_verify(rc, "Management_Filename: not defined")
     enddo
  
+    ! Irrigation_Filename
+    call ESMF_ConfigFindLabel(LIS_config, "Irrigation_Filename:", rc = rc)
+    do n=1, LIS_rc%nnest
+        if ( rc == 0) then
+            call ESMF_ConfigGetAttribute(LIS_config, &
+                 AC70_struc(n)%Irrigation_Filename, rc=rc)
+             ! change lis none to AquaCrop (None)
+             if ((AC70_struc(n)%Irrigation_Filename .eq. 'none') .or. &
+                 (AC70_struc(n)%Irrigation_Filename .eq. 'None')) then
+                 AC70_struc(n)%Irrigation_Filename = '(None)'
+             endif 
+        else
+            print*,'Irrigation_Filename: not defined --> set to (None)'
+            AC70_struc(n)%Irrigation_Filename = '(None)'
+        endif
+    enddo
+ 
     !! NumberSimulationRuns
     !call ESMF_ConfigFindLabel(LIS_config, "NumberSimulationRuns:", rc = rc)
     !do n=1, LIS_rc%nnest

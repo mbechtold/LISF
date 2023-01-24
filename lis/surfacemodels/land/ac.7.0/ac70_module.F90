@@ -912,6 +912,7 @@ character(len=:), allocatable :: Rain_Filename
 character(len=:), allocatable :: CO2_Filename
 character(len=:), allocatable :: Crop_Filename
 character(len=:), allocatable :: Management_Filename
+character(len=:), allocatable :: Irrigation_Filename
 character(len=:), allocatable :: ProfFile
 character(len=:), allocatable :: ProfFilefull
 character(len=:), allocatable :: ProfDescription

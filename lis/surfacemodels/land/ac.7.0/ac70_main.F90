@@ -1012,7 +1012,18 @@ subroutine Ac70_main(n)
                                               vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
             call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70ssmc_weighted, value = real(AC70_struc(n)%ac70(t)%AC70ssmc_weighted,kind=sp), &
                                               vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
-
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70RootZoneWC_WP, value = real(AC70_struc(n)%ac70(t)%RootZoneWC_WP,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70RootZoneWC_FC, value = real(AC70_struc(n)%ac70(t)%RootZoneWC_FC,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70Tact, value = real(AC70_struc(n)%ac70(t)%Tact,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70Eact, value = real(AC70_struc(n)%ac70(t)%Eact,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70RootingDepth, value = real(AC70_struc(n)%ac70(t)%RootingDepth,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
+            call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_AC70CCiActual, value = real(AC70_struc(n)%ac70(t)%CCiActual,kind=sp), &
+                                              vlevel=1, unit="-", direction="-", surface_type = LIS_rc%lsm_index)
             !call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_PREC_ac, value = real(AC70_struc(n)%ac70(t)%PREC_ac,kind=sp), &
             !                                  vlevel=1, unit="mm/d", direction="-", surface_type = LIS_rc%lsm_index)
             

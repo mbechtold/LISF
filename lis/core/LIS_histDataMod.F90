@@ -452,7 +452,13 @@ module LIS_histDataMod
   public :: LIS_MOC_AC70StressTot_Sto
   public :: LIS_MOC_AC70RootZoneWC_Actual
   public :: LIS_MOC_AC70ssmc_weighted
-
+  public :: LIS_MOC_AC70RootZoneWC_WP
+  public :: LIS_MOC_AC70RootZoneWC_FC
+  public :: LIS_MOC_AC70Tact
+  public :: LIS_MOC_AC70Eact
+  public :: LIS_MOC_AC70RootingDepth
+  public :: LIS_MOC_AC70CCiActual
+  
   ! RUC 
   public :: LIS_MOC_QVG
   public :: LIS_MOC_QCG
@@ -962,7 +968,16 @@ module LIS_histDataMod
    integer :: LIS_MOC_AC70StressTot_Temp  = -9999
    integer :: LIS_MOC_AC70StressTot_Sto  = -9999
    integer :: LIS_MOC_AC70RootZoneWC_Actual  = -9999
+<<<<<<< HEAD
    integer :: LIS_MOC_AC70ssmc_weighted = -9999
+=======
+   integer :: LIS_MOC_AC70RootZoneWC_WP  = -9999
+   integer :: LIS_MOC_AC70RootZoneWC_FC  = -9999
+   integer :: LIS_MOC_AC70Tact  = -9999
+   integer :: LIS_MOC_AC70Eact  = -9999
+   integer :: LIS_MOC_AC70RootingDepth  = -9999
+   integer :: LIS_MOC_AC70CCiActual  = -9999
+>>>>>>> 25dd0c2a00de5b968a371b7df38e445907e387d2
 
 !   <- RUC -> 
    integer :: LIS_MOC_QVG = -9999
@@ -4701,6 +4716,78 @@ contains
          "AC70 RootZoneWC_Actual",rc)
     if ( rc == 1 ) then
        call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70RootZoneWC_Actual,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70RootZoneWC_WP:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70RootZoneWC_WP",&
+         "AC70_RootZoneWC_WP",&
+         "AC70 RootZoneWC_WP",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70RootZoneWC_WP,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70RootZoneWC_FC:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70RootZoneWC_FC",&
+         "AC70_RootZoneWC_FC",&
+         "AC70 RootZoneWC_FC",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70RootZoneWC_FC,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70Tact:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70Tact",&
+         "AC70_Tact",&
+         "AC70 Tact",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70Tact,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70Eact:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70Eact",&
+         "AC70_Eact",&
+         "AC70 Eact",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70Eact,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70RootingDepth:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70RootingDepth",&
+         "AC70_RootingDepth",&
+         "AC70 RootingDepth",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70RootingDepth,&
+            LIS_histData(n)%head_lsm_list,&
+            n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
+            model_patch=.true.)
+    endif
+
+    call ESMF_ConfigFindLabel(modelSpecConfig,"AC70CCiActual:",rc=rc)
+    call get_moc_attributes(modelSpecConfig, LIS_histData(n)%head_lsm_list, &
+         "AC70CCiActual",&
+         "AC70_CCiActual",&
+         "AC70 CCiActual",rc)
+    if ( rc == 1 ) then
+       call register_dataEntry(LIS_MOC_LSM_COUNT,LIS_MOC_AC70CCiActual,&
             LIS_histData(n)%head_lsm_list,&
             n,1,ntiles,(/"-"/),1,(/"-"/),1,1,1,&
             model_patch=.true.)
