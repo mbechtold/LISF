@@ -968,16 +968,13 @@ module LIS_histDataMod
    integer :: LIS_MOC_AC70StressTot_Temp  = -9999
    integer :: LIS_MOC_AC70StressTot_Sto  = -9999
    integer :: LIS_MOC_AC70RootZoneWC_Actual  = -9999
-<<<<<<< HEAD
    integer :: LIS_MOC_AC70ssmc_weighted = -9999
-=======
    integer :: LIS_MOC_AC70RootZoneWC_WP  = -9999
    integer :: LIS_MOC_AC70RootZoneWC_FC  = -9999
    integer :: LIS_MOC_AC70Tact  = -9999
    integer :: LIS_MOC_AC70Eact  = -9999
    integer :: LIS_MOC_AC70RootingDepth  = -9999
    integer :: LIS_MOC_AC70CCiActual  = -9999
->>>>>>> 25dd0c2a00de5b968a371b7df38e445907e387d2
 
 !   <- RUC -> 
    integer :: LIS_MOC_QVG = -9999
