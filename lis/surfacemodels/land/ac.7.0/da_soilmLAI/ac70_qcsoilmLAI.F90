@@ -8,14 +8,14 @@
 ! All Rights Reserved.
 !-------------------------END NOTICE -- DO NOT EDIT-----------------------
 !BOP
-! !ROUTINE: ac70_qcsoilmLAIveg
-! \label{ac70_qcsoilmLAIveg}
+! !ROUTINE: ac70_qcsoilmLAI
+! \label{ac70_qcsoilmLAI}
 !
 ! !REVISION HISTORY:
 ! 27Feb2005: Sujay Kumar; Initial Specification
 ! 25Jun2006: Sujay Kumar: Updated for the ESMF design
 ! 1 Aug 2016: Mahdi Navari; Modified for ac70 
-! 18 Jun 2021: Michel Bechtold: SM and LAI updating with S1 backscatter w/ WCM
+! 18 Jun 2021: Michel Bechtold: SM and LAI and CC updating with S1 backscatter w/ WCM
 !
 ! !INTERFACE:
 subroutine ac70_qcsoilmLAI(n, LSM_State)
@@ -46,7 +46,7 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
 !  type(ESMF_Field)       :: sm2Field
 !  type(ESMF_Field)       :: sm3Field
 !  type(ESMF_Field)       :: sm4Field
-  type(ESMF_Field)       :: AC70BIOMASSField
+  type(ESMF_Field)       :: AC70BIOMASSField, AC70CCiprevField
   integer                :: t
   integer                :: status
   real, pointer          :: soilm1(:)
@@ -54,17 +54,18 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
 !  real, pointer          :: soilm3(:)
 !  real, pointer          :: soilm4(:)
   real, pointer          :: AC70BIOMASS(:)
+  real, pointer          :: AC70CCiprev(:)
   real                   :: smmax1!,smmax2,smmax3,smmax4
   real                   :: smmin1!,smmin2,smmin3,smmin4
-  real                   :: AC70BIOMASSmax
-  real                   :: AC70BIOMASSmin
+  real                   :: AC70BIOMASSmax, AC70CCiprevmax
+  real                   :: AC70BIOMASSmin, AC70CCiprevmin
   integer                :: gid
-  real                   :: AC70BIOMASStmp
+  real                   :: AC70BIOMASStmp, AC70CCiprevtmp
 
   logical                :: update_flag(LIS_rc%ngrid(n))
   real                   :: perc_violation(LIS_rc%ngrid(n))
-  real                   :: AC70BIOMASSmean(LIS_rc%ngrid(n))
-  integer                :: nAC70BIOMASSmean(LIS_rc%ngrid(n))
+  real                   :: AC70BIOMASSmean(LIS_rc%ngrid(n)), AC70CCiprevmean(LIS_rc%ngrid(n))
+  integer                :: nAC70BIOMASSmean(LIS_rc%ngrid(n)), nAC70CCiprevmean(LIS_rc%ngrid(n))
   integer                :: N_ens
   real                   :: state_tmp(LIS_rc%nensem(n)),state_mean
 
@@ -96,6 +97,19 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
   call LIS_verify(status,&
            "ESMF_AttributeGet for AC70BIOMASS Min Value failed in ac70_qcsoilmLAI")
 
+  call ESMF_StateGet(LSM_State,"AC70 CCiprev",AC70CCiprevField,rc=status)
+  call LIS_verify(status,&
+           "ESMF_StateGet for AC70CCiprev failed in ac70_qcsoilmLAI")
+  call ESMF_FieldGet(AC70CCiprevField,localDE=0,farrayPtr=AC70CCiprev,rc=status)
+  call LIS_verify(status,&
+           "ESMF_FieldGet for AC70CCiprev failed in ac70_qcsoilmLAI")
+
+  call ESMF_AttributeGet(AC70CCiprevField,"Max Value",AC70CCiprevmax,rc=status)
+  call LIS_verify(status,&
+           "ESMF_AttributeGet for AC70CCiprev Max Value failed in ac70_qcsoilmLAI")
+  call ESMF_AttributeGet(AC70CCiprevField,"Min Value",AC70CCiprevmin,rc=status)
+  call LIS_verify(status,&
+           "ESMF_AttributeGet for AC70CCiprev Min Value failed in ac70_qcsoilmLAI")
 
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
@@ -103,8 +117,11 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
      if(soilm1(t).lt.smmin1) soilm1(t) = smmin1
   enddo
 
+  ! AC70 BIOMASS
+  
   update_flag    = .true.
   perc_violation = 0.0
+
   AC70BIOMASSmean       = 0.0
   nAC70BIOMASSmean      = 0
 
@@ -182,6 +199,98 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
   N_ens = LIS_rc%nensem(n)
   do t=1,N_ens
      state_tmp(t) = AC70BIOMASS(t)
+  enddo
+  state_mean =sum(state_tmp)/N_ens
+
+  write(113,fmt='(i4.4,i2.2,i2.2,i2.2,i2.2,i2.2,21F8.3)') &
+       LIS_rc%yr, LIS_rc%mo, LIS_rc%da, LIS_rc%hr, &
+       LIS_rc%mn, LIS_rc%ss, &
+       state_mean, &
+       state_tmp
+#endif
+
+  ! AC70 CCiprev
+  
+  update_flag    = .true.
+  perc_violation = 0.0
+
+  AC70CCiprevmean       = 0.0
+  nAC70CCiprevmean      = 0
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+
+     gid = LIS_domain(n)%gindex(&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
+
+     AC70CCiprevtmp =  AC70CCiprev(t)
+
+     if(AC70CCiprevtmp.lt.AC70CCiprevmin.or.AC70CCiprevtmp.gt.AC70CCiprevmax) then
+        update_flag(gid) = .false.
+        perc_violation(gid) = perc_violation(gid) +1
+     endif
+
+  enddo
+
+  do gid=1,LIS_rc%ngrid(n)
+     perc_violation(gid) = perc_violation(gid)/LIS_rc%nensem(n)
+  enddo
+
+! For ensembles that are unphysical, compute the
+! ensemble average after excluding them. This
+! is done only if the majority of the ensemble
+! members are good (>60%)
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+
+     gid = LIS_domain(n)%gindex(&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
+     if(.not.update_flag(gid)) then
+        if(perc_violation(gid).lt.0.8) then
+           if((AC70CCiprev(t).gt.AC70CCiprevmin).and.&
+                (AC70CCiprev(t).lt.AC70CCiprevmax)) then 
+              AC70CCiprevmean(gid) = AC70CCiprevmean(gid) + &
+                   AC70CCiprev(t) 
+              nAC70CCiprevmean(gid) = nAC70CCiprevmean(gid) + 1
+           endif
+        endif
+     endif
+  enddo
+  
+  do gid=1,LIS_rc%ngrid(n)
+     if(nAC70CCiprevmean(gid).gt.0) then
+        AC70CCiprevmean(gid) = AC70CCiprevmean(gid)/nAC70CCiprevmean(gid)
+     endif
+  enddo
+
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     gid = LIS_domain(n)%gindex(&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
+
+     AC70CCiprevtmp =  AC70CCiprev(t)
+
+! If the update is unphysical, simply set to the average of
+! the good ensemble members. If all else fails, do not
+! update.
+
+     if(update_flag(gid)) then
+        AC70CCiprev(t) = AC70CCiprevtmp
+     elseif(perc_violation(gid).lt.0.8) then
+        if(AC70CCiprevtmp.lt.AC70CCiprevmin.or.AC70CCiprevtmp.gt.AC70CCiprevmax) then
+           AC70CCiprev(t) = AC70CCiprevmean(gid)
+        else
+           AC70CCiprev(t) = AC70CCiprev(t) 
+        endif
+     endif
+  enddo
+
+#if 0 
+  N_ens = LIS_rc%nensem(n)
+  do t=1,N_ens
+     state_tmp(t) = AC70CCiprev(t)
   enddo
   state_mean =sum(state_tmp)/N_ens
 

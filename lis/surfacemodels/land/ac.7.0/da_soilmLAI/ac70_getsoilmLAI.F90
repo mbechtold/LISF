@@ -16,7 +16,7 @@
 ! 25Jun2006: Sujay Kumar: Updated for the ESMF design
 ! 1 Aug 2016: Mahdi Navari; Modified for ac70 
 !   To do: makes it general for x layers (currently hard coded for 4 layers)
-! 18 Jun 2021: Michel Bechtold: SM and LAI updating with S1 backscatter w/ WCM
+! 18 Jun 2021: Michel Bechtold: SM and LAI and CC updating with S1 backscatter w/ WCM
 ! !INTERFACE:
 subroutine ac70_getsoilmLAI(n, LSM_State)
 
@@ -33,7 +33,7 @@ subroutine ac70_getsoilmLAI(n, LSM_State)
 !
 ! !DESCRIPTION:
 !
-!  Returns the soilmoisture and LAI related state prognostic variables for
+!  Returns the soilmoisture and LAI and CC related state prognostic variables for
 !  data assimilation
 ! 
 !  The arguments are: 
@@ -43,11 +43,11 @@ subroutine ac70_getsoilmLAI(n, LSM_State)
 !  \end{description}
 !EOP
   type(ESMF_Field)       :: sm1Field
-  type(ESMF_Field)       :: AC70BIOMASSField,lfmassField
+  type(ESMF_Field)       :: AC70BIOMASSField, AC70CCiprevField,lfmassField
   integer                :: t
   integer                :: status
   real, pointer          :: soilm1(:)
-  real, pointer          :: AC70BIOMASS(:)
+  real, pointer          :: AC70BIOMASS(:), AC70CCiprev(:)
   character*100          :: lsm_state_objs(2)
 
 
@@ -61,11 +61,21 @@ subroutine ac70_getsoilmLAI(n, LSM_State)
   call ESMF_FieldGet(AC70BIOMASSField,localDE=0,farrayPtr=AC70BIOMASS,rc=status)
   call LIS_verify(status,'ESMF_FieldGet failed for AC70BIOMASS in ac70_getsoilmLAI')
 
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for sm1 in ac70_getsoilmLAI')
+  call ESMF_StateGet(LSM_State,"AC70 CCiprev",AC70CCiprevField,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for AC70CCiprev in ac70_getsoilmLAI')
+
+  call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for sm1 in ac70_getsoilmLAI')
+  call ESMF_FieldGet(AC70CCiprevField,localDE=0,farrayPtr=AC70CCiprev,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for AC70CCiprev in ac70_getsoilmLAI')
+
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
      soilm1(t) = AC70_struc(n)%ac70(t)%smc(1)
-     !CCIprev(t) = AC70_struc(n)%ac70(t)%CCiprev
      AC70BIOMASS(t) = AC70_struc(n)%ac70(t)%SumWaBal%Biomass
+     AC70CCiprev(t) = AC70_struc(n)%ac70(t)%CCiprev
   enddo
 
 end subroutine ac70_getsoilmLAI

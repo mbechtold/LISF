@@ -41,23 +41,31 @@ subroutine ac70_updatesoilmLAI(n, LSM_State, LSM_Incr_State)
 
   type(ESMF_Field)       :: sm1Field
   type(ESMF_Field)       :: AC70BIOMASSField
+  type(ESMF_Field)       :: AC70CCiprevField
   type(ESMF_Field)       :: sm1IncrField
   type(ESMF_Field)       :: AC70BIOMASSIncrField
+  type(ESMF_Field)       :: AC70CCiprevIncrField
 
   real, pointer          :: soilm1(:)
   real, pointer          :: AC70BIOMASS(:)
+  real, pointer          :: AC70CCiprev(:)
   real, pointer          :: soilmIncr1(:)
   real, pointer          :: AC70BIOMASSincr(:)
+  real, pointer          :: AC70CCiprevincr(:)
   integer                :: t,i,m,gid
   integer                :: status
 
   real                   :: AC70BIOMASStmp,AC70BIOMASSmax,AC70BIOMASSmin
+  real                   :: AC70CCiprevtmp,AC70CCiprevmax,AC70CCiprevmin
 
   logical                :: update_flag(LIS_rc%ngrid(n))
   real                   :: perc_violation(LIS_rc%ngrid(n))
 
   real                   :: AC70BIOMASSmean(LIS_rc%ngrid(n))
   integer                :: nAC70BIOMASSmean(LIS_rc%ngrid(n))
+
+  real                   :: AC70CCiprevmean(LIS_rc%ngrid(n))
+  integer                :: nAC70CCiprevmean(LIS_rc%ngrid(n))
 
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
   call LIS_verify(status,&
@@ -94,12 +102,32 @@ subroutine ac70_updatesoilmLAI(n, LSM_State, LSM_Incr_State)
   call LIS_verify(status,&
        "ESMF_AttributeGet: AC70BIOMASSField Min Value failed in ac70_updatesoilmLAI")
 
+  call ESMF_StateGet(LSM_State,"AC70 CCiprev",AC70CCiprevField,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateGet: LSM_State, failed in ac70_updatesoilmLAI")
+  call ESMF_FieldGet(AC70CCiprevField,localDE=0,farrayPtr=AC70CCiprev,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet: AC70CCiprevField failed in ac70_updatesoilmLAI")
+ 
+  call ESMF_StateGet(LSM_Incr_State,"AC70 CCiprev",AC70CCiprevIncrField,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateGet: LSM_Incr_State AC70CCiprev failed in ac70_updatesoilmLAI")
+  call ESMF_FieldGet(AC70CCiprevIncrField,localDE=0,farrayPtr=AC70CCiprevincr,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet: AC70CCiprevIncrField failed in ac70_updatesoilmLAI")
+
+  call ESMF_AttributeGet(AC70CCiprevField,"Max Value",AC70CCiprevmax,rc=status)
+  call LIS_verify(status,&
+       "ESMF_AttributeGet: AC70CCiprevField Max Value failed in ac70_updatesoilmLAI")
+  call ESMF_AttributeGet(AC70CCiprevField,"Min Value",AC70CCiprevmin,rc=status)
+  call LIS_verify(status,&
+       "ESMF_AttributeGet: AC70CCiprevField Min Value failed in ac70_updatesoilmLAI")
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
      soilm1(t) = soilm1(t) + soilmIncr1(t)
   enddo
 
-
+!! AC70BIOMASS
   update_flag    = .true.
   perc_violation = 0.0
   AC70BIOMASSmean       = 0.0
@@ -172,6 +200,87 @@ subroutine ac70_updatesoilmLAI(n, LSM_State, LSM_Incr_State)
            AC70BIOMASS(t) = AC70BIOMASSmean(gid)
         else
            AC70BIOMASS(t) = AC70BIOMASS(t) + AC70BIOMASSincr(t)
+        endif
+     endif
+  enddo
+
+!! CCiprev
+
+  !! overwrite by CCx (max canopy cover for crop in Aquacrop)
+  AC70CCiprevmax = AC70_struc(n)%ac70(t)%crop%CCx
+
+  update_flag    = .true.
+  perc_violation = 0.0
+  AC70CCiprevmean       = 0.0
+  nAC70CCiprevmean      = 0
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+
+     gid = LIS_domain(n)%gindex(&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
+
+     AC70CCiprevtmp =  AC70CCiprev(t) + AC70CCiprevincr(t)
+
+
+     if(AC70CCiprevtmp.lt.AC70CCiprevmin.or.AC70CCiprevtmp.gt.AC70CCiprevmax) then
+        update_flag(gid) = .false.
+        perc_violation(gid) = perc_violation(gid) +1
+     endif
+
+  enddo
+
+  do gid=1,LIS_rc%ngrid(n)
+     perc_violation(gid) = perc_violation(gid)/LIS_rc%nensem(n)
+  enddo
+
+! For ensembles that are unphysical, compute the
+! ensemble average after excluding them. This
+! is done only if the majority of the ensemble
+! members are good (>60%)
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+
+     gid = LIS_domain(n)%gindex(&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
+     if(.not.update_flag(gid)) then
+        if(perc_violation(gid).lt.0.8) then
+           if((AC70CCiprev(t)+AC70CCiprevincr(t).gt.AC70CCiprevmin).and.&
+                (AC70CCiprev(t)+AC70CCiprevincr(t).lt.AC70CCiprevmax)) then 
+              AC70CCiprevmean(gid) = AC70CCiprevmean(gid) + &
+                   AC70CCiprev(t) + AC70CCiprevincr(t)
+              nAC70CCiprevmean(gid) = nAC70CCiprevmean(gid) + 1
+           endif
+        endif
+     endif
+  enddo
+
+ do gid=1,LIS_rc%ngrid(n)
+     if(nAC70CCiprevmean(gid).gt.0) then
+        AC70CCiprevmean(gid) = AC70CCiprevmean(gid)/nAC70CCiprevmean(gid)
+     endif
+  enddo
+
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     gid = LIS_domain(n)%gindex(&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
+          LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
+
+     AC70CCiprevtmp =  AC70CCiprev(t) + AC70CCiprevincr(t)
+
+! If the update is unphysical, simply set to the average of
+! the good ensemble members. If all else fails, do not
+! update.
+
+     if(update_flag(gid)) then
+        AC70CCiprev(t) = AC70CCiprevtmp
+     elseif(perc_violation(gid).lt.0.8) then
+        if(AC70CCiprevtmp.lt.AC70CCiprevmin.or.AC70CCiprevtmp.gt.AC70CCiprevmax) then
+           AC70CCiprev(t) = AC70CCiprevmean(gid)
+        else
+           AC70CCiprev(t) = AC70CCiprev(t) + AC70CCiprevincr(t)
         endif
      endif
   enddo

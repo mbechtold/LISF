@@ -58,8 +58,9 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
   real                   :: sm_threshold
   type(ESMF_Field)       :: sm1Field
   type(ESMF_Field)       :: AC70BIOMASSField
+  type(ESMF_Field)       :: AC70CCiprevField
   real, pointer          :: soilm1(:)
-  real, pointer          :: AC70BIOMASS(:)
+  real, pointer          :: AC70CCiprev(:)
   integer                :: t, j,i, gid, m, t_unpert
   integer                :: status
   real                   :: delta(1)
@@ -90,6 +91,9 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
   call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
   call LIS_verify(status,&
        "ESMF_StateSet: AC70BIOMASS failed in ac70_setsoilmLAI")
+  call ESMF_StateGet(LSM_State,"AC70 CCiprev",AC70CCiprevField,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateSet: AC70CCiprev failed in ac70_setsoilmLAI")
 
   call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
   call LIS_verify(status,&
@@ -97,10 +101,11 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
   call ESMF_FieldGet(AC70BIOMASSField,localDE=0,farrayPtr=AC70BIOMASS,rc=status)
   call LIS_verify(status,&
        "ESMF_FieldGet: AC70BIOMASS failed in ac70_setsoilmLAI")
+  call ESMF_FieldGet(AC70CCiprevField,localDE=0,farrayPtr=AC70CCiprev,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet: AC70CCiprev failed in ac70_setsoilmLAI")
 
   update_flag = .true. 
-  update_flag = .true. 
-  update_flag_tile= .true. 
   update_flag_tile= .true. 
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
@@ -381,9 +386,15 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
 !     XLAI    = max(LFMASS*LAPM,AC70BIOMASSmin)
-
      if(sla(AC70_struc(n)%ac70(t)%vegetype).ne.0) then 
         AC70_struc(n)%ac70(t)%SumWaBal%Biomass = AC70BIOMASS(t)
+     endif
+  enddo
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+!     XLAI    = max(LFMASS*LAPM,AC70CCiprevmin)
+     if(sla(AC70_struc(n)%ac70(t)%vegetype).ne.0) then 
+        AC70_struc(n)%ac70(t)%CCiprev = AC70CCiprev(t)
      endif
   enddo
 
