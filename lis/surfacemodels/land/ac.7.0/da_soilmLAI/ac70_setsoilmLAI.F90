@@ -60,7 +60,7 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
   type(ESMF_Field)       :: AC70BIOMASSField
   type(ESMF_Field)       :: AC70CCiprevField
   real, pointer          :: soilm1(:)
-  real, pointer          :: AC70CCiprev(:)
+  real, pointer          :: AC70BIOMASS(:), AC70CCiprev(:)
   integer                :: t, j,i, gid, m, t_unpert
   integer                :: status
   real                   :: delta(1)
