@@ -601,15 +601,21 @@ subroutine Ac70_setup()
             do l=1, TotalSimRuns  ! TotalSimRuns
                 ! MB: for current generic crop this is fixed to 1
                 call set_project_input(l, 'Simulation_YearSeason', 1_int8)
-                !
+                ! Simulation
                 call LIS_get_julhr(LIS_rc%syr+(l-1), 1,1,0,0,0,time1julhours)
                 call LIS_get_julhr(LIS_rc%syr+(l-1),12,31,0,0,0,time2julhours)
-                time1days = (time1julhours - timerefjulhours)/24 + 1 
+                time1days = (time1julhours - timerefjulhours)/24 + 1
                 time2days = (time2julhours - timerefjulhours)/24 + 1
                 call set_project_input(l, 'Simulation_DayNr1', time1days)
                 call set_project_input(l, 'Simulation_DayNrN', time2days)
+                ! Crop
+                call LIS_get_julhr(LIS_rc%syr+(l-1),AC70_struc(n)%Crop_AnnualStartMonth,AC70_struc(n)%Crop_AnnualStartDay,0,0,0,time1julhours)
+                call LIS_get_julhr(LIS_rc%syr+(l-1),AC70_struc(n)%Crop_AnnualEndMonth,AC70_struc(n)%Crop_AnnualEndDay,0,0,0,time2julhours)
+                time1days = (time1julhours - timerefjulhours)/24 + 1
+                time2days = (time2julhours - timerefjulhours)/24 + 1
                 call set_project_input(l, 'Crop_Day1', time1days)
                 call set_project_input(l, 'Crop_DayN', time2days)
+                !
                 call set_project_input(l, 'Description', ' LIS ')
                 call set_project_input(l, 'Climate_Info', ' MERRA2_AC ')
                 call set_project_input(l, 'Climate_Filename', '(External)')

@@ -87,6 +87,34 @@ subroutine Ac70_readcrd()
         call LIS_verify(rc, "Tmin_windowsize: not defined")
     enddo
 
+    ! First day of year of cropping period
+    call ESMF_ConfigFindLabel(LIS_config, "Starting day of crop period:", rc = rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, AC70_struc(n)%Crop_AnnualStartDay, rc=rc)
+        call LIS_verify(rc, "Starting day of crop period: not defined")
+    enddo
+
+    ! Last day of year of cropping period
+    call ESMF_ConfigFindLabel(LIS_config, "Ending day of crop period:", rc = rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, AC70_struc(n)%Crop_AnnualEndDay, rc=rc)
+        call LIS_verify(rc, "Ending day of crop period: not defined")
+    enddo
+
+    ! First month of year of cropping period
+    call ESMF_ConfigFindLabel(LIS_config, "Starting month of crop period:", rc = rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, AC70_struc(n)%Crop_AnnualStartMonth, rc=rc)
+        call LIS_verify(rc, "Starting month of crop period: not defined")
+    enddo
+
+    ! Last month of year of cropping period
+    call ESMF_ConfigFindLabel(LIS_config, "Ending month of crop period:", rc = rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, AC70_struc(n)%Crop_AnnualEndMonth, rc=rc)
+        call LIS_verify(rc, "Ending month of crop period: not defined")
+    enddo
+
     ! number of soil layers
     call ESMF_ConfigFindLabel(LIS_config, "max_No_compartments:", rc = rc)
     do n=1, LIS_rc%nnest
