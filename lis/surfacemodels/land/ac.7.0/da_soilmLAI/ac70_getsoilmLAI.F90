@@ -43,37 +43,63 @@ subroutine ac70_getsoilmLAI(n, LSM_State)
 !  \end{description}
 !EOP
   type(ESMF_Field)       :: sm1Field
-  type(ESMF_Field)       :: AC70BIOMASSField, AC70CCiprevField,lfmassField
+  real, pointer          :: soilm1(:)
+  type(ESMF_Field)       :: sm2Field
+  real, pointer          :: soilm2(:)
+  type(ESMF_Field)       :: sm3Field
+  real, pointer          :: soilm3(:)
+  type(ESMF_Field)       :: AC70BIOMASSField, AC70CCiprevField
+  real, pointer          :: AC70BIOMASS(:), AC70CCiprev(:)
   integer                :: t
   integer                :: status
-  real, pointer          :: soilm1(:)
-  real, pointer          :: AC70BIOMASS(:), AC70CCiprev(:)
   character*100          :: lsm_state_objs(2)
 
 
+  !Layer 1
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
   call LIS_verify(status,'ESMF_StateGet failed for sm1 in ac70_getsoilmLAI')
-  call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
-  call LIS_verify(status,'ESMF_StateGet failed for AC70BIOMASS in ac70_getsoilmLAI')
 
   call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
   call LIS_verify(status,'ESMF_FieldGet failed for sm1 in ac70_getsoilmLAI')
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     soilm1(t) = AC70_struc(n)%ac70(t)%smc(1)
+  enddo
+  
+  !Layer 2
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 2",sm2Field,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for sm2 in ac70_getsoilmLAI')
+
+  call ESMF_FieldGet(sm2Field,localDE=0,farrayPtr=soilm2,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for sm2 in ac70_getsoilmLAI')
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     soilm2(t) = AC70_struc(n)%ac70(t)%smc(2)
+  enddo
+
+  !Layer 3
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 3",sm3Field,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for sm3 in ac70_getsoilmLAI')
+
+  call ESMF_FieldGet(sm3Field,localDE=0,farrayPtr=soilm3,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for sm3 in ac70_getsoilmLAI')
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     soilm3(t) = AC70_struc(n)%ac70(t)%smc(3)
+  enddo
+
+  call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for AC70BIOMASS in ac70_getsoilmLAI')
   call ESMF_FieldGet(AC70BIOMASSField,localDE=0,farrayPtr=AC70BIOMASS,rc=status)
   call LIS_verify(status,'ESMF_FieldGet failed for AC70BIOMASS in ac70_getsoilmLAI')
 
-  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
-  call LIS_verify(status,'ESMF_StateGet failed for sm1 in ac70_getsoilmLAI')
   call ESMF_StateGet(LSM_State,"AC70 CCiprev",AC70CCiprevField,rc=status)
   call LIS_verify(status,'ESMF_StateGet failed for AC70CCiprev in ac70_getsoilmLAI')
-
-  call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
-  call LIS_verify(status,'ESMF_FieldGet failed for sm1 in ac70_getsoilmLAI')
   call ESMF_FieldGet(AC70CCiprevField,localDE=0,farrayPtr=AC70CCiprev,rc=status)
   call LIS_verify(status,'ESMF_FieldGet failed for AC70CCiprev in ac70_getsoilmLAI')
 
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-     soilm1(t) = AC70_struc(n)%ac70(t)%smc(1)
      AC70BIOMASS(t) = AC70_struc(n)%ac70(t)%SumWaBal%Biomass
      AC70CCiprev(t) = AC70_struc(n)%ac70(t)%CCiprev
   enddo

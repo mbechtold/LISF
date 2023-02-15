@@ -117,8 +117,8 @@ subroutine ac70_setsoilm(n, LSM_State)
  ! MN: NOTE: SMCMAX and SMCWLT are not stored in the data structure but we 
  !       can get module variables MAXSMC and WLTSMC from the module_sf_noahaclsm_36       
      SOILTYP = AC70_struc(n)%ac70(t)%soiltype        
-     MAX_THRESHOLD = MAXSMC (SOILTYP)
-     sm_threshold = MAXSMC (SOILTYP) - 0.02
+     MAX_THRESHOLD = AC70_struc(n)%ac70(t)%soillayer(1)%sat/100.0 - epsilon(0._dp)
+     sm_threshold = AC70_struc(n)%ac70(t)%soillayer(1)%sat/100.0 - 0.02
      
      gid = LIS_domain(n)%gindex(&
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
@@ -174,10 +174,7 @@ subroutine ac70_setsoilm(n, LSM_State)
 
   enddo
 
-!-----------------------------------------------------------------------------------------
-! MN create new falg: if update falg for 50% of the ensemble members is true 
-! then update the state variabels 
-!-----------------------------------------------------------------------------------------
+  !!! MB: AC70
   update_flag_ens = .True.
   do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index),LIS_rc%nensem(n)
      gid = LIS_domain(n)%gindex(&
@@ -195,7 +192,7 @@ subroutine ac70_setsoilm(n, LSM_State)
   ! MN print 
   if(i.eq.66) then !i=66  ! --> domain's center  1376
   if(LIS_rc%hr.eq.12) then
-     write(2001,'(I4, 2x, 3(I2,x), 2x, 23(L1,2x))') &
+     write(2001,'(I4, 2x, 3(I2,x), 2x, 23(L1,2x))'),&
           i, LIS_rc%mo, LIS_rc%da, LIS_rc%hr,update_flag_tile&
           ((i-1)*LIS_rc%nensem(n)+1:(i)*LIS_rc%nensem(n)),&
           update_flag_ens(i), update_flag_new(i), update_flag(i) 
