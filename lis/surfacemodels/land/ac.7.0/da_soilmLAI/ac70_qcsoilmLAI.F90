@@ -43,19 +43,19 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
 !  \end{description}
 !EOP
   type(ESMF_Field)       :: sm1Field
-!  type(ESMF_Field)       :: sm2Field
-!  type(ESMF_Field)       :: sm3Field
+  type(ESMF_Field)       :: sm2Field
+  type(ESMF_Field)       :: sm3Field
 !  type(ESMF_Field)       :: sm4Field
   type(ESMF_Field)       :: AC70BIOMASSField
   integer                :: t
   integer                :: status
   real, pointer          :: soilm1(:)
-!  real, pointer          :: soilm2(:)
-!  real, pointer          :: soilm3(:)
+  real, pointer          :: soilm2(:)
+  real, pointer          :: soilm3(:)
 !  real, pointer          :: soilm4(:)
   real, pointer          :: AC70BIOMASS(:)
-  real                   :: smmax1!,smmax2,smmax3,smmax4
-  real                   :: smmin1!,smmin2,smmin3,smmin4
+  real                   :: smmax1,smmax2,smmax3
+  real                   :: smmin1,smmin2,smmin3
   real                   :: AC70BIOMASSmax
   real                   :: AC70BIOMASSmin
   integer                :: gid
@@ -71,6 +71,7 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
   call LIS_verify(status,&
        "ESMF_StateGet for Soil Moisture Layer 1 failed in ac70_qcsoilmLAI")
+
   call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
   call LIS_verify(status,&
        "ESMF_FieldGet for Soil Moisture Layer 1 failed in ac70_qcsoilmLAI")
@@ -78,10 +79,63 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
   call ESMF_AttributeGet(sm1Field,"Max Value",smmax1,rc=status)
   call LIS_verify(status,&
        "ESMF_AttributeGet: Max Value failed in ac70_qcsoilmLAI")
+
   call ESMF_AttributeGet(sm1Field,"Min Value",smmin1,rc=status)
   call LIS_verify(status,&
        "ESMF_AttributeGet: Min Value failed in ac70_qcsoilmLAI")
 
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+     if(soilm1(t).gt.smmax1) soilm1(t) = smmax1
+     if(soilm1(t).lt.smmin1) soilm1(t) = smmin1
+  enddo
+
+  ! Layer 2
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 2",sm2Field,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateGet for Soil Moisture Layer 2 failed in ac70_qcsoilmLAI")
+ 
+  call ESMF_FieldGet(sm2Field,localDE=0,farrayPtr=soilm2,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet for Soil Moisture Layer 2 failed in ac70_qcsoilmLAI")
+
+  call ESMF_AttributeGet(sm2Field,"Max Value",smmax2,rc=status)
+  call LIS_verify(status,&
+       "ESMF_AttributeGet: Max Value failed in ac70_qcsoilmLAI")
+
+  call ESMF_AttributeGet(sm2Field,"Min Value",smmin2,rc=status)
+  call LIS_verify(status,&
+       "ESMF_AttributeGet: Min Value failed in ac70_qcsoilmLAI")
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+
+     if(soilm2(t).gt.smmax2) soilm2(t) = smmax2
+     if(soilm2(t).lt.smmin2) soilm2(t) = smmin2
+  enddo
+
+  ! Layer 3
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 3",sm3Field,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateGet for Soil Moisture Layer 3 failed in ac70_qcsoilmLAI")
+ 
+  call ESMF_FieldGet(sm3Field,localDE=0,farrayPtr=soilm3,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet for Soil Moisture Layer 3 failed in ac70_qcsoilmLAI")
+
+  call ESMF_AttributeGet(sm3Field,"Max Value",smmax3,rc=status)
+  call LIS_verify(status,&
+       "ESMF_AttributeGet: Max Value failed in ac70_qcsoilmLAI")
+
+  call ESMF_AttributeGet(sm3Field,"Min Value",smmin3,rc=status)
+  call LIS_verify(status,&
+       "ESMF_AttributeGet: Min Value failed in ac70_qcsoilmLAI")
+
+  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+
+     if(soilm3(t).gt.smmax3) soilm3(t) = smmax3
+     if(soilm3(t).lt.smmin3) soilm3(t) = smmin3
+  enddo
+
+  ! BIOMASS
   call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
   call LIS_verify(status,&
            "ESMF_StateGet for AC70BIOMASS failed in ac70_qcsoilmLAI")
@@ -97,11 +151,6 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
            "ESMF_AttributeGet for AC70BIOMASS Min Value failed in ac70_qcsoilmLAI")
 
 
-
-  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-     if(soilm1(t).gt.smmax1) soilm1(t) = smmax1
-     if(soilm1(t).lt.smmin1) soilm1(t) = smmin1
-  enddo
 
   update_flag    = .true.
   perc_violation = 0.0
