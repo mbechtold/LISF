@@ -974,44 +974,44 @@ subroutine Ac70_main(n)
             end if
             AC70_struc(n)%ac70(t)%AC70FC = AC70_struc(n)%ac70(t)%SoilLayer(1)%fc
 
-			! add water deficiency (WD) factor
-			! Get sum of ETo and PREC over Tmin_windowsize for condition 1
+            ! add water deficiency (WD) factor
+            ! Get sum of ETo and PREC over Tmin_windowsize for condition 1
             ! shift all previous ETo and PREC by 1 index
             do itemp = AC70_struc(n)%Tmin_windowsize, 2, -1
                 AC70_struc(n)%ac70(t)%ETo_ac_antecedent(itemp) = AC70_struc(n)%ac70(t)%ETo_ac_antecedent(itemp-1) ! mm
-				AC70_struc(n)%ac70(t)%PREC_ac_antecedent(itemp) = AC70_struc(n)%ac70(t)%PREC_ac_antecedent(itemp-1) ! mm
+                AC70_struc(n)%ac70(t)%PREC_ac_antecedent(itemp) = AC70_struc(n)%ac70(t)%PREC_ac_antecedent(itemp-1) ! mm
             end do
-			!define moving sum value ETo and PREC
+            !define moving sum value ETo and PREC
             AC70_struc(n)%ac70(t)%ETo_ac_antecedent(1) = AC70_struc(n)%ac70(t)%ETo_ac ! mm
             AC70_struc(n)%ac70(t)%PREC_ac_antecedent(1) = AC70_struc(n)%ac70(t)%PREC_ac ! mm
             ETo_movsum = 0.0
-			PREC_movsum = 0.0
+            PREC_movsum = 0.0
             do itemp = 1, AC70_struc(n)%Tmin_windowsize
                  ETo_movsum =  ETo_movsum + AC70_struc(n)%ac70(t)%ETo_ac_antecedent(itemp)
-				 PREC_movsum =  PREC_movsum + AC70_struc(n)%ac70(t)%PREC_ac_antecedent(itemp)
+                 PREC_movsum =  PREC_movsum + AC70_struc(n)%ac70(t)%PREC_ac_antecedent(itemp)
             end do 
 
             ! check conditions 1 and 2 After March 01
-			WD_mplr = 1.0
-            if ((LIS_rc%mo .gt. 3) then
-				! condition 2: find point where rootzone WC < SM deficiency
-				TAW = AC70_struc(n)%ac70(t)%RootZoneWC_FC - AC70_struc(n)%ac70(t)%RootZoneWC_WP
-				SMD = AC70_struc(n)%ac70(t)%RootZoneWC_WP + 0.1*TAW
+            WD_mplr = 1.0
+            if ((LIS_rc%mo .gt. 2) then
+                ! condition 2: find point where rootzone WC < SM deficiency
+                TAW = AC70_struc(n)%ac70(t)%RootZoneWC_FC - AC70_struc(n)%ac70(t)%RootZoneWC_WP
+                SMD = AC70_struc(n)%ac70(t)%RootZoneWC_WP + 0.1*TAW
 
-				if AC70_struc(n)%ac70(t)%WD_flag  == 0 then 
-					if (0.5*ETo_movsum > PREC_movsum) .and. (AC70_struc(n)%ac70(t)%RootZoneWC_Actual <  SMD) then
-						AC70_struc(n)%ac70(t)%WD_flag = 1								! global
-						AC70_struc(n)%ac70(t)%day_0 = AC70_struc(n)%ac70(t)%daynri		! global
+                if AC70_struc(n)%ac70(t)%WD_flag  == 0 then 
+                    if (0.5*ETo_movsum > PREC_movsum) .and. (AC70_struc(n)%ac70(t)%RootZoneWC_Actual <  SMD) then
+                        AC70_struc(n)%ac70(t)%WD_flag = 1                               ! global
+                        AC70_struc(n)%ac70(t)%day_0 = AC70_struc(n)%ac70(t)%daynri      ! global
 
-			if AC70_struc(n)%ac70(t)%WD_flag  == 1 then
-				halfB = 80.0
-				shp_factor = 0.15*halfB
-				day_i =  AC70_struc(n)%ac70(t)%daynri - AC70_struc(n)%ac70(t)%day_0
-				WD_mplr = 1.0 / (1 + EXP((day_i- halfB) / shp_factor))
-			if WD_mplr .lt. 0.0 then
-				 WD_mplr = 0.0
+            if AC70_struc(n)%ac70(t)%WD_flag  == 1 then
+                halfB = 80.0
+                shp_factor = 0.15*halfB
+                day_i =  AC70_struc(n)%ac70(t)%daynri - AC70_struc(n)%ac70(t)%day_0
+                WD_mplr = 1.0 / (1 + EXP((day_i- halfB) / shp_factor))
+            if WD_mplr .lt. 0.0 then
+                WD_mplr = 0.0
 
-			AC70_struc(n)%ac70(t)%WCMV1V2 =  AC70_struc(n)%ac70(t)%WCMV1V2 * WD_mplr
+            AC70_struc(n)%ac70(t)%WCMV1V2 =  AC70_struc(n)%ac70(t)%WCMV1V2 * WD_mplr
 
             !!! SMC Top Weighted for DA
             w2 = 0.15
