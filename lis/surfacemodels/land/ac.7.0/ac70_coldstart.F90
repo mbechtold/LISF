@@ -333,6 +333,8 @@ subroutine Ac70_coldstart(mtype)
                 !AC70_struc(n)%ac70(t)%EToRecord = GetEToRecord()
                 !AC70_struc(n)%ac70(t)%daynri = GetDayNri()
                 AC70_struc(n)%ac70(t)%irun = 1
+                AC70_struc(n)%ac70(t)%WD_flag = 0
+                AC70_struc(n)%ac70(t)%day_0 = 1
                 !AC70_struc(n)%daynrinextclimaterecord = GetDayNri() + 1
                 AC70_struc(n)%daynrinextclimaterecord = 1
 
@@ -479,8 +481,10 @@ subroutine Ac70_coldstart(mtype)
                     AC70_struc(n)%ac70(t)%smc(l) = GetCompartment_theta(l)
                 enddo
 
-                do l=1, 40
+                do l=1, AC70_struc(n)%Tmin_windowsize
                     AC70_struc(n)%ac70(t)%Tmin_ac_antecedent(l) = 0.0
+                    AC70_struc(n)%ac70(t)%ETo_ac_antecedent(l) = 0.0
+                    AC70_struc(n)%ac70(t)%PREC_ac_antecedent(l) = 0.0
                 enddo
                 ! added by shugong 
                 zsnso = 0.0 

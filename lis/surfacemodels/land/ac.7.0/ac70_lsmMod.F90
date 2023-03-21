@@ -252,6 +252,8 @@ module Ac70_lsmMod
         integer            :: NrSoilLayers
         integer            :: max_No_compartments
         integer            :: Tmin_windowsize
+        integer            :: WD_flag
+        integer            :: day_0
         real, pointer      :: Thickness(:)
         logical            :: QC_opt
         !!! MB: AC70
@@ -323,6 +325,8 @@ contains
             enddo
             do t=1, LIS_rc%npatch(n, LIS_rc%lsm_index)
                 allocate(AC70_struc(n)%ac70(t)%Tmin_ac_antecedent(AC70_struc(n)%Tmin_windowsize))
+                allocate(AC70_struc(n)%ac70(t)%ETo_ac_antecedent(AC70_struc(n)%Tmin_windowsize))
+                allocate(AC70_struc(n)%ac70(t)%PREC_ac_antecedent(AC70_struc(n)%Tmin_windowsize))
             enddo
 !            ! allocate memory for intiali state variables
 !            allocate(AC70_struc(n)%init_stc( AC70_struc(n)%nsoil))
