@@ -455,6 +455,7 @@ subroutine Ac70_main(n)
     real                 :: SMD
     real                 :: halfB
     real                 :: shp_factor
+    real                 :: day_i
     real                 :: Tmin_mplr
     real                 :: w1, w2, w3
     integer              :: row, col
@@ -993,23 +994,27 @@ subroutine Ac70_main(n)
 
             ! check conditions 1 and 2 After March 01
             WD_mplr = 1.0
-            if ((LIS_rc%mo .gt. 2) then
+            if (LIS_rc%mo .gt. 2) then
                 ! condition 2: find point where rootzone WC < SM deficiency
                 TAW = AC70_struc(n)%ac70(t)%RootZoneWC_FC - AC70_struc(n)%ac70(t)%RootZoneWC_WP
                 SMD = AC70_struc(n)%ac70(t)%RootZoneWC_WP + 0.1*TAW
-
-                if AC70_struc(n)%ac70(t)%WD_flag  == 0 then 
-                    if (0.5*ETo_movsum > PREC_movsum) .and. (AC70_struc(n)%ac70(t)%RootZoneWC_Actual <  SMD) then
+                if (AC70_struc(n)%ac70(t)%WD_flag .eq. 0) then 
+                    if ((0.5*ETo_movsum > PREC_movsum) .and. (AC70_struc(n)%ac70(t)%RootZoneWC_Actual <  SMD)) then
                         AC70_struc(n)%ac70(t)%WD_flag = 1                               ! global
                         AC70_struc(n)%ac70(t)%day_0 = AC70_struc(n)%ac70(t)%daynri      ! global
+                    endif
+                endif
+            endif
 
-            if AC70_struc(n)%ac70(t)%WD_flag  == 1 then
+            if (AC70_struc(n)%ac70(t)%WD_flag .eq. 1) then
                 halfB = 80.0
                 shp_factor = 0.15*halfB
                 day_i =  AC70_struc(n)%ac70(t)%daynri - AC70_struc(n)%ac70(t)%day_0
                 WD_mplr = 1.0 / (1 + EXP((day_i- halfB) / shp_factor))
-            if WD_mplr .lt. 0.0 then
+            endif
+            if (WD_mplr .lt. 0.0) then
                 WD_mplr = 0.0
+            endif
 
             AC70_struc(n)%ac70(t)%WCMV1V2 =  AC70_struc(n)%ac70(t)%WCMV1V2 * WD_mplr
 
