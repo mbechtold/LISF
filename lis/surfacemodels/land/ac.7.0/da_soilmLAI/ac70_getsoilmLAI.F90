@@ -16,7 +16,7 @@
 ! 25Jun2006: Sujay Kumar: Updated for the ESMF design
 ! 1 Aug 2016: Mahdi Navari; Modified for ac70 
 !   To do: makes it general for x layers (currently hard coded for 4 layers)
-! 18 Jun 2021: Michel Bechtold: SM and LAI updating with S1 backscatter w/ WCM
+! 18 Jun 2021: Michel Bechtold: SM and Biomass updating with S1 backscatter w/ WCM
 ! !INTERFACE:
 subroutine ac70_getsoilmLAI(n, LSM_State)
 
@@ -33,7 +33,7 @@ subroutine ac70_getsoilmLAI(n, LSM_State)
 !
 ! !DESCRIPTION:
 !
-!  Returns the soilmoisture and LAI related state prognostic variables for
+!  Returns the soilmoisture and Biomass related state prognostic variables for
 !  data assimilation
 ! 
 !  The arguments are: 
@@ -48,7 +48,7 @@ subroutine ac70_getsoilmLAI(n, LSM_State)
   real, pointer          :: soilm2(:)
   type(ESMF_Field)       :: sm3Field
   real, pointer          :: soilm3(:)
-  type(ESMF_Field)       :: AC70BIOMASSField,lfmassField
+  type(ESMF_Field)       :: AC70BIOMASSField
   real, pointer          :: AC70BIOMASS(:)
   integer                :: t
   integer                :: status

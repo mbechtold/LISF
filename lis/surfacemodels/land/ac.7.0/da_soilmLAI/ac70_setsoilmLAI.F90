@@ -57,8 +57,8 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
   real                   :: MAX_threshold
   real                   :: sm_threshold
   type(ESMF_Field)       :: sm1Field,sm2Field,sm3Field
-  type(ESMF_Field)       :: AC70BIOMASSField
   real, pointer          :: soilm1(:),soilm2(:),soilm3(:)
+  type(ESMF_Field)       :: AC70BIOMASSField
   real, pointer          :: AC70BIOMASS(:)
   integer                :: t, j,i, gid, m, t_unpert
   integer                :: status
@@ -114,6 +114,7 @@ subroutine ac70_setsoilmLAI(n, LSM_State)
   call LIS_verify(status,&
        "ESMF_FieldGet: Soil Moisture Layer 3 failed in ac70_setsoilmLAI")
 
+  ! BIOMASS
   call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
   call LIS_verify(status,&
        "ESMF_StateSet: AC70BIOMASS failed in ac70_setsoilmLAI")

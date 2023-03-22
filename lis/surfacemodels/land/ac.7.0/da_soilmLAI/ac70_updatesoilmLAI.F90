@@ -155,10 +155,6 @@ subroutine ac70_updatesoilmLAI(n, LSM_State, LSM_Incr_State)
        "ESMF_AttributeGet: AC70BIOMASSField Min Value failed in ac70_updatesoilmLAI")
 
 
-  do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-     soilm1(t) = soilm1(t) + soilmIncr1(t)
-  enddo
-
 
   update_flag    = .true.
   perc_violation = 0.0

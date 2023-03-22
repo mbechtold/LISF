@@ -733,9 +733,13 @@ module Ac70_module
      real               :: WCMV1V2
      real               :: AC70ssmc_weighted
      real               :: AC70FC
-     real, allocatable  :: TMIN_ac_antecedent(:)
+     real, allocatable  :: Tmin_ac_antecedent(:)
+     real, allocatable  :: ETo_ac_antecedent(:)
+     real, allocatable  :: PREC_ac_antecedent(:)
      !!!
      integer            :: daynri
+     integer            :: day_0
+     integer            :: WD_flag
      !real, pointer      :: ac70_soilwc(:)
      real               :: RootZoneWC_Actual
      real               :: RootZoneWC_FC

@@ -8,14 +8,14 @@
 ! All Rights Reserved.
 !-------------------------END NOTICE -- DO NOT EDIT-----------------------
 !BOP
-! !ROUTINE: ac70_qcsoilmLAIveg
-! \label{ac70_qcsoilmLAIveg}
+! !ROUTINE: ac70_qcsoilmLAI
+! \label{ac70_qcsoilmLAI}
 !
 ! !REVISION HISTORY:
 ! 27Feb2005: Sujay Kumar; Initial Specification
 ! 25Jun2006: Sujay Kumar: Updated for the ESMF design
 ! 1 Aug 2016: Mahdi Navari; Modified for ac70 
-! 18 Jun 2021: Michel Bechtold: SM and LAI updating with S1 backscatter w/ WCM
+! 18 Jun 2021: Michel Bechtold: SM and Biomass updating with S1 backscatter w/ WCM
 !
 ! !INTERFACE:
 subroutine ac70_qcsoilmLAI(n, LSM_State)
@@ -45,17 +45,15 @@ subroutine ac70_qcsoilmLAI(n, LSM_State)
   type(ESMF_Field)       :: sm1Field
   type(ESMF_Field)       :: sm2Field
   type(ESMF_Field)       :: sm3Field
-!  type(ESMF_Field)       :: sm4Field
-  type(ESMF_Field)       :: AC70BIOMASSField
   integer                :: t
   integer                :: status
   real, pointer          :: soilm1(:)
   real, pointer          :: soilm2(:)
   real, pointer          :: soilm3(:)
-!  real, pointer          :: soilm4(:)
-  real, pointer          :: AC70BIOMASS(:)
   real                   :: smmax1,smmax2,smmax3
   real                   :: smmin1,smmin2,smmin3
+  type(ESMF_Field)       :: AC70BIOMASSField
+  real, pointer          :: AC70BIOMASS(:)
   real                   :: AC70BIOMASSmax
   real                   :: AC70BIOMASSmin
   integer                :: gid
