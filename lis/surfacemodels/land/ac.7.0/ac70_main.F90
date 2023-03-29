@@ -994,6 +994,11 @@ subroutine Ac70_main(n)
 
             ! check conditions 1 and 2 After March 01
             WD_mplr = 1.0
+            ! reset WD_flag at start of the year
+            if (LIS_rc%mo .eq. 1) then
+                AC70_struc(n)%ac70(t)%WD_flag = 0
+            endif
+
             if (LIS_rc%mo .gt. 2) then
                 ! condition 2: find point where rootzone WC < SM deficiency
                 TAW = AC70_struc(n)%ac70(t)%RootZoneWC_FC - AC70_struc(n)%ac70(t)%RootZoneWC_WP
