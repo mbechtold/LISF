@@ -54,12 +54,12 @@ subroutine ac70_setsoilm(n, LSM_State)
   real, parameter        :: MIN_THRESHOLD = 0.02 
   real                   :: MAX_threshold
   real                   :: sm_threshold
-  type(ESMF_Field)       :: sm1Field
-  real, pointer          :: soilm1(:)
+  type(ESMF_Field)       :: sm1Field,sm2Field,sm3Field
+  real, pointer          :: soilm1(:),soilm2(:),soilm3(:)
   integer                :: t, j,i, gid, m, t_unpert
   integer                :: status
-  real                   :: delta(1)
-  real                   :: delta1
+  real                   :: delta(3)
+  real                   :: delta1,delta2,delta3
   real                   :: tmpval
   logical                :: bounds_violation
   integer                :: nIter
@@ -81,8 +81,8 @@ subroutine ac70_setsoilm(n, LSM_State)
   real                   :: MaxEns_sh2o1, MaxEns_sh2o2, MaxEns_sh2o3, MaxEns_sh2o4
   real                   :: smc_rnd, smc_tmp 
   real                   :: sh2o_tmp, sh2o_rnd 
-  INTEGER, DIMENSION (1) :: seed 
 
+  ! Layer 1
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
   call LIS_verify(status,&
        "ESMF_StateSet: Soil Moisture Layer 1 failed in ac70_setsoilm")
@@ -90,6 +90,24 @@ subroutine ac70_setsoilm(n, LSM_State)
   call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm1,rc=status)
   call LIS_verify(status,&
        "ESMF_FieldGet: Soil Moisture Layer 1 failed in ac70_setsoilm")
+  
+  ! Layer 2
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 2",sm2Field,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateSet: Soil Moisture Layer 2 failed in ac70_setsoilm")
+
+  call ESMF_FieldGet(sm2Field,localDE=0,farrayPtr=soilm2,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet: Soil Moisture Layer 2 failed in ac70_setsoilm")
+  
+  ! Layer 3
+  call ESMF_StateGet(LSM_State,"Soil Moisture Layer 3",sm3Field,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateSet: Soil Moisture Layer 3 failed in ac70_setsoilm")
+
+  call ESMF_FieldGet(sm3Field,localDE=0,farrayPtr=soilm3,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet: Soil Moisture Layer 3 failed in ac70_setsoilm")
 
   update_flag = .true. 
   update_flag_tile= .true. 
@@ -99,15 +117,17 @@ subroutine ac70_setsoilm(n, LSM_State)
  ! MN: NOTE: SMCMAX and SMCWLT are not stored in the data structure but we 
  !       can get module variables MAXSMC and WLTSMC from the module_sf_noahaclsm_36       
      SOILTYP = AC70_struc(n)%ac70(t)%soiltype        
-     MAX_THRESHOLD = MAXSMC (SOILTYP)
-     sm_threshold = MAXSMC (SOILTYP) - 0.02
+     MAX_THRESHOLD = AC70_struc(n)%ac70(t)%soillayer(1)%sat/100.0 - epsilon(0._dp)
+     sm_threshold = AC70_struc(n)%ac70(t)%soillayer(1)%sat/100.0 - 0.02
      
      gid = LIS_domain(n)%gindex(&
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row) 
      
      !MN: delta = X(+) - X(-)
-     !NOTE: "ac70_updatesoilm.F90" updates the soilm_(t)     
+     !NOTE: "ac70_updatesoilm.F90" updates the soilm_(t)    
+
+     ! Layer 1 
      delta1 = soilm1(t)-AC70_struc(n)%ac70(t)%smc(1)
 
      ! MN: check    MIN_THRESHOLD < volumetric liquid soil moisture < threshold 
@@ -121,12 +141,40 @@ subroutine ac70_setsoilm(n, LSM_State)
         update_flag(gid) = update_flag(gid).and.(.false.)
         update_flag_tile(t) = update_flag_tile(t).and.(.false.)
      endif
+
+     ! Layer 2
+     delta2 = soilm2(t)-AC70_struc(n)%ac70(t)%smc(2)
+
+     ! MN: check    MIN_THRESHOLD < volumetric liquid soil moisture < threshold 
+     if(AC70_struc(n)%ac70(t)%smc(2)+delta2.gt.MIN_THRESHOLD .and.&
+          AC70_struc(n)%ac70(t)%smc(2)+delta2.lt.&
+          sm_threshold) then 
+        update_flag(gid) = update_flag(gid).and.(.true.)
+        ! MN save the flag for each tile (col*row*ens)   (64*44)*20
+        update_flag_tile(t) = update_flag_tile(t).and.(.true.)
+     else
+        update_flag(gid) = update_flag(gid).and.(.false.)
+        update_flag_tile(t) = update_flag_tile(t).and.(.false.)
+     endif
+
+     ! Layer 3
+     delta3 = soilm3(t)-AC70_struc(n)%ac70(t)%smc(3)
+
+     ! MN: check    MIN_THRESHOLD < volumetric liquid soil moisture < threshold 
+     if(AC70_struc(n)%ac70(t)%smc(3)+delta3.gt.MIN_THRESHOLD .and.&
+          AC70_struc(n)%ac70(t)%smc(3)+delta3.lt.&
+          sm_threshold) then 
+        update_flag(gid) = update_flag(gid).and.(.true.)
+        ! MN save the flag for each tile (col*row*ens)   (64*44)*20
+        update_flag_tile(t) = update_flag_tile(t).and.(.true.)
+     else
+        update_flag(gid) = update_flag(gid).and.(.false.)
+        update_flag_tile(t) = update_flag_tile(t).and.(.false.)
+     endif
+
   enddo
 
-!-----------------------------------------------------------------------------------------
-! MN create new falg: if update falg for 50% of the ensemble members is true 
-! then update the state variabels 
-!-----------------------------------------------------------------------------------------
+  !!! MB: AC70
   update_flag_ens = .True.
   do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index),LIS_rc%nensem(n)
      gid = LIS_domain(n)%gindex(&
@@ -144,7 +192,7 @@ subroutine ac70_setsoilm(n, LSM_State)
   ! MN print 
   if(i.eq.66) then !i=66  ! --> domain's center  1376
   if(LIS_rc%hr.eq.12) then
-     write(2001,'(I4, 2x, 3(I2,x), 2x, 23(L1,2x))') &
+     write(2001,'(I4, 2x, 3(I2,x), 2x, 23(L1,2x))'),&
           i, LIS_rc%mo, LIS_rc%da, LIS_rc%hr,update_flag_tile&
           ((i-1)*LIS_rc%nensem(n)+1:(i)*LIS_rc%nensem(n)),&
           update_flag_ens(i), update_flag_new(i), update_flag(i) 
@@ -171,6 +219,8 @@ subroutine ac70_setsoilm(n, LSM_State)
         ! update_flag_tile = TRUE --> means met the both min and max threshold
       
         tmp1 = LIS_rc%udef
+        tmp2 = LIS_rc%udef
+        tmp3 = LIS_rc%udef
 	!icount = 1
         do m=1,LIS_rc%nensem(n)
            t = i+m-1
@@ -179,20 +229,32 @@ subroutine ac70_setsoilm(n, LSM_State)
 	  if(update_flag_tile(t)) then
           
            tmp1(m) = soilm1(t) 
+           tmp2(m) = soilm2(t) 
+           tmp3(m) = soilm3(t) 
            !icount = icount + 1 
           endif
         enddo
         
         MaxEnsSM1 = -10000
+        MaxEnsSM2 = -10000
+        MaxEnsSM3 = -10000
 
         MinEnsSM1 = 10000
+        MinEnsSM2 = 10000
+        MinEnsSM3 = 10000
 
         do m=1,LIS_rc%nensem(n)
            if(tmp1(m).ne.LIS_rc%udef) then 
               MaxEnsSM1 = max(MaxEnsSM1, tmp1(m))
-
               MinEnsSM1 = min(MinEnsSM1, tmp1(m))
-              
+           endif
+           if(tmp2(m).ne.LIS_rc%udef) then 
+              MaxEnsSM2 = max(MaxEnsSM2, tmp2(m))
+              MinEnsSM2 = min(MinEnsSM2, tmp2(m))
+           endif
+           if(tmp3(m).ne.LIS_rc%udef) then 
+              MaxEnsSM3 = max(MaxEnsSM3, tmp3(m))
+              MinEnsSM3 = min(MinEnsSM3, tmp3(m))
            endif
         enddo
 
@@ -206,10 +268,22 @@ subroutine ac70_setsoilm(n, LSM_State)
            if(update_flag_tile(t)) then
               
               delta1 = soilm1(t)-AC70_struc(n)%ac70(t)%smc(1)
+              delta2 = soilm2(t)-AC70_struc(n)%ac70(t)%smc(2)
+              delta3 = soilm3(t)-AC70_struc(n)%ac70(t)%smc(3)
 
               AC70_struc(n)%ac70(t)%smc(1) = soilm1(t)
+              AC70_struc(n)%ac70(t)%smc(2) = soilm2(t)
+              AC70_struc(n)%ac70(t)%smc(3) = soilm3(t)
               if(soilm1(t).lt.0) then 
                  print*, 'setsoilm1 ',t,soilm1(t)
+                 stop
+              endif
+              if(soilm2(t).lt.0) then 
+                 print*, 'setsoilm2 ',t,soilm2(t)
+                 stop
+              endif
+              if(soilm3(t).lt.0) then 
+                 print*, 'setsoilm3 ',t,soilm3(t)
                  stop
               endif
 
@@ -226,6 +300,10 @@ subroutine ac70_setsoilm(n, LSM_State)
               ! Assume sh2o = smc (i.e. ice content=0) 
               smc_tmp = (MaxEnsSM1 - MinEnsSM1)/2 + MinEnsSM1
               AC70_struc(n)%ac70(t)%smc(1) = smc_tmp
+              smc_tmp = (MaxEnsSM2 - MinEnsSM2)/2 + MinEnsSM2
+              AC70_struc(n)%ac70(t)%smc(2) = smc_tmp
+              smc_tmp = (MaxEnsSM3 - MinEnsSM3)/2 + MinEnsSM3
+              AC70_struc(n)%ac70(t)%smc(3) = smc_tmp
                           
            endif ! flag for each tile
 
@@ -246,7 +324,7 @@ subroutine ac70_setsoilm(n, LSM_State)
               niter = niter + 1
               !t_unpert = i*LIS_rc%nensem(n)
 	      t_unpert = i+LIS_rc%nensem(n)-1
-              do j=1,1
+              do j=1,3
                  delta(j) = 0.0
                  do m=1,LIS_rc%nensem(n)-1
                      t = i+m-1
@@ -261,7 +339,7 @@ subroutine ac70_setsoilm(n, LSM_State)
                  enddo
               enddo
               
-              do j=1,1
+              do j=1,3
                  delta(j) =delta(j)/(LIS_rc%nensem(n)-1)
                  do m=1,LIS_rc%nensem(n)-1
                      t = i+m-1
@@ -288,7 +366,7 @@ subroutine ac70_setsoilm(n, LSM_State)
               !--------------------------------------------------------------------------
               ! Recalculate the deltas and adjust the ensemble
               !--------------------------------------------------------------------------
-              do j=1,1
+              do j=1,3
                  delta(j) = 0.0
                  do m=1,LIS_rc%nensem(n)-1
                     t = i+m-1
@@ -301,7 +379,7 @@ subroutine ac70_setsoilm(n, LSM_State)
                  enddo
               enddo
               
-              do j=1,1
+              do j=1,3
                  delta(j) =delta(j)/(LIS_rc%nensem(n)-1)
                  do m=1,LIS_rc%nensem(n)-1
                     t = i+m-1
@@ -343,7 +421,7 @@ subroutine ac70_setsoilm(n, LSM_State)
                  write(LIS_logunit,*) '[ERR] Ensemble structure violates physical bounds '
                  write(LIS_logunit,*) '[ERR] Please adjust the perturbation settings ..'
 
-                 do j=1,1
+                 do j=1,3
                     do m=1,LIS_rc%nensem(n)
                        t = i+m-1
                        !t = (i-1)*LIS_rc%nensem(n)+m
