@@ -257,15 +257,9 @@ subroutine noahmp36_qc_Sig0VVobs(n,k,OBS_State)
            obsl(t) = LIS_rc%udef
         elseif(sca_obs(t).gt.0.0001) then  ! Var name sca 
            obsl(t) = LIS_rc%udef
- ! MN: check for green vegetation fraction NOTE: threshold incerased from 0.5 to 0.7 !commented out for now
- !      elseif(shdfac_obs(t).gt.0.7) then  ! var name Noah36 shdfac 12-month green veg. frac.  
- !          obsl(t) = LIS_rc%udef        
-!too close to the tails, could be due to scaling, so reject. !commented out for
-!now. It was written for soil moisture
-!        elseif(smcmax_obs(t)-obsl(t).lt.0.02) then 
-!           obsl(t) = LIS_rc%udef
-!        elseif(obsl(t) - smcwlt_obs(t).lt.0.02) then 
-!           obsl(t) = LIS_rc%udef
+ ! MB: check for slope, S1 backscatter and water cloud model not reliable for SM and LAI updating over mountains
+        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.15) then  ! Var name sca 
+           obsl(t) = LIS_rc%udef
         endif
      endif
   enddo
