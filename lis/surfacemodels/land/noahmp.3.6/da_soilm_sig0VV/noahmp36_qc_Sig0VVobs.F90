@@ -73,6 +73,7 @@ subroutine noahmp36_qc_Sig0VVobs(n,k,OBS_State)
   real                     :: vegt(LIS_rc%npatch(n,LIS_rc%lsm_index))
   real                     :: SMCMAX(LIS_rc%npatch(n,LIS_rc%lsm_index))
   real                     :: SMCWLT(LIS_rc%npatch(n,LIS_rc%lsm_index))
+  real                     :: slope(LIS_rc%npatch(n,LIS_rc%lsm_index))
 
   real                     :: rainf_obs(LIS_rc%obs_ngrid(k))
   real                     :: sneqv_obs(LIS_rc%obs_ngrid(k))
@@ -94,6 +95,7 @@ subroutine noahmp36_qc_Sig0VVobs(n,k,OBS_State)
   real                     :: stc3_obs(LIS_rc%obs_ngrid(k))
   real                     :: stc4_obs(LIS_rc%obs_ngrid(k))
   real                     :: vegt_obs(LIS_rc%obs_ngrid(k))
+  real                     :: slope_obs(LIS_rc%obs_ngrid(k))
 
 !-----this part is derived from ./lis/dataassim/obs/s1_sigma/read_S1_sigma.F90
   call ESMF_StateGet(OBS_State,"Observation01",sigmaField,&
@@ -132,6 +134,7 @@ subroutine noahmp36_qc_Sig0VVobs(n,k,OBS_State)
      SOILTYP = NOAHMP36_struc(n)%noahmp36(t)%soiltype        
      SMCMAX(t)  = MAXSMC (SOILTYP) 
      SMCWLT(t) = WLTSMC (SOILTYP)
+     slope(t) = LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope
   enddo
 
   call LIS_convertPatchSpaceToObsSpace(n,k,&       
@@ -216,6 +219,11 @@ subroutine noahmp36_qc_Sig0VVobs(n,k,OBS_State)
        vegt,&
        vegt_obs)
 
+  call LIS_convertPatchSpaceToObsSpace(n,k,&
+       LIS_rc%lsm_index, &
+       slope,&
+       slope_obs)
+
   do t = 1,LIS_rc%obs_ngrid(k)
 !------------------start loop considering one obs--------------------------
      if(obsl(t).ne.LIS_rc%udef) then 
@@ -258,7 +266,7 @@ subroutine noahmp36_qc_Sig0VVobs(n,k,OBS_State)
         elseif(sca_obs(t).gt.0.0001) then  ! Var name sca 
            obsl(t) = LIS_rc%udef
  ! MB: check for slope, S1 backscatter and water cloud model not reliable for SM and LAI updating over mountains
-        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.15) then  ! Var name sca 
+        elseif(slope_obs(t).gt.0.15) then
            obsl(t) = LIS_rc%udef
         endif
      endif
