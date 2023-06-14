@@ -259,8 +259,8 @@ subroutine noahmp36_qc_Sig0VVVHobs(n,k,OBS_State)
            s_vv(t) = LIS_rc%udef 
         elseif(t1_obs(t).le.LIS_CONST_TKFRZ) then ! Var name Noah36 --> t1
            s_vv(t) = LIS_rc%udef
-!        elseif(vegt_obs(t).le.4) then !forest types ! Var name Noah36 --> vegt
-!           s_vv(t) = LIS_rc%udef
+        elseif(vegt_obs(t).le.4) then !forest types ! Var name Noah36 --> vegt
+           s_vv(t) = LIS_rc%udef
         elseif(vegt_obs(t).eq.13) then !urban ! Var name Noah36 --> vegt
            s_vv(t) = LIS_rc%udef
         elseif(vegt_obs(t).eq.17) then !water ! Var name Noah36 --> vegt
@@ -271,7 +271,7 @@ subroutine noahmp36_qc_Sig0VVVHobs(n,k,OBS_State)
         elseif(sca_obs(t).gt.0.0001) then  ! Var name sca 
            s_vv(t) = LIS_rc%udef
  ! MB: check for slope, S1 backscatter and water cloud model not reliable for SM and LAI updating over mountains
-        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.15) then  ! Var name sca 
+        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.10) then  ! Var name sca 
            s_vv(t) = LIS_rc%udef
         endif
      endif
@@ -304,8 +304,8 @@ subroutine noahmp36_qc_Sig0VVVHobs(n,k,OBS_State)
            s_vh(t) = LIS_rc%udef
         elseif(t1_obs(t).le.LIS_CONST_TKFRZ) then ! Var name Noah36 --> t1
            s_vh(t) = LIS_rc%udef
-!        elseif(vegt_obs(t).le.4) then !forest types ! Var name Noah36 --> vegt
-!           s_vh(t) = LIS_rc%udef
+        elseif(vegt_obs(t).le.4) then !forest types ! Var name Noah36 --> vegt
+           s_vh(t) = LIS_rc%udef
         elseif(vegt_obs(t).eq.13) then !urban ! Var name Noah36 --> vegt
            s_vh(t) = LIS_rc%udef
         elseif(vegt_obs(t).eq.17) then !water ! Var name Noah36 --> vegt
@@ -316,7 +316,7 @@ subroutine noahmp36_qc_Sig0VVVHobs(n,k,OBS_State)
         elseif(sca_obs(t).gt.0.0001) then  ! Var name sca 
            s_vh(t) = LIS_rc%udef
  ! MB: check for slope, S1 backscatter and water cloud model not reliable for SM and LAI updating over mountains
-        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.15) then  ! Var name sca 
+        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.10) then  ! Var name sca 
            s_vh(t) = LIS_rc%udef
         endif
      endif
