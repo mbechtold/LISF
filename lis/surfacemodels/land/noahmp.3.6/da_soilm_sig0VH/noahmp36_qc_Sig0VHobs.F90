@@ -246,8 +246,8 @@ subroutine noahmp36_qc_Sig0VHobs(n,k,OBS_State)
            obsl(t) = LIS_rc%udef 
         elseif(t1_obs(t).le.LIS_CONST_TKFRZ) then ! Var name Noah36 --> t1
            obsl(t) = LIS_rc%udef
-!        elseif(vegt_obs(t).le.4) then !forest types ! Var name Noah36 --> vegt
-!           obsl(t) = LIS_rc%udef
+        elseif(vegt_obs(t).le.4) then !forest types ! Var name Noah36 --> vegt
+           obsl(t) = LIS_rc%udef
         elseif(vegt_obs(t).eq.13) then !urban ! Var name Noah36 --> vegt
            obsl(t) = LIS_rc%udef
         elseif(vegt_obs(t).eq.17) then !urban ! Var name Noah36 --> vegt
@@ -258,7 +258,7 @@ subroutine noahmp36_qc_Sig0VHobs(n,k,OBS_State)
         elseif(sca_obs(t).gt.0.0001) then  ! Var name sca 
            obsl(t) = LIS_rc%udef
  ! MB: check for slope, S1 backscatter and water cloud model not reliable for SM and LAI updating over mountains
-        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.15) then  ! Var name sca 
+        elseif(LIS_surface(n,LIS_rc%lsm_index)%tile(t)%slope.gt.0.10) then  ! Var name sca 
            obsl(t) = LIS_rc%udef
         endif
      endif
