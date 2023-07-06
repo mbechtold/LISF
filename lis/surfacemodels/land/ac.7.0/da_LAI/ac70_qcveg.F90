@@ -38,51 +38,47 @@ subroutine ac70_qcveg(n, LSM_State)
 !  \item[LSM\_State] ESMF State container for LSM state variables \newline
 !  \end{description}
 !EOP
-  type(ESMF_Field)       :: laiField, lfmassField
+  type(ESMF_Field)       :: AC70BIOMASSField
   integer                :: t
   integer                :: status
-  real, pointer          :: lai(:),lfmass(:)
+  real, pointer          :: AC70BIOMASS(:)
 
-  real                   :: laimax,lfmassmax
-  real                   :: laimin,lfmassmin
+  real                   :: AC70BIOMASSmax
+  real                   :: AC70BIOMASSmin
 
   integer                :: gid
-  real                   :: laitmp
+  real                   :: AC70BIOMASStmp
 
   logical                :: update_flag(LIS_rc%ngrid(n))
   real                   :: perc_violation(LIS_rc%ngrid(n))
 
-  real                   :: laimean(LIS_rc%ngrid(n))
-  integer                :: nlaimean(LIS_rc%ngrid(n))
+  real                   :: AC70BIOMASSmean(LIS_rc%ngrid(n))
+  integer                :: nAC70BIOMASSmean(LIS_rc%ngrid(n))
  
   integer                :: N_ens
   real                   :: state_tmp(LIS_rc%nensem(n)),state_mean
 
-  call ESMF_StateGet(LSM_State,"LAI",laiField,rc=status)
-  call LIS_verify(status)
-!  call ESMF_StateGet(LSM_State,"LeafMass",lfmassField,rc=status)
-!  call LIS_verify(status)
- 
-  call ESMF_FieldGet(laiField,localDE=0,farrayPtr=lai,rc=status)
-  call LIS_verify(status)
-!  call ESMF_FieldGet(lfmassField,localDE=0,farrayPtr=lfmass,rc=status)
-!  call LIS_verify(status)
+  ! BIOMASS
+  call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
+  call LIS_verify(status,&
+           "ESMF_StateGet for AC70BIOMASS failed in ac70_qcsoilmLAI")
+  call ESMF_FieldGet(AC70BIOMASSField,localDE=0,farrayPtr=AC70BIOMASS,rc=status)
+  call LIS_verify(status,&
+           "ESMF_FieldGet for AC70BIOMASS failed in ac70_qcsoilmLAI")
 
-  call ESMF_AttributeGet(laiField,"Max Value",laimax,rc=status)
-  call LIS_verify(status)
-  call ESMF_AttributeGet(laiField,"Min Value",laimin,rc=status)
-  call LIS_verify(status)
+  call ESMF_AttributeGet(AC70BIOMASSField,"Max Value",AC70BIOMASSmax,rc=status)
+  call LIS_verify(status,&
+           "ESMF_AttributeGet for AC70BIOMASS Max Value failed in ac70_qcsoilmLAI")
+  call ESMF_AttributeGet(AC70BIOMASSField,"Min Value",AC70BIOMASSmin,rc=status)
+  call LIS_verify(status,&
+           "ESMF_AttributeGet for AC70BIOMASS Min Value failed in ac70_qcsoilmLAI")
 
-!  call ESMF_AttributeGet(lfmassField,"Max Value",lfmassmax,rc=status)
-!  call LIS_verify(status)
-!  call ESMF_AttributeGet(lfmassField,"Min Value",lfmassmin,rc=status)
-!  call LIS_verify(status)
 
 
   update_flag    = .true.
   perc_violation = 0.0
-  laimean       = 0.0
-  nlaimean      = 0
+  AC70BIOMASSmean       = 0.0
+  nAC70BIOMASSmean      = 0
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
 
@@ -90,9 +86,9 @@ subroutine ac70_qcveg(n, LSM_State)
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
 
-     laitmp =  lai(t)
+     AC70BIOMASStmp =  AC70BIOMASS(t)
 
-     if(laitmp.lt.laimin.or.laitmp.gt.laimax) then
+     if(AC70BIOMASStmp.lt.AC70BIOMASSmin.or.AC70BIOMASStmp.gt.AC70BIOMASSmax) then
         update_flag(gid) = .false.
         perc_violation(gid) = perc_violation(gid) +1
      endif
@@ -115,19 +111,19 @@ subroutine ac70_qcveg(n, LSM_State)
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
      if(.not.update_flag(gid)) then
         if(perc_violation(gid).lt.0.8) then
-           if((lai(t).gt.laimin).and.&
-                (lai(t).lt.laimax)) then 
-              laimean(gid) = laimean(gid) + &
-                   lai(t) 
-              nlaimean(gid) = nlaimean(gid) + 1
+           if((AC70BIOMASS(t).gt.AC70BIOMASSmin).and.&
+                (AC70BIOMASS(t).lt.AC70BIOMASSmax)) then 
+              AC70BIOMASSmean(gid) = AC70BIOMASSmean(gid) + &
+                   AC70BIOMASS(t) 
+              nAC70BIOMASSmean(gid) = nAC70BIOMASSmean(gid) + 1
            endif
         endif
      endif
   enddo
   
   do gid=1,LIS_rc%ngrid(n)
-     if(nlaimean(gid).gt.0) then
-        laimean(gid) = laimean(gid)/nlaimean(gid)
+     if(nAC70BIOMASSmean(gid).gt.0) then
+        AC70BIOMASSmean(gid) = AC70BIOMASSmean(gid)/nAC70BIOMASSmean(gid)
      endif
   enddo
 
@@ -137,19 +133,19 @@ subroutine ac70_qcveg(n, LSM_State)
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%row)
 
-     laitmp =  lai(t)
+     AC70BIOMASStmp =  AC70BIOMASS(t)
 
 ! If the update is unphysical, simply set to the average of
 ! the good ensemble members. If all else fails, do not
 ! update.
 
      if(update_flag(gid)) then
-        lai(t) = laitmp
+        AC70BIOMASS(t) = AC70BIOMASStmp
      elseif(perc_violation(gid).lt.0.8) then
-        if(laitmp.lt.laimin.or.laitmp.gt.laimax) then
-           lai(t) = laimean(gid)
+        if(AC70BIOMASStmp.lt.AC70BIOMASSmin.or.AC70BIOMASStmp.gt.AC70BIOMASSmax) then
+           AC70BIOMASS(t) = AC70BIOMASSmean(gid)
         else
-           lai(t) = lai(t) 
+           AC70BIOMASS(t) = AC70BIOMASS(t) 
         endif
      endif
   enddo
@@ -157,7 +153,7 @@ subroutine ac70_qcveg(n, LSM_State)
 #if 0 
   N_ens = LIS_rc%nensem(n)
   do t=1,N_ens
-     state_tmp(t) = lai(t)
+     state_tmp(t) = AC70BIOMASS(t)
   enddo
   state_mean =sum(state_tmp)/N_ens
 

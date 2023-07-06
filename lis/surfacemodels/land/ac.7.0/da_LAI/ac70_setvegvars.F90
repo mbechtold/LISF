@@ -22,6 +22,7 @@ subroutine ac70_setvegvars(n, LSM_State)
   use ac70_lsmMod
   use AC_VEG_PARAMETERS_70
   use LIS_logMod, only : LIS_logunit, LIS_verify
+  use ac_kinds, only: dp
 
   implicit none
 ! !ARGUMENTS: 
@@ -35,31 +36,22 @@ subroutine ac70_setvegvars(n, LSM_State)
 ! 
 !EOP
 
-  type(ESMF_Field)       :: laiField,lfmassField
+  type(ESMF_Field)       :: AC70BIOMASSField
 
   integer                :: t
   integer                :: status
-  real, pointer          :: lai(:)
-  real                   :: lfmass
+  real, pointer          :: AC70BIOMASS(:)
  
-  call ESMF_StateGet(LSM_State,"LAI",laiField,rc=status)
-  call LIS_verify(status)
-  call ESMF_FieldGet(laiField,localDE=0,farrayPtr=lai,rc=status)
-  call LIS_verify(status)
-
-!  call ESMF_StateGet(LSM_State,"LeafMass",lfmassField,rc=status)
-!  call LIS_verify(status)
-!  call ESMF_FieldGet(lfmassField,localDE=0,farrayPtr=lfmass,rc=status)
-!  call LIS_verify(status)
+  ! BIOMASS
+  call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
+  call LIS_verify(status,&
+       "ESMF_StateSet: AC70BIOMASS failed in ac70_setsoilmLAI")
+  call ESMF_FieldGet(AC70BIOMASSField,localDE=0,farrayPtr=AC70BIOMASS,rc=status)
+  call LIS_verify(status,&
+       "ESMF_FieldGet: AC70BIOMASS failed in ac70_setsoilmLAI")
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-!     XLAI    = max(LFMASS*LAPM,laimin)
-
-     if(sla(AC70_struc(n)%ac70(t)%vegetype).ne.0) then 
-        AC70_struc(n)%ac70(t)%lai = lai(t)
-        lfmass = lai(t)/(sla(AC70_struc(n)%ac70(t)%vegetype)/1000.0)
-        AC70_struc(n)%ac70(t)%lfmass = lfmass
-     endif
+     AC70_struc(n)%ac70(t)%SumWaBal%Biomass = AC70BIOMASS(t)
   enddo
   
 end subroutine ac70_setvegvars

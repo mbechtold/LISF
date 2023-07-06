@@ -93,19 +93,6 @@ call LIS_RTM_run(n)
      enddo
   enddo
 
-  !!! new
-
-
-  call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
-        LIS_rc%lsm_index, &
-        s0VV,&
-        obs_pred_VV)
-
-  call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
-        LIS_rc%lsm_index, &
-        s0VH,&
-        obs_pred_VH)
-
 
   do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index),LIS_rc%nensem(n)
      do m=1,LIS_rc%nensem(n)
@@ -116,6 +103,18 @@ call LIS_RTM_run(n)
         count1(gid,m) = count1(gid,m) +1
      enddo
   enddo
+
+  !!! alternatively the last two blocks could be:
+
+  !! call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
+  !!      LIS_rc%lsm_index, &
+  !!     s0VV,&
+  !!      obs_pred_VV)
+
+  !! call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
+  !!      LIS_rc%lsm_index, &
+  !!      s0VH,&
+  !!      obs_pred_VH)
 
   do i=1,LIS_rc%obs_ngrid(k)*2
      do m=1,LIS_rc%nensem(n)

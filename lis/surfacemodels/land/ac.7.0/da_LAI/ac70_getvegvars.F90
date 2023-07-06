@@ -39,26 +39,21 @@ subroutine ac70_getvegvars(n, LSM_State)
 !  \end{description}
 !
 !EOP
-  type(ESMF_Field)       :: laiField,lfmassField
+  type(ESMF_Field)       :: AC70BIOMASSField
 
   integer                :: t
   integer                :: status
-  real, pointer          :: lai(:),lfmass(:)
+  real, pointer          :: AC70BIOMASS(:)
  
-  call ESMF_StateGet(LSM_State,"LAI",laiField,rc=status)
-  call LIS_verify(status)
-  call ESMF_FieldGet(laiField,localDE=0,farrayPtr=lai,rc=status)
-  call LIS_verify(status)
+  call ESMF_StateGet(LSM_State,"AC70 BIOMASS",AC70BIOMASSField,rc=status)
+  call LIS_verify(status,'ESMF_StateGet failed for AC70BIOMASS in ac70_getsoilmLAI')
+  call ESMF_FieldGet(AC70BIOMASSField,localDE=0,farrayPtr=AC70BIOMASS,rc=status)
+  call LIS_verify(status,'ESMF_FieldGet failed for AC70BIOMASS in ac70_getsoilmLAI')
 
-!  call ESMF_StateGet(LSM_State,"LeafMass",lfmassField,rc=status)
-!  call LIS_verify(status)
-!  call ESMF_FieldGet(lfmassField,localDE=0,farrayPtr=lfmass,rc=status)
-!  call LIS_verify(status)
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-     lai(t) = AC70_struc(n)%ac70(t)%lai
-!     lfmass(t) = AC70_struc(n)%ac70(t)%lfmass
+     AC70BIOMASS(t) = AC70_struc(n)%ac70(t)%SumWaBal%Biomass
   enddo
-  
+
 end subroutine ac70_getvegvars
 
