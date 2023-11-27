@@ -3168,7 +3168,7 @@ subroutine LIS_lsmda_plugin
    call registerlsmdasetstatevar(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_setsnowsimplevars)
    call registerlsmdagetobspred(trim(LIS_noahmp401Id)//"+"//&
-        trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_getsnwdpred)
+        trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_getsnowpred)
    call registerlsmdaqcstate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_qcsnow)
    call registerlsmdaqcobsstate(trim(LIS_noahmp401Id)//"+"//&

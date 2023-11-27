@@ -20,9 +20,9 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
 
   use LIS_coreMod
   use NoahMP401_lsmMod
-  use module_sf_noahlsm_401 
-  use NOAHMP_ROUTINES_401
-  
+  use module_sf_noahmplsm_401
+  use noahmp_tables_401
+
   implicit none
 ! 
 ! !DESCRIPTION: 
@@ -53,10 +53,11 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
   real    :: sneqv1,snowh1
   real    :: ponding1,ponding2
   integer :: newnode
-  integer :: isnow, nsoil, nsnow,soiltyp
+  integer :: isnow, nsoil, nsnow, soiltype(4), isoil
 
 ! local
   real    :: BDSNOW
+  type (noahmp_parameters)  :: parameters
 
   isnow = noahmp401_struc(n)%noahmp401(t)%isnow
   nsoil = noahmp401_struc(n)%nsoil
@@ -69,6 +70,14 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
   allocate(zsnso(-nsnow+1:nsoil))
   allocate(sice(nsoil))
   
+  ! initialize the variables
+  soiltype = noahmp401_struc(n)%noahmp401(t)%soiltype
+  do isoil = 1, size(soiltype)
+    parameters%BEXP(isoil)   = BEXP_TABLE   (SOILTYPE(isoil))
+    parameters%PSISAT(isoil) = PSISAT_TABLE (SOILTYPE(isoil))
+    parameters%SMCMAX(isoil) = SMCMAX_TABLE (SOILTYPE(isoil))
+  end do
+
   sneqv = noahmp401_struc(n)%noahmp401(t)%sneqv
   snowh = noahmp401_struc(n)%noahmp401(t)%snowh
 
@@ -98,9 +107,11 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
        noahmp401_struc(n)%noahmp401(t)%snowice(1:nsnow)
   snliq(-nsnow+1:0) = &
        noahmp401_struc(n)%noahmp401(t)%snowliq(1:nsnow) 
-  stc(-nsnow+1:nsoil) = &
-       noahmp401_struc(n)%noahmp401(t)%sstc(1:nsnow+&
-       nsoil) 
+  stc(-nsnow+1:0) = &
+       noahmp401_struc(n)%noahmp401(t)%tsno(1:nsnow)
+  ! soil temperature
+  stc(1:nsoil) = &
+       noahmp401_struc(n)%noahmp401(t)%tslb(1:nsoil)
 
 ! from snowfall routine
   ! no snow layer - update adds snow
@@ -150,7 +161,7 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
           - noahmp401_struc(n)%noahmp401(t)%sh2o(:))   
      
      if(isnow < 0) &
-          call  combine (nsnow  ,&
+          call  combine (parameters, nsnow  ,&
           nsoil  ,iloc   ,jloc   ,         & !in
           isnow  ,&
           noahmp401_struc(n)%noahmp401(t)%sh2o   ,&
@@ -160,7 +171,7 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
      
      
      if(isnow < 0) &        
-          call divide (nsnow  , nsoil  ,   & !in
+          call divide (parameters, nsnow  , nsoil  ,   & !in
           isnow  , stc    ,&
           snice  , snliq  , dzsnso )   !inout
      
@@ -220,8 +231,11 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
           snice(-nsnow+1:0) 
      noahmp401_struc(n)%noahmp401(t)%snowliq(1:nsnow)  = &        
           snliq(-nsnow+1:0) 
-     noahmp401_struc(n)%noahmp401(t)%sstc(1:nsnow+&
-          nsoil) =  stc(-nsnow+1:nsoil) 
+     noahmp401_struc(n)%noahmp401(t)%tsno(1:nsnow) = &
+            stc(-nsnow+1:0)
+     ! soil temperature
+     noahmp401_struc(n)%noahmp401(t)%tslb(1:nsoil) = &
+            stc(1:nsoil)
   endif
 
   deallocate(snice)
