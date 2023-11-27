@@ -1040,6 +1040,7 @@ subroutine LIS_DAobs_plugin
         read_CGLSlai)
    call registerwritedaobs(trim(LIS_CGLSlaiobsId)//char(0),&
         write_CGLSlai)
+#endif
 !Y.Kwon
 #if ( defined DA_OBS_VIIRS_GVF )
    call registerdaobsclass(trim(LIS_VIIRSgvfobsId),"LSM")
