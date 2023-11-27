@@ -313,7 +313,6 @@ subroutine LIS_DAobs_plugin
     use CDFSgvf_Mod,       only : CDFSgvf_setup
 #endif
 
->>>>>>> 00f6850696e189dfd1b2bb79799d31bc132f6449
 #if ( defined DA_OBS_NRT_SMAPSM )
     use SMAPNRTsm_Mod,           only : SMAPNRTsm_setup
 #endif
