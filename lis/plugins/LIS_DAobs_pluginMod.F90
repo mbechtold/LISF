@@ -1060,7 +1060,6 @@ subroutine LIS_DAobs_plugin
         read_CDFSgvf)
    call registerwritedaobs(trim(LIS_CDFSgvfobsId)//char(0),&
         write_CDFSgvfobs)
->>>>>>> 00f6850696e189dfd1b2bb79799d31bc132f6449
 #endif
 
 #if ( defined DA_OBS_NRT_SMAPSM )
