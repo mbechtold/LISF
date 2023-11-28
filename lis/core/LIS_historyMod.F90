@@ -2079,7 +2079,7 @@ contains
        endif
 
        ! LIS output is always writing output for a single time
-       call LIS_verify(nf90_def_dim(ftn,'time',NF90_UNLIMITED,tdimID),&
+       call LIS_verify(nf90_def_dim(ftn,'time',1,tdimID),&
             'nf90_def_dim for time failed in LIS_historyMod')
        call LIS_verify(nf90_put_att(ftn,NF90_GLOBAL,"missing_value", LIS_rc%udef),&
             'nf90_put_att for missing_value failed in LIS_historyMod')
@@ -2443,7 +2443,7 @@ contains
        endif
 
        ! LIS output is always writing output for a single time
-       call LIS_verify(nf90_def_dim(ftn,'time',NF90_UNLIMITED,tdimID),&
+       call LIS_verify(nf90_def_dim(ftn,'time',1,tdimID),&
             'nf90_def_dim for time failed in LIS_historyMod')
        call LIS_verify(nf90_put_att(ftn,NF90_GLOBAL,"missing_value", LIS_rc%udef),&
             'nf90_put_att for missing_value failed in LIS_historyMod')
@@ -4629,7 +4629,8 @@ contains
             "vmax",0.0),&
             'nf90_put_att failed for xlong:vmax')
        !defining time field
-       call LIS_verify(nf90_def_dim(ftn,'time',NF90_UNLIMITED,tdimID),&
+       !call LIS_verify(nf90_def_dim(ftn,'time',NF90_UNLIMITED,tdimID),&
+       call LIS_verify(nf90_def_dim(ftn,'time',1,tdimID),&
             'nf90_def_dim failed for time')
        
        call LIS_verify(nf90_def_var(ftn,'time',&
