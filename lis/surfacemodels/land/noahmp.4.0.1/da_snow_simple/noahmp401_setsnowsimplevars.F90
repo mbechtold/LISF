@@ -59,7 +59,7 @@ subroutine noahmp401_setsnowsimplevars(n, LSM_State)
 !  write(LIS_logunit,*)'[INFO] upd in:SWE',noahmp401_struc(1)%noahmp401(10)%sneqv,'SD',noahmp401_struc(1)%noahmp401(10)%snowh
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
 
-     dsneqv = swe(t)*1000.0 - noahmp401_struc(n)%noahmp401(t)%sneqv !in mm
+     dsneqv = swe(t) - noahmp401_struc(n)%noahmp401(t)%sneqv !in mm
      dsnowh = snod(t) - noahmp401_struc(n)%noahmp401(t)%snowh  !in m
 
 !NOTE: if snow becomes unphysical after applying the deltas, then 
