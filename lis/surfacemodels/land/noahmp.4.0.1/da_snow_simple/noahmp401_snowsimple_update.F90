@@ -56,7 +56,7 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
   integer :: isnow, nsoil, nsnow, soiltype(4), isoil
 
 ! local
-  real    :: BDSNOW
+  real    :: SNOFLOW, BDSNOW
   type (noahmp_parameters)  :: parameters
 
   isnow = noahmp401_struc(n)%noahmp401(t)%isnow
@@ -69,7 +69,16 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
   allocate(dzsnso(-nsnow+1:nsoil))
   allocate(zsnso(-nsnow+1:nsoil))
   allocate(sice(nsoil))
-  
+ 
+  !set empty snow layers to zero
+  do iz = -nsnow+1, isnow
+     snice(iz) = 0.
+     snliq(iz) = 0.
+     stc(iz)   = 0.
+     dzsnso(iz)= 0.
+     zsnso(iz) = 0.
+  enddo
+ 
   ! initialize the variables
   soiltype = noahmp401_struc(n)%noahmp401(t)%soiltype
   do isoil = 1, size(soiltype)
@@ -184,7 +193,17 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
         dzsnso(iz)= 0.
         zsnso(iz) = 0.
      enddo
-     
+  
+  snoflow = 0.0
+  !to obtain equilibrium state of snow in glacier region
+  if(sneqv > 2000.) then   ! 2000 mm -> maximum water depth
+     bdsnow      = snice(0) / dzsnso(0)
+     snoflow     = (sneqv - 2000.)
+     snice(0)    = snice(0)  - snoflow
+     dzsnso(0)   = dzsnso(0) - snoflow/bdsnow
+     !snoflow     = snoflow / dt
+  end if
+
 
 ! sum up snow mass for layered snow
      IF(ISNOW < 0) THEN  ! MB: only do for multi-layer
@@ -204,6 +223,9 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
                SNOWH  = SNOWH*(BDSNOW/1000.) ! change unit, SNEQV=[mm] SNOWH=[m]
            END IF
       END IF
+     
+      !write(LIS_logunit,33) 'SNEQV ..', SNEQV
+      !write(LIS_logunit,33) 'DZSNSO(0) ...', DZSNSO(0)
 
 
 ! Reset ZSNSO and layer thinkness DZSNSO
