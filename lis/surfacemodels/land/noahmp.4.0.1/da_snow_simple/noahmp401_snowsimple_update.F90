@@ -223,6 +223,9 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
                SNOWH  = SNOWH*(BDSNOW/1000.) ! change unit, SNEQV=[mm] SNOWH=[m]
            END IF
       END IF
+     
+      !write(LIS_logunit,33) 'SNEQV ..', SNEQV
+      !write(LIS_logunit,33) 'DZSNSO(0) ...', DZSNSO(0)
 
 
 ! Reset ZSNSO and layer thinkness DZSNSO

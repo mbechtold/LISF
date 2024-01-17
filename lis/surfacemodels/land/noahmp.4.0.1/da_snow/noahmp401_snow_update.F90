@@ -26,6 +26,7 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
   use NoahMP401_lsmMod
   use module_sf_noahmplsm_401
   use noahmp_tables_401
+  use LIS_logMod, only     : LIS_logunit
 
   implicit none
 ! 
@@ -202,7 +203,18 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
         snowh1 = snowh + dsnowh
      endif
 ! make sure snow layers currently exist in decrease case
+                !write(LIS_logunit,*) "dzsnso(0):", dzsnso(0)
+                !write(LIS_logunit,*) "snowh:", snowh
+                !write(LIS_logunit,*) "snowh1:", snowh1
+                !write(LIS_logunit,*) "dsnowh:", dsnowh
+                !write(LIS_logunit,*) "sneqv:", sneqv
+                !write(LIS_logunit,*) "sneqv1:", sneqv1
+                !write(LIS_logunit,*) "dsneqv:", dsneqv
+                !write(LIS_logunit,*) "snice(0):", snice(0)
+                !write(LIS_logunit,*) "snliq(0):", snliq(0)
+                !write(LIS_logunit,*) "isnow:", isnow
      if(dzsnso(0).eq.0) then
+                !write(LIS_logunit,*) "dzsnso(0) is zero:"
         if(snowh.ge.0.025) then
            isnow = -1
         else
@@ -217,6 +229,7 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
         snowh = snowh + dsnowh
         sneqv = sneqv + dsneqv
 ! snow can no longer fill layer -1
+        !if(snowh.le.dzsnso(0)) then 
         if(snowh.le.(dzsnso(0)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -1
            dzsnso(-nsnow+1:(isnow)) = 0 
@@ -225,6 +238,7 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
            snice(isnow+1) = sneqv
            snliq(-nsnow+1:isnow) = 0
 ! snow can no longer fill layer -1 and -2
+        !elseif(snowh.le.(dzsnso(0)+dzsnso(-1))) then 
         elseif(snowh.le.(dzsnso(0)+dzsnso(-1)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -2
            dzsnso(-nsnow+1:isnow) = 0 
@@ -235,13 +249,14 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
            enddo
            snliq(-nsnow+1:isnow) = 0
 ! all other cases
+        !elseif(snowh.ge.1.e-7) then
         elseif(snowh.le.(dzsnso(0)+dzsnso(-1)+dzsnso(-2)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -3
            dzsnso(isnow+1) = max(snowh -dzsnso(-1) -dzsnso(0), 1.e-7)
            ! scale swe in layers by ratio of depth to pack
            do snl_idx=-nsnow+1,0
               snice(snl_idx) = sneqv*(dzsnso(snl_idx)/snowh)
- from snowwater 
+           enddo
            snliq(-nsnow+1:isnow) = 0
         endif           
      endif
@@ -308,6 +323,26 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
   snoflow = 0.0
   ponding1 = 0.0
   ponding2 = 0.0  
+  
+          !if ((dzsnso(0) == 0.0).or.(dzsnso(-1)==0).or.(dzsnso(-2)==0)) then
+          !      write(LIS_logunit,*) "isnow:", isnow
+          !      write(LIS_logunit,*) "dzsnso(-2):", dzsnso(-2)
+          !      write(LIS_logunit,*) "snowh:", snowh
+          !      write(LIS_logunit,*) "snowh1:", snowh1
+          !      write(LIS_logunit,*) "sneqv1:", sneqv1
+          !      write(LIS_logunit,*) "dsnowh:", dsnowh
+          !      write(LIS_logunit,*) "sneqv:", sneqv
+          !      write(LIS_logunit,*) "dsneqv:", dsneqv
+          !      write(LIS_logunit,*) "snice(-2):", snice(-2)
+          !      write(LIS_logunit,*) "snliq(-2):", snliq(-2)
+          !      write(LIS_logunit,*) "dzsnso(-1):", dzsnso(-1)
+          !      write(LIS_logunit,*) "snice(-1):", snice(-1)
+          !      write(LIS_logunit,*) "snliq(-1):", snliq(-1)
+          !      write(LIS_logunit,*) "dzsnso(0):", dzsnso(0)
+          !      write(LIS_logunit,*) "snice(0):", snice(0)
+          !      write(LIS_logunit,*) "snliq(0):", snliq(0)
+        !endif
+    
 
   if(isnow < 0) &     ! when multi-layer
        call  compact (parameters, nsnow, nsoil, noahmp401_struc(n)%ts,     & !in
