@@ -241,7 +241,7 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
            ! scale swe in layers by ratio of depth to pack
            do snl_idx=-nsnow+1,0
               snice(snl_idx) = sneqv*(dzsnso(snl_idx)/snowh)
-           enddo
+ from snowwater 
            snliq(-nsnow+1:isnow) = 0
         endif           
      endif
