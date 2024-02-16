@@ -1,0 +1,32 @@
+module purge
+module load grib_api/1.24.0-intel-2018a
+module load JasPer/2.0.14-GCCcore-6.4.0
+module load ESMF/7.1.0r-intel-2018a
+module load libxml2/2.9.7-GCCcore-6.4.0
+module load Szip/2.1.1-GCCcore-6.4.0
+module load zlib/1.2.11-GCCcore-6.4.0
+module load HDF/4.2.14-intel-2018a-w-fortran-no-netcdf
+module load HDF5/1.10.1-intel-2018a
+module load HDF-EOS2/20.1.00-intel-2018a-HDF4-w-fortran
+module load Python/2.7.14-GCCcore-6.4.0-bare
+module load GDAL/2.2.3-intel-2018a-Python-2.7.14
+
+export LIS_SRC=$PWD
+export LIS_ARCH=linux_ifc
+export LIS_SPMD=parallel
+export LIS_FC=mpiifort
+export LIS_CC=mpiicc
+export LIS_JASPER=$EBROOTJASPER
+export LIS_GRIBAPI=$EBROOTGRIB_API
+export LIS_NETCDF=$EBROOTNETCDF
+export LIS_HDF4=$EBROOTHDF
+export LIS_HDFEOS=$EBROOTHDFMINEOS2
+export LIS_HDF5=$EBROOTHDF5
+export LIS_MODESMF=$EBROOTESMF/mod
+export LIS_LIBESMF=$EBROOTESMF/lib
+export LIS_MINPACK=
+export LIS_CRTM=
+export LIS_CMEM=
+export LIS_GDAL=$EBROOTGDAL
+export LIS_CRTM_PROF=$LIS_SRC/lib/lis-crtm-profile-utility
+export LD_LIBRARY_PATH=${LIS_CRTM_PROF}/lib:${LIS_MINPACK}/lib/intel64:${LIS_HDFEOS}/lib:${LIS_HDF4}/lib:${LIS_HDF5}/lib:${LIS_LIBESMF}:${LIS_NETCDF}/lib:${LIS_GRIBAPI}/lib:{LIS_JASPER}/lib:$LD_LIBRARY_PATH
