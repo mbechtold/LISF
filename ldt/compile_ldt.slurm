@@ -10,7 +10,7 @@
 #SBATCH -e compile_ldt_out.txt
 
 ####
-# for more later lis simulations that use more than 6 cores you should add #SBATCH --exclude=r23i13n23
+# for larger lis simulations that need more than 6 cores you should add #SBATCH --exclude=r23i13n23
 
 cd $SLURM_SUBMIT_DIR
 source KUL_LDT_modules
