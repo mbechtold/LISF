@@ -195,7 +195,7 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
      enddo
   
   snoflow = 0.0
-  !to obtain equilibrium state of snow in glacier region  
+  !to obtain equilibrium state of snow in glacier region
   if(sneqv > 2000.) then   ! 2000 mm -> maximum water depth
      bdsnow      = snice(0) / dzsnso(0)
      snoflow     = (sneqv - 2000.)
