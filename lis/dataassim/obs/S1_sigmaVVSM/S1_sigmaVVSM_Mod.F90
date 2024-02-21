@@ -63,7 +63,8 @@ contains
     use LIS_DAobservationsMod
     use LIS_logMod
     use netcdf
-   
+    use LIS_constantsMod, only : LIS_CONST_PATH_LEN
+
     implicit none 
 
 ! !ARGUMENTS: 
@@ -93,6 +94,7 @@ contains
     character*100          ::  S1sigmaobsdir
     character*80           ::  S1_firstfile
     character*80           ::  S1_filename
+    character(len=LIS_CONST_PATH_LEN) :: list_files
     character*100          ::  temp
     real,  allocatable         ::  obsstd(:)
     character*1            ::  vid(2)
@@ -107,9 +109,10 @@ contains
     integer                :: ncid
     integer                :: flist
     integer                :: ios
+    integer                :: rc
     character*100          :: infile 
     character*100          :: xname, yname 
-
+    integer, external      :: create_filelist
 
     allocate(S1_sigma_struc(LIS_rc%nnest))
 
@@ -270,13 +273,29 @@ contains
 !-------------------------------------------------------------
 
     ! Open first file to get nx ny dimensions
-    call system('ls ./' // trim(S1sigmaobsdir) // ' > ./S1_listfiles.txt')
+    if(LIS_masterproc) then
+       list_files = trim(S1sigmaobsdir)//'/'//'S1*.nc'
+       write(LIS_logunit,*) &
+              '[INFO] Searching for ',trim(list_files)
+       rc = create_filelist(trim(list_files)//char(0), &
+             "S1_listfiles.txt"//char(0))
+       if (rc .ne. 0) then
+           write(LIS_logunit,*) &
+               '[WARN] Problem encountered when searching for S1 files'
+           write(LIS_logunit,*) &
+               'Was searching for ',trim(list_files)
+           write(LIS_logunit,*) &
+               'LIS will continue...'
+       endif
+    end if
+
+    flist = LIS_getNextUnitNumber()
 
     open(flist, file=trim('./S1_listfiles.txt'), &
          status='old', iostat=status)
 
     read(flist, '(a)', iostat=status) S1_firstfile
-    S1_filename = trim(S1sigmaobsdir) // '/' // trim(S1_firstfile)
+    S1_filename = trim(S1_firstfile)
 
     ios = nf90_open(path=S1_filename,&
                     mode=NF90_NOWRITE,ncid=ncid)
