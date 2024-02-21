@@ -6734,7 +6734,6 @@ ENDIF   ! CROPTYPE == 0
                         SH2O   ,SICE   ,STC    ,ZSNSO  ,DZSNSO , & !inout
                         QSNBOT ,SNOFLOW,PONDING1       ,PONDING2)  !out
 ! ----------------------------------------------------------------------
-  USE LIS_logMod
   IMPLICIT NONE
 ! ----------------------------------------------------------------------
 ! input
