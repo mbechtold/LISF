@@ -313,26 +313,6 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
   ponding1 = 0.0
   ponding2 = 0.0  
   
-          !if ((dzsnso(0) == 0.0).or.(dzsnso(-1)==0).or.(dzsnso(-2)==0)) then
-          !      write(LIS_logunit,*) "isnow:", isnow
-          !      write(LIS_logunit,*) "dzsnso(-2):", dzsnso(-2)
-          !      write(LIS_logunit,*) "snowh:", snowh
-          !      write(LIS_logunit,*) "snowh1:", snowh1
-          !      write(LIS_logunit,*) "sneqv1:", sneqv1
-          !      write(LIS_logunit,*) "dsnowh:", dsnowh
-          !      write(LIS_logunit,*) "sneqv:", sneqv
-          !      write(LIS_logunit,*) "dsneqv:", dsneqv
-          !      write(LIS_logunit,*) "snice(-2):", snice(-2)
-          !      write(LIS_logunit,*) "snliq(-2):", snliq(-2)
-          !      write(LIS_logunit,*) "dzsnso(-1):", dzsnso(-1)
-          !      write(LIS_logunit,*) "snice(-1):", snice(-1)
-          !      write(LIS_logunit,*) "snliq(-1):", snliq(-1)
-          !      write(LIS_logunit,*) "dzsnso(0):", dzsnso(0)
-          !      write(LIS_logunit,*) "snice(0):", snice(0)
-          !      write(LIS_logunit,*) "snliq(0):", snliq(0)
-        !endif
-    
-
   if(isnow < 0) &     ! when multi-layer
        call  compact (parameters, nsnow, nsoil, noahmp401_struc(n)%ts,     & !in
                      stc, snice, snliq, zsoil, imelt, ficeold, iloc, jloc, & !in
