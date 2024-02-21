@@ -2047,10 +2047,12 @@ subroutine LIS_gather_1dgrid_to_2dgrid_obs(n, k, gtmp, var)
           count1=1 + (i-1)*SUM(LIS_obs_ngrids(k,0:i-2))
           gtmp1 = LIS_rc%udef
           do l=1,LIS_npes
-             count1=count1+MIN0(1,l-1)*&
-             (LIS_rc%nobtypes(k)-i)*LIS_obs_ngrids(k,l-2) +&
-             MIN0(1,l-1)*&
-             (i-1)*LIS_obs_ngrids(k,l-1)
+             if (l.gt.1) then
+                 count1=count1+MIN0(1,l-1)*&
+                 (LIS_rc%nobtypes(k)-i)*LIS_obs_ngrids(k,l-2) +&
+                 MIN0(1,l-1)*&
+                 (i-1)*LIS_obs_ngrids(k,l-1)
+             endif
              do t =1, LIS_obs_ngrids(k,l-1)
                 c = LIS_obs_domain(n,k)%glb_col(l,t)
                 r = LIS_obs_domain(n,k)%glb_row(l,t)

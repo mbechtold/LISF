@@ -316,7 +316,7 @@ contains
 !----------------------------------------------------------------------------
 !  Assemble observation covariances. 
 !----------------------------------------------------------------------------
-       allocate(obs_param(LIS_rc%nobtypes(k)))
+       allocate(obs_param(Nobjs))
        call generateObsparam(Nobjs, LIS_OBS_Pert_State(n,k),obs_param)
        
 !----------------------------------------------------------------------------
