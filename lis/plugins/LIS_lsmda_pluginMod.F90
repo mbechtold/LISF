@@ -3182,7 +3182,6 @@ subroutine LIS_lsmda_plugin
    call registerlsmdaqcobsstate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_qc_snowobs)
 
-
 #if ( defined DA_OBS_GCOMW_AMSR2L3SND )
    call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_GCOMW_AMSR2L3sndobsId)//char(0),noahmp401_dasnow_init)

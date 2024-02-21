@@ -203,18 +203,7 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
         snowh1 = snowh + dsnowh
      endif
 ! make sure snow layers currently exist in decrease case
-                !write(LIS_logunit,*) "dzsnso(0):", dzsnso(0)
-                !write(LIS_logunit,*) "snowh:", snowh
-                !write(LIS_logunit,*) "snowh1:", snowh1
-                !write(LIS_logunit,*) "dsnowh:", dsnowh
-                !write(LIS_logunit,*) "sneqv:", sneqv
-                !write(LIS_logunit,*) "sneqv1:", sneqv1
-                !write(LIS_logunit,*) "dsneqv:", dsneqv
-                !write(LIS_logunit,*) "snice(0):", snice(0)
-                !write(LIS_logunit,*) "snliq(0):", snliq(0)
-                !write(LIS_logunit,*) "isnow:", isnow
      if(dzsnso(0).eq.0) then
-                !write(LIS_logunit,*) "dzsnso(0) is zero:"
         if(snowh.ge.0.025) then
            isnow = -1
         else
