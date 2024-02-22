@@ -227,6 +227,7 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
            snice(-nsnow+1:(isnow)) = 0
            snice(isnow+1) = sneqv
            snliq(-nsnow+1:isnow) = 0
+! snow can no longer fill layer -1 and -2
         elseif(snowh.le.(dzsnso(0)+dzsnso(-1)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -2
            dzsnso(-nsnow+1:isnow) = 0 

@@ -700,7 +700,7 @@ subroutine LIS_lsm_plugin
 #if ( defined SM_NOAHMP_4_0_1 )
    call registerlsminit(trim(LIS_noahmp401Id)//char(0),noahmp401_ini)
    call registerlsmsetup(trim(LIS_noahmp401Id)//char(0),noahmp401_setup)
-   call registerlsmf2t(trim(LIS_noahmp36Id)//"+"//trim(LIS_retroId)//char(0),&
+   call registerlsmf2t(trim(LIS_noahmp401Id)//"+"//trim(LIS_retroId)//char(0),&
         noahmp401_f2t)
    call registerlsmf2t(trim(LIS_noahmp401Id)//"+"&
         //trim(LIS_retroId)//char(0),noahmp401_f2t)
