@@ -17,6 +17,8 @@
 !  15 May 2019: Yeosang Yoon; Modified for NoahMP 4.0.1 and LDTSI
 !  13 Dec 2019: Eric Kemp; Replaced LDTSI with SNOW
 !  05 Jun 2023: Justin Pflug; fixes for SnowModel-defined snow updates
+!  22 Feb 2024: Gabrielle De Lannoy: SWE updates changed to be in direction of snow depth changes as elsewhere in code 
+!  22 Feb 2024: Michel Bechtold: bug fix related to snow layer indexing 
 
 !
 ! !INTERFACE
@@ -37,6 +39,9 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
 !  number of snow layers, snice, snliq, snow temperature 
 !  and snow thickness. 
 ! 
+!  The DA module "snow_update" is used to assimilate snow depth 
+!  and let SWE depend on it.
+
 ! !ARGUMENTS:
   integer, intent(in)  :: n
   integer, intent(in)  :: t
@@ -148,10 +153,9 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
   endif
 
   ! allow snow update even in cases where changes opp. directions
-  ! alter snow depth change to be in direction of SWE change
+  ! alter SWE change to be in direction of snow depth change
   if((dsneqv.gt.0.and.dsnowh.le.0).or.&
           (dsneqv.lt.0.and.dsnowh.ge.0)) then
-     !dsnowh = (dsneqv/snoden)/1000
      dsneqv = dsnowh*snoden*1000
   ! set snow depth change to zero in instance where no SWE change
   elseif(dsneqv.eq.0.and.dsnowh.ne.0) then
@@ -188,11 +192,9 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
   if(dsneqv.lt.0.and.dsnowh.lt.0) then
      snowh1 = snowh + dsnowh
      sneqv1 = sneqv + dsneqv
-! if dsnowh adjusted since dsneqv and dsnowh in opp. directions
+! if dsneqv adjusted since dsneqv and dsnowh in opp. directions
 ! can cause one or other snowh1 or sneqv1 to be negative
      if(snowh1.gt.0.and.sneqv1.le.0) then
-        !snowh = ((sneqv1/snoden)/1000)-dsnowh
-        !snowh1 = snowh + dsnowh
         sneqv = snowh1*snoden*1000 - dsneqv
         sneqv1 =sneqv + dsneqv
 ! if SWE disappears, also make sure snow depth disappears
@@ -218,7 +220,6 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
         snowh = snowh + dsnowh
         sneqv = sneqv + dsneqv
 ! snow can no longer fill layer -1
-        !if(snowh.le.dzsnso(0)) then 
         if(snowh.le.(dzsnso(0)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -1
            dzsnso(-nsnow+1:(isnow)) = 0 
@@ -227,7 +228,6 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
            snice(isnow+1) = sneqv
            snliq(-nsnow+1:isnow) = 0
 ! snow can no longer fill layer -1 and -2
-        !elseif(snowh.le.(dzsnso(0)+dzsnso(-1))) then 
         elseif(snowh.le.(dzsnso(0)+dzsnso(-1)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -2
            dzsnso(-nsnow+1:isnow) = 0 
@@ -238,7 +238,6 @@ subroutine noahmp401_snow_update(n, t, dsneqv, dsnowh)
            enddo
            snliq(-nsnow+1:isnow) = 0
 ! all other cases
-        !elseif(snowh.ge.1.e-7) then
         elseif(snowh.le.(dzsnso(0)+dzsnso(-1)+dzsnso(-2)+1.e-7).and.snowh.ge.1.e-7) then 
            isnow = -3
            dzsnso(isnow+1) = max(snowh -dzsnso(-1) -dzsnso(0), 1.e-7)
