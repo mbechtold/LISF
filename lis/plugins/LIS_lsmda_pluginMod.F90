@@ -528,8 +528,6 @@ subroutine LIS_lsmda_plugin
    external noahmp401_scale_veg
    external noahmp401_descale_veg
    external noahmp401_veg_DAlog
-   external noahmp401_transform_veg
-   external noahmp401_map_veg
 
 !BL:NOAHMP4.0.1 TWS
    external noahmp401_gettws
@@ -2862,10 +2860,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_descale_soilmLAI)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_updatesoilmLAI)
-   !call registerlsmdaobstransform(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_transform_veg)
-   !call registerlsmdamapobstolsm(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_map_veg)
 
 ! S1 backscatter DA VHSM
    call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
@@ -2906,10 +2900,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_descale_soilmLAI)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_updatesoilmLAI)
-   !call registerlsmdaobstransform(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_transform_veg)
-   !call registerlsmdamapobstolsm(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_map_veg)
 
 ! S1 backscatter DA VVVHSMLAI
    call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
@@ -2930,10 +2920,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_descale_soilmLAI)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_updatesoilmLAI)
-   !call registerlsmdaobstransform(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_transform_veg)
-   !call registerlsmdamapobstolsm(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_map_veg)
 
 ! MN
 ! Noah-MP.4.0.1 RT SMOPS ASCAT soil moisture
