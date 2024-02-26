@@ -82,8 +82,13 @@ call LIS_RTM_run(n)
   call ESMF_FieldGet(varField, localDE=0,farrayPtr=s0VH, rc=status)
   call LIS_verify(status, &
        'Error in FieldGet in noahmp401_getSig0Pred for WCM_Sig0VH')
+  
+  ! obs_pred and count1 will eventually contain both VV and VH
+  ! as concatenated vector (see LIS_rc%ngrid(n) is added to gid)
+  ! this is how the EnKF expects obs_pred for the joint DA case
   obs_pred = 0.0
   count1 = 0.0
+  
   do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index),LIS_rc%nensem(n)
      do m=1,LIS_rc%nensem(n)
         t = i+m-1
@@ -92,20 +97,6 @@ call LIS_RTM_run(n)
         count1(gid,m) = count1(gid,m) +1
      enddo
   enddo
-
-  !!! new
-
-
-  call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
-        LIS_rc%lsm_index, &
-        s0VV,&
-        obs_pred_VV)
-
-  call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
-        LIS_rc%lsm_index, &
-        s0VH,&
-        obs_pred_VH)
-
 
   do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index),LIS_rc%nensem(n)
      do m=1,LIS_rc%nensem(n)
@@ -122,6 +113,17 @@ call LIS_RTM_run(n)
         obs_pred(i,m) = obs_pred(i,m)/(count1(i,m))
      enddo
   enddo
+
+  ! alternative implementation could be done with
+  !call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
+  !      LIS_rc%lsm_index, &
+  !      s0VV,&
+  !      obs_pred_VV)
+  !
+  !call LIS_convertPatchSpaceToObsEnsSpace(n,k,&
+  !      LIS_rc%lsm_index, &
+  !      s0VH,&
+  !      obs_pred_VH)
 
 end subroutine noahmp401_getSig0VVVHpred
 
