@@ -107,7 +107,8 @@ call LIS_RTM_run(n)
         count1(gid,m) = count1(gid,m) +1
      enddo
   enddo
-
+  
+  ! pixel-wise averaging of all obs_pred (VV and VH)
   do i=1,LIS_rc%obs_ngrid(k)*2
      do m=1,LIS_rc%nensem(n)
         obs_pred(i,m) = obs_pred(i,m)/(count1(i,m))
