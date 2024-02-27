@@ -528,8 +528,6 @@ subroutine LIS_lsmda_plugin
    external noahmp401_scale_veg
    external noahmp401_descale_veg
    external noahmp401_veg_DAlog
-   external noahmp401_transform_veg
-   external noahmp401_map_veg
 
 !BL:NOAHMP4.0.1 TWS
    external noahmp401_gettws
