@@ -31,7 +31,12 @@ subroutine noahmp401_snowsimple_update(n, t, dsneqv, dsnowh)
 !  snow depth (dsnowh). The updated variables include
 !  number of snow layers, snice, snliq, snow temperature 
 !  and snow thickness. 
-! 
+!  The 'simple' update trusts that the Kalman filter will properly 
+!  determine dsneqv and dsnowh, and will therefore not further partially 
+!  postprocess or compact snow afterwards (unlike the default snow_update 
+!  routine). The model will deal with any further processing at 
+!  the next time step.
+!
 ! !ARGUMENTS:
   integer, intent(in)  :: n
   integer, intent(in)  :: t

@@ -2862,10 +2862,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_descale_soilmLAI)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_updatesoilmLAI)
-   !call registerlsmdaobstransform(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_transform_veg)
-   !call registerlsmdamapobstolsm(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVSMLAI_obsId)//char(0),noahmp401_map_veg)
 
 ! S1 backscatter DA VHSM
    call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
@@ -2906,10 +2902,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_descale_soilmLAI)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_updatesoilmLAI)
-   !call registerlsmdaobstransform(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_transform_veg)
-   !call registerlsmdamapobstolsm(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVHSMLAI_obsId)//char(0),noahmp401_map_veg)
 
 ! S1 backscatter DA VVVHSMLAI
    call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
@@ -2930,10 +2922,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_descale_soilmLAI)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_updatesoilmLAI)
-   !call registerlsmdaobstransform(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_transform_veg)
-   !call registerlsmdamapobstolsm(trim(LIS_noahmp401Id)//"+"//&
-   !     trim(LIS_S1_sigmaVVVHSMLAI_obsId)//char(0),noahmp401_map_veg)
 
 ! MN
 ! Noah-MP.4.0.1 RT SMOPS ASCAT soil moisture
@@ -3311,7 +3299,6 @@ subroutine LIS_lsmda_plugin
         trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_updatesnowvars)
    call registerlsmdaqcobsstate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_S1_SNWD_obsId)//char(0),noahmp401_qc_snowobs)
-
 
 #if ( defined DA_OBS_GCOMW_AMSR2L3SND )
    call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
