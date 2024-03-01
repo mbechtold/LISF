@@ -208,7 +208,7 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
   
   if((LIS_rc%nperts.eq.0).or.(LIS_rc%pert_bias_corr.eq.0)) then
   	  do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-         t = i
+		 t = i
 		 timestep = NOAHMP401_struc(n)%dt
 		 soiltyp = noahmp401_struc(n)%noahmp401(t)%soiltype
 		
