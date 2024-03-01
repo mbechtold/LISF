@@ -117,11 +117,15 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
   type(ESMF_Field)     :: irriggwratioField
   real,  pointer       :: irriggwratio(:)
 
-  integer              :: i, m
+  integer              :: i, m, j
   real                 :: sfctemp_avg
   real                 :: shdfac_avg
   real                 :: smc_avg(nsoil)
 
+  character*256        :: line
+  integer              :: where
+  logical              :: soil_moisture_pert
+  integer              :: ftn
   call ESMF_StateGet(irrigState, "Irrigation rate",irrigRateField,rc=rc)
   call LIS_verify(rc,'ESMF_StateGet failed for Irrigation rate')    
   call ESMF_FieldGet(irrigRateField, localDE=0,farrayPtr=irrigRate,rc=rc)
@@ -160,7 +164,31 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
 
   call LIS_read_shdmax(n,placeshdmax)
   call LIS_read_shdmin(n,placeshdmin)
-
+  
+  ! check if soil moisture is perturbed
+  ! will later be used to determine whether it 
+  ! has to be irrigated by ensemble mean
+  soil_moisture_pert = .false.
+  if (LIS_rc%nperts.gt.0) then
+      ftn = LIS_getNextUnitNumber()
+      do j = 1, size(LIS_rc%progattribFile)
+          open(ftn, file=LIS_rc%progattribFile(j))
+          do
+             read (ftn, '(A)', IOSTAT=rc) line
+             if (rc < 0) then
+                 close (ftn)
+                 exit
+             end if
+             where = index (line, 'Soil Moisture')
+             if (where .ne. 0) then
+                 soil_moisture_pert = .true.
+                 close (ftn)
+                 exit
+             endif
+          end do
+          if (soil_moisture_pert) exit
+      end do
+  end if
 !----------------------------------------------------------------------
 ! Set start and end times for selected irrigation type
 !----------------------------------------------------------------------
@@ -178,8 +206,9 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
      otimee = otimefs + irrhrf
   endif
   
-  if(LIS_rc%pert_bias_corr.eq.0) then
+  if((LIS_rc%nperts.eq.0).or.(LIS_rc%pert_bias_corr.eq.0)) then
   	  do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+         t = i
 		 timestep = NOAHMP401_struc(n)%dt
 		 soiltyp = noahmp401_struc(n)%noahmp401(t)%soiltype
 		
@@ -482,7 +511,7 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
 		end do
   
 
-  elseif (LIS_rc%pert_bias_corr.eq.1) then
+  elseif ((LIS_rc%pert_bias_corr.eq.1) .and. (soil_moisture_pert)) then
 	  do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index)/LIS_rc%nensem(n)
 
 		 sfctemp_avg = 0.
