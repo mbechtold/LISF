@@ -206,7 +206,8 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
      otimee = otimefs + irrhrf
   endif
   
-  if(.not. soil_moisture_pert) then
+  if((.not. soil_moisture_pert) .or. & 
+      (soil_moisture_pert .and. (LIS_rc%pert_bias_corr.eq.0)))  then
   	  do i=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
 		 t = i
 		 timestep = NOAHMP401_struc(n)%dt
