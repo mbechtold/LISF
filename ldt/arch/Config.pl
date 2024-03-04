@@ -224,11 +224,11 @@ else{
 }
 
 
-print "Use GRIBAPI/ECCODES? (0-neither, 1-gribapi, 2-eccodes, default=2): ";
+print "Use GRIBAPI/ECCODES? (0-neither, 1-gribapi, 2-eccodes, default=1): ";
 $use_gribapi=<stdin>;
 chomp($use_gribapi);
 if($use_gribapi eq ""){
-   $use_gribapi=2;
+   $use_gribapi=1;
 }
 
 if($use_gribapi == 1) {
@@ -407,7 +407,7 @@ if($use_hdf4 eq "\n"){
 if($use_hdf4 == 1) {
    if(defined($ENV{LDT_HDF4})){
       $sys_hdf4_path = $ENV{LDT_HDF4};
-      $inc = "/include/";
+      $inc = "/include/hdf/";
       $lib = "/lib/";
       $inc_hdf4=$sys_hdf4_path.$inc;
       $lib_hdf4=$sys_hdf4_path.$lib;
@@ -479,10 +479,10 @@ if($use_hdfeos == 1) {
    }
 }
 
-print "Enable GeoTIFF support? (1-yes, 0-no, default=1): ";
+print "Enable GeoTIFF support? (1-yes, 0-no, default=0): ";
 $enable_geotiff=<stdin>;
 if($enable_geotiff eq "\n"){
-   $enable_geotiff=1;
+   $enable_geotiff=0;
 }
 if($enable_geotiff == 1) {
     if(defined($ENV{LDT_GDAL})){
@@ -525,10 +525,10 @@ if($enable_geotiff == 1) {
 }
 
 # EMK...Add LIBGEOTIFF support for Air Force
-print "Enable LIBGEOTIFF support? (1-yes, 0-no, default=1): ";
+print "Enable LIBGEOTIFF support? (1-yes, 0-no, default=0): ";
 $enable_libgeotiff=<stdin>;
 if($enable_libgeotiff eq "\n"){
-    $enable_libgeotiff=1;
+    $enable_libgeotiff=0;
 }
 if($enable_libgeotiff == 1) {
     if(defined($ENV{LDT_LIBGEOTIFF})){
@@ -608,26 +608,26 @@ else{
 if($sys_arch eq "linux_ifc") {
    if($use_omp == 1) {
       if($use_endian == 1) {
-         $fflags77= "-c -openmp ".$sys_opt."-nomixed-str-len-arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $fflags =" -c -openmp ".$sys_opt."-u -traceback -fpe0  -nomixed-str-len-arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $fflags77= "-c -openmp ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $fflags =" -c -openmp ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
          $ldflags= " -openmp -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -lrt -lz";
       }
       else {
-         $fflags77= "-c -openmp ".$sys_opt."-nomixed-str-len-arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $fflags =" -c -openmp ".$sys_opt."-u -traceback -fpe0  -nomixed-str-len-arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $fflags77= "-c -openmp ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $fflags =" -c -openmp ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
          $ldflags= " -openmp -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -lrt -lz";
       }
    }
    else {
       if($use_endian == 1) {
-         $fflags77= "-c ".$sys_opt."-nomixed-str-len-arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed-str-len-arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -lrt -lz";
+         $fflags77= "-c ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz";
       }
       else {
-         $fflags77= "-c ".$sys_opt."-nomixed-str-len-arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed-str-len-arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -lrt -lz";
+         $fflags77= "-c ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz";
       }
    }
 

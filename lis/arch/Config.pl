@@ -394,12 +394,12 @@ else{
 }
 
 
-print "Use GRIBAPI/ECCODES? (0-neither, 1-gribapi, 2-eccodes, default=2): ";
+print "Use GRIBAPI/ECCODES? (0-neither, 1-gribapi, 2-eccodes, default=1): ";
 $use_gribapi=<stdin>;
 $use_gribapi=~s/ *#.*$//;
 chomp($use_gribapi);
 if($use_gribapi eq ""){
-   $use_gribapi=2;
+   $use_gribapi=1;
 }
 
 if($use_gribapi == 1) {
@@ -429,7 +429,7 @@ if($use_gribapi == 1) {
    }
    elsif(defined($ENV{LIS_JASPER})){
       $sys_jpeg2000_path = $ENV{LIS_JASPER};
-      $inc = "/include/";
+      $inc = "/include/jasper/";
       $lib = "/lib/";
       $inc_jpeg2000=$sys_jpeg2000_path.$inc;
       $lib_jpeg2000=$sys_jpeg2000_path.$lib;
@@ -632,7 +632,7 @@ if($use_hdf4 eq ""){
 if($use_hdf4 == 1) {
    if(defined($ENV{LIS_HDF4})){
       $sys_hdf4_path = $ENV{LIS_HDF4};
-      $inc = "/include/";
+      $inc = "/include/hdf/";
       $lib = "/lib/";
       $inc_hdf4=$sys_hdf4_path.$inc;
       $lib_hdf4=$sys_hdf4_path.$lib;
@@ -736,11 +736,11 @@ if($use_minpack == 1) {
 }
 
 
-print "Use LIS-WCM? (1-yes, 0-no, default=0): ";
+print "Use LIS-WCM? (1-yes, 0-no, default=1): ";
 $use_wcm=<stdin>;
 chomp($use_wcm);
 if($use_wcm eq ""){
-   $use_wcm=0;
+   $use_wcm=1;
 }
 
 print "Use LIS-CRTM? (1-yes, 0-no, default=0): ";
@@ -898,9 +898,9 @@ else{
 
 if($sys_arch eq "linux_ifc") {
    $cflags = "-c ".$sys_omp." ".$sys_c_opt." -traceback -DIFC -DLINUX";
-   $fflags77= "-c ".$sys_omp." ".$sys_opt." -traceback -nomixed-str-len-arg -names lowercase ".$sys_endian." -assume byterecl ".$sys_par." -DHIDE_SHR_MSG -DNO_SHR_VMATH -DIFC -DLINUX -I\$(MOD_ESMF) ".$sys_par_d;
-   $fflags ="-c ".$sys_omp." ".$sys_opt." -u -traceback -fpe0 -nomixed-str-len-arg -names lowercase ".$sys_endian." -assume byterecl ".$sys_par." -DHIDE_SHR_MSG -DNO_SHR_VMATH -DIFC -DLINUX -I\$(MOD_ESMF) ".$sys_par_d;
-   $ldflags= $sys_omp." -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lrt";
+   $fflags77= "-c ".$sys_omp." ".$sys_opt." -traceback -nomixed_str_len_arg -names lowercase ".$sys_endian." -assume byterecl ".$sys_par." -DHIDE_SHR_MSG -DNO_SHR_VMATH -DIFC -DLINUX -I\$(MOD_ESMF) ".$sys_par_d;
+   $fflags ="-c ".$sys_omp." ".$sys_opt." -u -traceback -fpe0 -nomixed_str_len_arg -names lowercase ".$sys_endian." -assume byterecl ".$sys_par." -DHIDE_SHR_MSG -DNO_SHR_VMATH -DIFC -DLINUX -I\$(MOD_ESMF) ".$sys_par_d;
+   $ldflags= $sys_omp." -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lrt -lmkl -lsz -ltirpc";
    $lib_flags= "-lesmf -lstdc++ -limf -lrt";
    $lib_paths= "-L\$(LIB_ESMF)";
 }
