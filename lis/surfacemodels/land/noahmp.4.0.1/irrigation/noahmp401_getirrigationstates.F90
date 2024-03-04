@@ -277,7 +277,7 @@ subroutine noahmp401_getirrigationstates(n,irrigState)
 	   
 	! JE This temperature check avoids irrigating at temperatures near or below 0C
 		 if((ltime.ge.shift_otimes).and.(ltime.le.shift_otimee).and. &
-			 (sfctemp_avg.gt.tempcheck)) then 
+			 (sfctemp.gt.tempcheck)) then 
 	!------------------------------------
 			vegt = LIS_surface(n,LIS_rc%lsm_index)%tile(t)%vegt
 		   !----------------------------------------------------------------------       
