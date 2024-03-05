@@ -11,6 +11,16 @@
 #-------------------------END NOTICE -- DO NOT EDIT-----------------------
 # 6 Jan 2012: Sujay Kumar, Initial Specification
 
+if(defined($ENV{VSC_SYSTEM})){
+   $vsc_tier_system = $ENV{VSC_SYSTEM};
+}
+else{
+   print "--------------ERROR---------------------\n";
+   print "VSC_SYSTEM env variable not defined in KUL_LIS_MODULES\n";
+   print "--------------ERROR---------------------\n";
+   exit 1;
+}
+
 #Find the architecture
 
 if(defined($ENV{LDT_ARCH})){
@@ -407,7 +417,18 @@ if($use_hdf4 eq "\n"){
 if($use_hdf4 == 1) {
    if(defined($ENV{LDT_HDF4})){
       $sys_hdf4_path = $ENV{LDT_HDF4};
-      $inc = "/include/hdf/";
+      if($vsc_tier_system eq "genius"){
+         $inc = "/include/hdf/";
+      }
+      elsif($vsc_tier_system eq "hortense") {
+         $inc = "/include/";
+      }
+      else{
+         print "--------------ERROR---------------------\n";
+	 print "VSC_SYSTEM not available in Config.pl\n";
+         print "--------------ERROR---------------------\n";
+	 exit 1;
+      }
       $lib = "/lib/";
       $inc_hdf4=$sys_hdf4_path.$inc;
       $lib_hdf4=$sys_hdf4_path.$lib;
@@ -415,7 +436,7 @@ if($use_hdf4 == 1) {
    else {
       print "--------------ERROR---------------------\n";
       print "Please specify the HDF4 path using\n";
-      print "the LDT_HDF4 variable.\n";
+      print "the LIS_HDF4 variable.\n";
       print "Configuration exiting ....\n";
       print "--------------ERROR---------------------\n";
       exit 1;
@@ -620,14 +641,60 @@ if($sys_arch eq "linux_ifc") {
    }
    else {
       if($use_endian == 1) {
-         $fflags77= "-c ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz";
+         if($vsc_tier_system eq "genius"){
+            $fflags77= "-c ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+            $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         }
+         elsif($vsc_tier_system eq "hortense") {
+            $fflags77= "-c ".$sys_opt."-nomixed-str-len-arg -names lowercase -convert little_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+            $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed-str-len-arg -names lowercase -convert little_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         }
+         else{
+            print "--------------ERROR---------------------\n";
+            print "VSC_SYSTEM not available in Config.pl\n";
+            print "--------------ERROR---------------------\n";
+            exit 1;
+         }
+         if($vsc_tier_system eq "genius"){
+            $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz";
+         }
+         elsif($vsc_tier_system eq "hortense") {
+            $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz -qopenmp";
+         }
+         else{
+            print "--------------ERROR---------------------\n";
+            print "VSC_SYSTEM not available in Config.pl\n";
+            print "--------------ERROR---------------------\n";
+            exit 1;
+         }
       }
       else {
-         $fflags77= "-c ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
-         $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz";
+         if($vsc_tier_system eq "genius"){
+            $fflags77= "-c ".$sys_opt."-nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+            $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed_str_len_arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         }
+         elsif($vsc_tier_system eq "hortense") {
+            $fflags77= "-c ".$sys_opt."-nomixed-str-len-arg -names lowercase -convert big_endian -assume byterecl ".$sys_par." -DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+            $fflags =" -c ".$sys_opt."-u -traceback -fpe0  -nomixed-str-len-arg -names lowercase -convert big_endian -assume byterecl ".$sys_par."-DIFC -I\$(MOD_ESMF) -DUSE_INCLUDE_MPI";
+         }
+         else{
+            print "--------------ERROR---------------------\n";
+            print "VSC_SYSTEM not available in Config.pl\n";
+            print "--------------ERROR---------------------\n";
+            exit 1;
+         }
+         if($vsc_tier_system eq "genius"){
+            $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz";
+         }
+         elsif($vsc_tier_system eq "hortense") {
+            $ldflags= " -L\$(LIB_ESMF) -lesmf -lstdc++ -limf -lm -ltirpc -lrt -lmkl -lsz -lz -qopenmp";
+         }
+         else{
+            print "--------------ERROR---------------------\n";
+            print "VSC_SYSTEM not available in Config.pl\n";
+            print "--------------ERROR---------------------\n";
+            exit 1;
+         }
       }
    }
 
