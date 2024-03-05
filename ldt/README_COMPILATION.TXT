@@ -1,5 +1,5 @@
 # 2024/03/04: Michel Bechtold
-# To compile ldt run the following steps
+# To compile ldt, run the following steps
 cd LISF/ldt
 # load the modules (right ones for each system will be automatically selected)
 source KUL_LDT_modules
