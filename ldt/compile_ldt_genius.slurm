@@ -12,5 +12,5 @@
 
 cd $SLURM_SUBMIT_DIR
 source KUL_LDT_modules
-./compile
+./compile -j 4
 
