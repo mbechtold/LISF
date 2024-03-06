@@ -4,8 +4,6 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH -A lp_ees_swm_ls_001
 #SBATCH --cluster=genius
-#SBATCH --mail-type FAIL,BEGIN,END
-#SBATCH --mail-user XXX.XXX@kuleuven.be
 #SBATCH -o compile_ldt_genius_log.txt
 #SBATCH -e compile_ldt_genius_out.txt
 
