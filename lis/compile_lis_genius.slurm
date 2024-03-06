@@ -4,8 +4,6 @@
 #SBATCH --ntasks-per-node=4
 #SBATCH -A lp_ees_swm_ls_001
 #SBATCH --cluster=genius
-#SBATCH --mail-type FAIL,BEGIN,END
-#SBATCH --mail-user XXX.XXX@kuleuven.be
 #SBATCH -o compile_lis_genius_log.txt
 #SBATCH -e compile_lis_genius_out.txt
 
@@ -18,5 +16,5 @@ source KUL_LIS_modules
 # compilation of WCM as used in default
 cd lib/lis-crtm-profile-utility; gmake && make install; cd ../../;
 
-./compile
+./compile -j 4
 

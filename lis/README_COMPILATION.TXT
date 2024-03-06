@@ -1,5 +1,5 @@
 # 2024/03/04: Michel Bechtold
-# To compile lis run the following steps
+# To compile lis, run the following steps
 cd LISF/lis
 # load the modules (right ones for each system will be automatically selected)
 source KUL_LIS_modules
