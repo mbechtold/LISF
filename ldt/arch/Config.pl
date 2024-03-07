@@ -16,7 +16,7 @@ if(defined($ENV{VSC_SYSTEM})){
 }
 else{
    print "--------------ERROR---------------------\n";
-   print "VSC_SYSTEM env variable not defined in KUL_LIS_MODULES\n";
+   print "VSC_SYSTEM env variable not defined in KUL_LDT_MODULES\n";
    print "--------------ERROR---------------------\n";
    exit 1;
 }
@@ -436,7 +436,7 @@ if($use_hdf4 == 1) {
    else {
       print "--------------ERROR---------------------\n";
       print "Please specify the HDF4 path using\n";
-      print "the LIS_HDF4 variable.\n";
+      print "the LDT_HDF4 variable.\n";
       print "Configuration exiting ....\n";
       print "--------------ERROR---------------------\n";
       exit 1;
