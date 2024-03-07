@@ -6,7 +6,7 @@ source KUL_LDT_modules
 # run the configure and accept all defaults or change to 'debug' compilation if wanted
 ./configure 
 # submit either the hortense or genius job scripts
-# hortense (tier 1), need to switch to milan
+# hortense (tier 1), need to swap to milan
 module swap cluster/dodrio/cpu_milan
 qsub compile_ldt_hortense.pbs
 # genius (tier 2)

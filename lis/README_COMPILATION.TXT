@@ -6,7 +6,7 @@ source KUL_LIS_modules
 # run the configure and accept all defaults or change to 'debug' compilation if wanted
 ./configure 
 # submit either the hortense or genius job scripts
-# hortense (tier 1)
+# hortense (tier 1), need to swap to milan
 module swap cluster/dodrio/cpu_milan
 qsub compile_lis_hortense.pbs
 # genius (tier 2)
