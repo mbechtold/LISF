@@ -7,6 +7,6 @@ source KUL_LDT_modules
 ./configure 
 # submit either the hortense or genius job scripts
 # hortense (tier 1)
-qsub compile_ldt_hortense.qsub
+qsub compile_ldt_hortense.pbs
 # genius (tier 2)
 sbatch compile_ldt_genius.slurm
