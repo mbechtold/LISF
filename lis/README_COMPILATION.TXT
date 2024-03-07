@@ -7,6 +7,7 @@ source KUL_LIS_modules
 ./configure 
 # submit either the hortense or genius job scripts
 # hortense (tier 1)
+module swap cluster/dodrio/cpu_milan
 qsub compile_lis_hortense.pbs
 # genius (tier 2)
 sbatch compile_lis_genius.slurm
