@@ -103,6 +103,12 @@ module AC72_module
         real               :: RootZoneWC_ZtopFC
         real               :: RootZoneWC_ZtopWP
         real               :: RootZoneWC_ZtopThresh
+        integer               :: GDDaysToGermination
+        integer               :: GDDaysToHarvest
+        integer               :: GDDaysToSenescence
+        integer               :: GDDaysToMaxRooting
+        real               :: GDDCGC
+        real               :: GDDCDC
         type(rep_RootZoneWC) :: RootZoneWC
         type(rep_Content) :: TotalSaltContent
         type(rep_Content) :: TotalWaterContent
@@ -179,6 +185,17 @@ module AC72_module
         real :: Tact
         real :: Tpot
         real :: TactWeedInfested
+        ! WCM
+        real :: lai
+        real :: WCMV1V2
+        real               :: Tmin_ac_Julyref
+        real               :: AC70ssmc_weighted
+        real               :: AC70FC
+        real, allocatable  :: Tmin_ac_antecedent(:)
+        real, allocatable  :: ETo_ac_antecedent(:)
+        real, allocatable  :: PREC_ac_antecedent(:)
+        integer            :: day_0
+        integer            :: WD_flag
 
         ! variables from run.f90
         type(rep_GwTable) :: GwTable

@@ -103,6 +103,8 @@ subroutine ANSASNWDsnow_obsname(n,k,obsname)
 
 ! !ARGUMENTS: 
   character(len=*)      :: obsname
+  integer,     intent(in)  :: n 
+  integer,     intent(in)  :: k
 ! 
 ! !DESCRIPTION: 
 ! 

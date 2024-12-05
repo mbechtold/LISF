@@ -1152,6 +1152,11 @@ integer(int32) function SumCalendarDays(ValGDDays, FirstDayCrop, Tbase, Tupper,&
             i = DayNri-GetSimulation_FromDayNr()+1
             TDayMin_loc = real(GetTminRun_i(i),kind=sp)
             TDayMax_loc = real(GetTmaxRun_i(i),kind=sp)
+            !write(*,*) 'MB: i: ', i
+            !write(*,*) 'MB: Tbase: ', Tbase
+            !write(*,*) 'MB: Tupper: ', Tupper
+            !write(*,*) 'MB: TDayMin_loc: ', TDayMin_loc
+            !write(*,*) 'MB: TDayMax_loc: ', TDayMax_loc
             DayGDD = DegreesDay(Tbase, Tupper, TDayMin_loc, &
                                         TDayMax_loc, &
                                         GetSimulParam_GDDMethod())
@@ -1564,6 +1569,9 @@ subroutine AdjustCalendarDays(PlantDayNr, InfoCropType,&
     end if
 
     if (Succes) then
+        !write(*,*) 'GDDL12: ', GDDL12
+        !write(*,*) 'D12: ', D12
+        !write(*,*) 'GDDCGC: ', GDDCGC
         CGC = (real(GDDL12, kind=sp)/real(D12, kind=sp)) * GDDCGC
         call GDDCDCToCDC(PlantDayNr, D123, GDDL123, GDDHarvest,&
                CCx, GDDCDC, Tbase, Tupper, tmp_NoTempFileTMin, tmp_NoTempFileTMax, CDC, &
@@ -2212,7 +2220,9 @@ subroutine LoadSimulationRunProject(NrRun)
     call SetSimulation_LinkCropToSimPeriod(.true.)
     call SetCropFile(ProjectInput(NrRun)%Crop_Filename)
     call SetCropFilefull(ProjectInput(NrRun)%Crop_Directory // GetCropFile())
-    call LoadCrop(GetCropFilefull())
+    !if (GetTemperatureFile() /= '(External)') then
+       call LoadCrop(GetCropFilefull())
+    !endif
 
     ! Adjust crop parameters of Perennials
     if (GetCrop_subkind() == subkind_Forage) then

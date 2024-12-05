@@ -20,6 +20,7 @@ subroutine write_NASASMAPsmobs(n, k, OBS_State)
 ! !USES: 
   use ESMF
   use LIS_coreMod
+  use LIS_timeMgrMod
   use LIS_logMod
   use LIS_fileIOMod
   use LIS_historyMod
@@ -47,10 +48,17 @@ subroutine write_NASASMAPsmobs(n, k, OBS_State)
   character(len=LIS_CONST_PATH_LEN) :: obsname
   integer                  :: ftn
   integer                  :: status
+  logical                  :: alarmCheck
+  character*3            :: fda
 
+  write(fda,'(i3.3)') k
+  alarmCheck = LIS_isAlarmRinging(LIS_rc,"LIS DA output "//trim(fda))
+
+if (alarmCheck) then
   call ESMF_AttributeGet(OBS_State, "Data Update Status", & 
        data_update, rc=status)
   call LIS_verify(status)
+
 
   if(data_update) then 
      
@@ -81,7 +89,7 @@ subroutine write_NASASMAPsmobs(n, k, OBS_State)
      if(LIS_masterproc) then 
         call LIS_releaseUnitNumber(ftn)
      endif
-
+endif
   endif  
 
 end subroutine write_NASASMAPsmobs

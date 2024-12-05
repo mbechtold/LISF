@@ -70,6 +70,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
    integer                :: grid_index
    character(len=LIS_CONST_PATH_LEN) :: smobsdir
    character(len=LIS_CONST_PATH_LEN) :: fname
+   character(len=LIS_CONST_PATH_LEN) :: fname_SMAP_filelist
    logical                :: alarmCheck, file_exists
    integer                :: t, c, r, jj
    real,          pointer :: obsl(:)
@@ -161,15 +162,38 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
          write(mm,'(i2.2)') LIS_rc%mo
          write(dd,'(i2.2)') LIS_rc%da
          write(hh,'(i2.2)') LIS_rc%hr
+         !fname_SMAP_filelist = &
+         !'SMAP_filelist.sm_'//trim(yyyy)//trim(mm)//trim(dd)//'.dat'
+         fname_SMAP_filelist = &
+         'SMAP_filelist.dat'
 
          if(LIS_masterproc) then
-            list_files = trim(smobsdir)//'/'//trim(yyyy)//'.'//trim(mm)//'.'//&
+            ! MB: AquaCrop runs at daily resolution, check if ts=86400,
+            ! then collect all observations of one day            
+            !if (LIS_rc%ts .ne. 86400.0) then
+            !if (LIS_rc%ts .ne. 3600.0) then
+            if (LIS_rc%lsm .ne. "AquaCrop.7.2") then
+                list_files = trim(smobsdir)//'/'//trim(yyyy)//'.'//trim(mm)//'.'//&
                          trim(dd)//'/SMAP_L2_*' &
                          //trim(yyyy)//trim(mm)//trim(dd)//'T'//trim(hh)//'*.h5'
+            else
+                list_files = trim(smobsdir)//'/'//trim(yyyy)//'.'//trim(mm)//'.'//&
+                     trim(dd)//'/SMAP_L2_*' &
+                     //trim(yyyy)//trim(mm)//trim(dd)//'T'//'*.h5'                
+            endif
             write(LIS_logunit,*) &
                   '[INFO] Searching for ',trim(list_files)
-            rc = create_filelist(trim(list_files)//char(0), &
-                 "SMAP_filelist.sm.dat"//char(0))
+            !write(LIS_logunit,*) &
+            !      '[INFO] Current lis.t filename for SMAP ',trim(fname_SMAP_filelist)
+            ! Check if the file exists
+            !inquire(fil=trim(fname_SMAP_filelist)//char(0), exist=file_exists)
+            ! Only create the file if it does not exist
+            !if (.not. file_exists) then
+                  rc = create_filelist(trim(list_files)//char(0), &
+                         trim(fname_SMAP_filelist)//char(0))
+            !else
+            !      rc = 0
+            !end if
             if (rc .ne. 0) then
                write(LIS_logunit,*) &
                     '[WARN] Problem encountered when searching for SMAP files'
@@ -179,20 +203,35 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
                     'LIS will continue...'
             endif
          end if
-#if (defined SPMD)
+
+         #if (defined SPMD)
          call mpi_barrier(lis_mpi_comm,ierr)
-#endif
+         #endif
 
          ftn = LIS_getNextUnitNumber()
-         open(ftn,file="./SMAP_filelist.sm.dat",status='old',iostat=ierr)
+         open(ftn,file=fname_SMAP_filelist,status='old',iostat=ierr)
+         do while(ierr.ne.0)
+            call sleep(10)
+            call LIS_releaseUnitNumber(ftn)
+            ftn = LIS_getNextUnitNumber()
+            open(ftn,file=fname_SMAP_filelist,status='old',iostat=ierr)
+            write(LIS_logunit,*) &
+               '[INFO] ierr ', ierr
+         enddo
 
          do while(ierr.eq.0)
             read(ftn,'(a)',iostat=ierr) fname
             if(ierr.ne.0) then
                exit
             endif
-
-            mn_ind = index(fname,trim(yyyymmdd)//'T'//trim(hh))+11
+            ! MB: AquaCrop runs at daily resolution, check if ts=86400            
+            ! if (LIS_rc%ts .ne. 86400.0) then
+            !if (LIS_rc%ts .ne. 3600.0) then
+            if (LIS_rc%lsm .ne. "AquaCrop.7.2") then
+                mn_ind = index(fname,trim(yyyymmdd)//'T'//trim(hh))+11
+            else
+                mn_ind = index(fname,trim(yyyymmdd)//'T')+11
+            end if 
             read(fname(mn_ind:mn_ind+1),'(i2.2)') mn
             ss=0
             call LIS_tick(timenow,doy,gmt,LIS_rc%yr, LIS_rc%mo, LIS_rc%da, &
@@ -204,6 +243,9 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
                  NASASMAPsm_struc(n)%smobs,timenow)
          enddo
          call LIS_releaseUnitNumber(ftn)
+#if (defined SPMD)
+         call mpi_barrier(lis_mpi_comm, ierr)
+#endif
 
       elseif (NASASMAPsm_struc(n)%data_designation .eq. "SPL3SMP_E") then
 !---------------------------------------------------------------------------
@@ -225,8 +267,17 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
                          trim(CRID)//'*.h5'
             write(LIS_logunit,*) &
                   '[INFO] Searching for ',trim(list_files)
-            rc = create_filelist(trim(list_files)//char(0), &
-                 "SMAP_filelist.dat"//char(0))
+            fname_SMAP_filelist = &
+            'SMAP_filelist.sm_'//trim(yyyy)//trim(mm)//trim(dd)//'.dat'
+            ! Check if the file exists
+            !inquire(file=trim(fname_SMAP_filelist)//char(0), exist=file_exists)
+            ! Only create the file if it does not exist
+            !if (.not. file_exists) then
+                  rc = create_filelist(trim(list_files)//char(0), &
+                       fname_SMAP_filelist//char(0))
+            !else
+            !      rc = 0
+            !end if
             if (rc .ne. 0) then
                write(LIS_logunit,*) &
                     '[WARN] Problem encountered when searching for SMAP files'
@@ -241,8 +292,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
 #endif
 
          ftn = LIS_getNextUnitNumber()
-         open (ftn, file="./SMAP_filelist.dat", &
-               action='read', status='old', iostat=ierr)
+         open(ftn,file=fname_SMAP_filelist,status='old',iostat=ierr)
 
 ! if multiple files for the same time and orbits are present, the latest
 ! one will overwrite older ones, though multiple (redundant) reads occur.
@@ -318,8 +368,10 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
                          trim(CRID)//'*.h5'
             write(LIS_logunit,*) &
                   '[INFO] Searching for ',trim(list_files)
+            fname_SMAP_filelist = &
+            'SMAP_filelist.sm_'//trim(yyyy)//trim(mm)//trim(dd)//'.dat'
             rc = create_filelist(trim(list_files)//char(0), &
-                 "SMAP_filelist.dat"//char(0))
+                 fname_SMAP_filelist//char(0))
             if (rc .ne. 0) then
                write(LIS_logunit,*) &
                     '[WARN] Problem encountered when searching for SMAP files'
@@ -334,8 +386,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
 #endif
 
          ftn = LIS_getNextUnitNumber()
-         open (ftn, file="./SMAP_filelist.dat", &
-               action='read', status='old', iostat=ierr)
+         open(ftn,file=fname_SMAP_filelist,status='old',iostat=ierr)
 
 ! if multiple files for the same time and orbits are present, the latest
 ! one will overwrite older ones, though multiple (redundant) reads occur.
@@ -382,7 +433,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
                   if (smobs_A(c + (r - 1)*LIS_rc%obs_lnc(k)) .ne. -9999.0 .and. &
                       NASASMAPsm_struc(n)%smobs(c, r) .eq. -9999.0) then
                      NASASMAPsm_struc(n)%smobs(c, r) = &
-                        smobs_A(c + (r - 1)*LIS_rc%obs_lnc(k))
+                       smobs_A(c + (r - 1)*LIS_rc%obs_lnc(k))
                      lon = LIS_obs_domain(n, k)%lon(c + (r - 1)*LIS_rc%obs_lnc(k))
                      lhour = 18.0
                      call LIS_localtime2gmt(gmt, lon, lhour, zone)
@@ -447,7 +498,11 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             if(LIS_obs_domain(n,k)%gindex(c,r).ne.-1) then
                grid_index = c+(r-1)*LIS_rc%obs_lnc(k)
                dt = (NASASMAPsm_struc(n)%smtime(c,r)-time1)
-               if(dt.ge.0.and.dt.lt.(time3-time1)) then
+               ! MB: AquaCrop runs at daily resolution, check if ts=86400
+               if((dt.ge.0.and.dt.lt.(time3-time1)) .or. &
+                   (LIS_rc%lsm .eq. "AquaCrop.7.2")) then
+                   !(LIS_rc%ts .eq. 3600.0)) then 
+                   !(LIS_rc%ts .eq. 86400.0)) then 
                   sm_current(c,r) = &
                        NASASMAPsm_struc(n)%smobs(c,r)
                   if(LIS_obs_domain(n,k)%gindex(c,r).ne.-1) then
@@ -470,7 +525,11 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
                grid_index = c + (r - 1)*LIS_rc%obs_lnc(k)
 
                dt = (LIS_rc%gmt - NASASMAPsm_struc(n)%smtime(c, r))*3600.0
-               if (dt .ge. 0 .and. dt .lt. LIS_rc%ts) then
+               ! MB: AquaCrop runs at daily resolution, check if ts=86400
+               if ((dt .ge. 0 .and. dt .lt. LIS_rc%ts) .or. &
+                   (LIS_rc%lsm .eq. "AquaCrop.7.2")) then
+                  !(LIS_rc%ts .eq. 3600.0)) then
+                  !(LIS_rc%ts .eq. 86400.0)) then
                   sm_current(c, r) = &
                         NASASMAPsm_struc(n)%smobs(c, r)
                   if (LIS_obs_domain(n, k)%gindex(c, r) .ne. -1) then

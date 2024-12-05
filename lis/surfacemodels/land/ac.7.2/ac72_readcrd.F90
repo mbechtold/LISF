@@ -169,6 +169,19 @@ subroutine AC72_readcrd()
         endif 
     enddo
 
+    ! ZH: not applying the recommended QC to avoid out of bounds soil
+    ! moisture;
+    ! can be useful when performing a run excluding the increment
+    ! updates (e.g., before CDF matching)
+    call ESMF_ConfigFindLabel(LIS_config, &
+         "Aquacrop.7.2 apply soil moisture observation QC:", rc=rc)
+    do n=1, LIS_rc%nnest
+         call ESMF_ConfigGetAttribute(LIS_config, AC72_struc(n)%QC_opt, &
+              default=.true., rc=rc)
+         write(LIS_logunit,*) "applying QC:", &
+              AC72_struc(n)%QC_opt
+    enddo
+
     ! Read Nrsoil layers from LDT
     do n=1, LIS_rc%nnest
         ios = nf90_get_att(nids(n), NF90_GLOBAL, 'SOIL_LAYERS', AC72_struc(n)%NrSoilLayers)
@@ -229,6 +242,12 @@ subroutine AC72_readcrd()
         AC72_struc(n)%LDT_ncvar_soiltype = 'AC72_SOILTYPE'
         AC72_struc(n)%LDT_ncvar_tmincli_monthly = 'AC_Tmin_clim'
         AC72_struc(n)%LDT_ncvar_tmaxcli_monthly = 'AC_Tmax_clim'
+        AC72_struc(n)%LDT_ncvar_gdd_cco = 'GDD_CCo'
+        AC72_struc(n)%LDT_ncvar_gdd_maturity = 'GDD_maturity'
+        AC72_struc(n)%LDT_ncvar_gdd_senescence = 'GDD_senescence'
+        AC72_struc(n)%LDT_ncvar_gdd_maxr = 'GDD_maxR'
+        AC72_struc(n)%LDT_ncvar_cgc = 'CGC'
+        AC72_struc(n)%LDT_ncvar_cdc = 'CDC'
     enddo
 
     ! set default restart format to netcdf
