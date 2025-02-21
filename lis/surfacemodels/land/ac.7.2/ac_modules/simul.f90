@@ -3810,9 +3810,18 @@ subroutine DetermineCCiGDD(CCxTotal, CCoTotal, &
             WPeffectiveRootZone = GetRootZoneWC_ZtopWP()
         else
             SWCeffectiveRootZone = GetRootZoneWC_Actual()
-            Wrelative = (GetRootZoneWC_FC() - GetRootZoneWC_Actual()) &
-                            /(GetRootZoneWC_FC() - GetRootZoneWC_WP())
+            ! MB 2025/01/08: occurence of GetRootZoneWC_FC() = GetRootZoneWC_WP() 
+            ! for some times and ensemble members and grid cells in large scale runs
+            ! causing floating point error
+            if (abs(GetRootZoneWC_FC() - GetRootZoneWC_WP()) > epsilon(0._sp)) then
+               Wrelative = (GetRootZoneWC_FC() - GetRootZoneWC_Actual()) &
+                               /(GetRootZoneWC_FC() - GetRootZoneWC_WP())
                                                         ! total root zone
+            else
+               ! assume FC
+               write(*,*) 'occurence of GetRootZoneWC_FC() = GetRootZoneWC_WP()'
+               Wrelative = epsilon(0._sp)  
+            endif
             FCeffectiveRootZone = GetRootZoneWC_FC()
             WPeffectiveRootZone = GetRootZoneWC_WP()
         end if
