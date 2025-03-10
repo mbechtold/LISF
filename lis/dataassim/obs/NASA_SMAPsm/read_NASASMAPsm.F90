@@ -162,10 +162,10 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
          write(mm,'(i2.2)') LIS_rc%mo
          write(dd,'(i2.2)') LIS_rc%da
          write(hh,'(i2.2)') LIS_rc%hr
-         !fname_SMAP_filelist = &
-         !'SMAP_filelist.sm_'//trim(yyyy)//trim(mm)//trim(dd)//'.dat'
          fname_SMAP_filelist = &
          'SMAP_filelist.dat'
+         !fname_SMAP_filelist = &
+         !'SMAP_filelist.sm_'//trim(yyyy)//trim(mm)//trim(dd)//'.dat'
 
          if(LIS_masterproc) then
             ! MB: AquaCrop runs at daily resolution, check if ts=86400,
