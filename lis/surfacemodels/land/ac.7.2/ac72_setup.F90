@@ -24,7 +24,8 @@ subroutine AC72_setup()
 ! !USES:
     use LIS_logMod,    only: LIS_logunit, LIS_verify, LIS_endrun
     use LIS_fileIOMod, only: LIS_read_param
-    use LIS_coreMod,   only: LIS_rc, LIS_surface
+    use LIS_coreMod,   only: LIS_rc, LIS_surface, LIS_config
+    use ESMF
     use LIS_timeMgrMod
     use LIS_mpiMod,    only: LIS_mpi_comm
     use LIS_constantsMod
@@ -536,6 +537,7 @@ subroutine AC72_setup()
             WriteProjectsInfo
 
         use ac_initialsettings, only: InitializeSettings
+        
 
     !
     ! !DESCRIPTION:
@@ -564,6 +566,7 @@ subroutine AC72_setup()
         integer           :: time1julhours, timerefjulhours
         integer           :: time1days, time2days
         integer           :: yr2, mo2, da2, hr2, mn2
+        integer           :: gdd_external, rc
         
         integer :: daynr, todaynr, iproject, nprojects, NrRuns
         integer(intEnum) :: TheProjectType
@@ -650,8 +653,15 @@ subroutine AC72_setup()
             !call SetCropFile(trim(AC72_struc(n)%ac72(1)%cropt)//'.CRO')
             !call SetCropFilefull(trim(AC72_struc(n)%PathCropFiles)//GetCropFile())
             !call LoadCrop(GetCropFilefull())
-
+            
+            call ESMF_ConfigFindLabel(LIS_config,"AquaCrop.7.2 get gdd from nc file:",rc=rc)
+            if (rc == 0) then
+                gdd_external = 1
+            else
+                gdd_external = 0
+            endif
             !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
+            if(gdd_external.eq.1)then
                 write(LIS_logunit,*) "AC72: reading parameter GDD_CCo from ", trim(LIS_rc%paramfile(n))
                 call LIS_read_param(n, trim(AC72_struc(n)%LDT_ncvar_gdd_cco), placeholder)
                 do t = 1, LIS_rc%npatch(n, mtype)
@@ -659,9 +669,7 @@ subroutine AC72_setup()
                     row = LIS_surface(n, mtype)%tile(t)%row
                     AC72_struc(n)%ac72(t)%GDDaysToGermination = placeholder(col, row)
                 enddo 
-            !endif
 
-            !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
                 write(LIS_logunit,*) "AC72: reading parameter GDD_maturity from ", trim(LIS_rc%paramfile(n))
                 call LIS_read_param(n, trim(AC72_struc(n)%LDT_ncvar_gdd_maturity), placeholder)
                 do t = 1, LIS_rc%npatch(n, mtype)
@@ -669,9 +677,7 @@ subroutine AC72_setup()
                     row = LIS_surface(n, mtype)%tile(t)%row
                     AC72_struc(n)%ac72(t)%GDDaysToHarvest = placeholder(col, row)
                 enddo 
-            !endif
 
-            !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
                 write(LIS_logunit,*) "AC72: reading parameter GDD_senescence from ", trim(LIS_rc%paramfile(n))
                 call LIS_read_param(n, trim(AC72_struc(n)%LDT_ncvar_gdd_senescence), placeholder)
                 do t = 1, LIS_rc%npatch(n, mtype)
@@ -679,9 +685,7 @@ subroutine AC72_setup()
                     row = LIS_surface(n, mtype)%tile(t)%row
                     AC72_struc(n)%ac72(t)%GDDaysToSenescence = placeholder(col, row)
                 enddo 
-            !endif
 
-            !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
                 write(LIS_logunit,*) "AC72: reading parameter GDD_maxR from ", trim(LIS_rc%paramfile(n))
                 call LIS_read_param(n, trim(AC72_struc(n)%LDT_ncvar_gdd_maxr), placeholder)
                 do t = 1, LIS_rc%npatch(n, mtype)
@@ -689,9 +693,7 @@ subroutine AC72_setup()
                     row = LIS_surface(n, mtype)%tile(t)%row
                     AC72_struc(n)%ac72(t)%GDDaysToMaxRooting = placeholder(col, row)
                 enddo 
-            !endif
 
-            !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
                 write(LIS_logunit,*) "AC72: reading parameter CGC from ", trim(LIS_rc%paramfile(n))
                 call LIS_read_param(n, trim(AC72_struc(n)%LDT_ncvar_cgc), placeholder)
                 do t = 1, LIS_rc%npatch(n, mtype)
@@ -699,17 +701,15 @@ subroutine AC72_setup()
                     row = LIS_surface(n, mtype)%tile(t)%row
                     AC72_struc(n)%ac72(t)%GDDCGC = placeholder(col, row)
                 enddo 
-            !endif
 
-            !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
                 write(LIS_logunit,*) "AC72: reading parameter CDC from ", trim(LIS_rc%paramfile(n))
                 call LIS_read_param(n, trim(AC72_struc(n)%LDT_ncvar_cdc), placeholder)
                 do t = 1, LIS_rc%npatch(n, mtype)
                     col = LIS_surface(n, mtype)%tile(t)%col
                     row = LIS_surface(n, mtype)%tile(t)%row
                     AC72_struc(n)%ac72(t)%GDDCDC = placeholder(col, row)
-                enddo 
-            !endif
+                enddo
+            endif
 
             deallocate(placeholder)
             ! Read soil table
@@ -1025,13 +1025,14 @@ subroutine AC72_setup()
                 call SetNrCompartments(AC72_struc(n)%ac72(t)%NrCompartments)
                 
             !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
+            if(gdd_external.eq.1)then
                 call SetCrop_GDDaysToGermination(AC72_struc(n)%ac72(t)%GDDaysToGermination)
                 call SetCrop_GDDaysToHarvest(AC72_struc(n)%ac72(t)%GDDaysToHarvest)
                 call SetCrop_GDDaysToMaxRooting(AC72_struc(n)%ac72(t)%GDDaysToMaxRooting)
                 call SetCrop_GDDaysToSenescence(AC72_struc(n)%ac72(t)%GDDaysToSenescence)
                 call SetCrop_GDDCGC(AC72_struc(n)%ac72(t)%GDDCGC)
                 call SetCrop_GDDCDC(AC72_struc(n)%ac72(t)%GDDCDC)
-            !endif
+            endif
 
                 call SetPathNameProg('')
                 !

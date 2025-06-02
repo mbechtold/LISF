@@ -512,6 +512,7 @@ subroutine AC72_main(n)
     integer              :: Crop_DaysToFullCanopy, Crop_DaysToFullCanopySF, Crop_DaysToHIo
     integer(int32) :: temp1    
     integer              :: irr_record_flag, DNr ! for irri file management
+    integer           :: gdd_external, rc
     character(250)       :: TempStr 
 
     real                 :: tmp_pres, tmp_precip, tmp_tmax, tmp_tmin   ! Weather Forcing
@@ -790,7 +791,14 @@ subroutine AC72_main(n)
             call SetGDDayi(AC72_struc(n)%ac72(t)%GDDayi)
             call SetNoMoreCrop(AC72_struc(n)%AC72(t)%NoMoreCrop)
             ! Set variables for GDD mode in case of spatially variable parameters
-            if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
+            call ESMF_ConfigFindLabel(LIS_config,"AquaCrop.7.2 get gdd from nc file:",rc=rc)
+            if (rc == 0) then
+                gdd_external = 1
+            else
+                gdd_external = 0
+            endif
+            !if(GetCrop_ModeCycle().eq.ModeCycle_GDDays)then
+            if(gdd_external.eq.1)then
                call SetCrop_GDDaysToGermination(AC72_struc(n)%AC72(t)%GDDaysToGermination)
                call SetCrop_GDDaysToHarvest(AC72_struc(n)%AC72(t)%GDDaysToHarvest)
                call SetCrop_GDDaysToMaxRooting(AC72_struc(n)%AC72(t)%GDDaysToMaxRooting)
