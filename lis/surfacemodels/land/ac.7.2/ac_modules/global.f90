@@ -4888,7 +4888,9 @@ subroutine LoadCrop(FullName)
     ! required growing degree days to complete the crop cycle
     ! (is identical as to maturity)
     read(fhandle, *) TempInt
-    call SetCrop_GDDaysToHarvest(TempInt)
+    if (GetTemperatureFile() /= '(External)') then
+       call SetCrop_GDDaysToHarvest(TempInt)
+    endif
 
     ! water stress
     read(fhandle, *) TempDouble
@@ -5133,21 +5135,33 @@ subroutine LoadCrop(FullName)
 
     ! growing degree days
     read(fhandle, *) TempInt
-    call SetCrop_GDDaysToGermination(TempInt)
+    if (GetTemperatureFile() /= '(External)') then
+      call SetCrop_GDDaysToGermination(TempInt)
+    endif
     read(fhandle, *) TempInt
-    call SetCrop_GDDaysToMaxRooting(TempInt)
+    if (GetTemperatureFile() /= '(External)') then
+      call SetCrop_GDDaysToMaxRooting(TempInt)
+    endif
     read(fhandle, *) TempInt
-    call SetCrop_GDDaysToSenescence(TempInt)
+    if (GetTemperatureFile() /= '(External)') then
+      call SetCrop_GDDaysToSenescence(TempInt)
+    endif
     read(fhandle, *) TempInt
-    call SetCrop_GDDaysToHarvest(TempInt)
+    if (GetTemperatureFile() /= '(External)') then
+      call SetCrop_GDDaysToHarvest(TempInt)
+    endif
     read(fhandle, *) TempInt
     call SetCrop_GDDaysToFlowering(TempInt)
     read(fhandle, *) TempInt
     call SetCrop_GDDLengthFlowering(TempInt)
     read(fhandle, *) TempDouble
-    call SetCrop_GDDCGC(TempDouble)
+    if (GetTemperatureFile() /= '(External)') then
+      call SetCrop_GDDCGC(TempDouble)
+    endif
     read(fhandle, *) TempDouble
-    call SetCrop_GDDCDC(TempDouble)
+    if (GetTemperatureFile() /= '(External)') then
+      call SetCrop_GDDCDC(TempDouble)
+    endif
     read(fhandle, *) TempInt
     call SetCrop_GDDaysToHIo(TempInt)
 
