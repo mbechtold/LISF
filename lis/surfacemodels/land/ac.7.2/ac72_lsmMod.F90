@@ -143,6 +143,7 @@ module AC72_lsmMod
      real               :: refz_tq
      real               :: refz_uv
      integer            :: tempcli_refyr
+     logical            :: QC_opt
      type(AC72dec), pointer :: ac72(:)
   end type AC72_type_dec
 
