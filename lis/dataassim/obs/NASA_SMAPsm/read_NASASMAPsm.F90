@@ -195,7 +195,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             call sleep(10)
             call LIS_releaseUnitNumber(ftn)
             ftn = LIS_getNextUnitNumber()
-            open(ftn,file=fname_SMAP_filelist,status='old',iostat=ierr)
+            open(ftn,file="./SMAP_filelist.sm.dat",status='old',iostat=ierr)
             write(LIS_logunit,*) &
                '[INFO] ierr ', ierr
          enddo
