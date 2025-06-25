@@ -358,6 +358,7 @@ use ac_global, only:    AdjustSizeCompartments, &
                         GetPart2Eval, &
                         GetObservationsFile, &
                         CalculateAdjustedFC, &
+                        CalculateSoftSWCReset, &
                         ResetSWCToFC, &
                         SetSumWaBal, &
                         GlobalZero, &
@@ -6612,6 +6613,9 @@ subroutine InitializeRunPart1(NrRun, TheProjectType)
                 > roundc(TotDepth*1000._sp, mold=1)) then
                 call AdjustSizeCompartments(GetSimulation_MultipleRunConstZrx())
             end if
+            Comp_temp = GetCompartment()
+            call CalculateSoftSWCReset(Comp_temp)
+            call SetCompartment(Comp_temp)
         else
             if (roundc(GetCrop_RootMax()*1000._sp, mold=1) &
                 > roundc(TotDepth*1000._sp, mold=1)) then

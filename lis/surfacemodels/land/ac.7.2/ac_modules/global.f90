@@ -4153,6 +4153,68 @@ subroutine DetermineRootZoneSaltContent(RootingDepth, ZrECe, ZrECsw, ZrECswFC, Z
 end subroutine DetermineRootZoneSaltContent
 
 
+subroutine CalculateSoftSWCReset(CompartAdj)
+    type(CompartmentIndividual), dimension(max_No_compartments), &
+                                    intent(inout) :: CompartAdj
+    ! Soft reset of SWC in compartments 4 to NrCompartments 
+    ! to prevent unrealistic slow down of root expansion in new crop season due to dry previous year
+    ! TODO: check how to deal with compartment thicknesses, now assuming all the same
+    integer(int32) :: compi
+    integer(int32) :: layer, compi_above, compi_below
+    real(sp) :: TAWcompi, ThetaTreshold, ThetaTresholdAbove, ThetaTresholdBelow
+    real(sp) :: deficit, newabove, newbelow, deficit_new, pZexp
+
+    
+    pZexp = GetCrop_pdef() + (1-GetCrop_pdef())/2.0_sp
+    do compi = 4, (GetNrCompartments()-1)
+        ! above
+        layer = GetCompartment_Layer(compi-1)
+        TAWcompi = GetSoilLayer_FC(layer)/100.0_sp &
+                     - GetSoilLayer_WP(layer)/100.0_sp
+        ThetaTresholdAbove = GetSoilLayer_FC(layer)/100.0_sp - pZexp * TAWcompi
+        ! middle
+        layer = GetCompartment_Layer(compi)
+        TAWcompi = GetSoilLayer_FC(layer)/100.0_sp &
+                     - GetSoilLayer_WP(layer)/100.0_sp
+        ThetaTreshold = GetSoilLayer_FC(layer)/100.0_sp - pZexp * TAWcompi
+        ! below
+        layer = GetCompartment_Layer(compi+1)
+        TAWcompi = GetSoilLayer_FC(layer)/100.0_sp &
+                     - GetSoilLayer_WP(layer)/100.0_sp
+        ThetaTresholdBelow = GetSoilLayer_FC(layer)/100.0_sp - pZexp * TAWcompi
+        ! check whether root extration would be slowed down 
+        deficit = ThetaTreshold - GetCompartment_theta(compi) ! deficit is positive if water is lacking
+        if (deficit > epsilon(0._sp)) then
+            ! look above for water
+                compi_above = compi-1
+                do
+                    newabove = max(GetCompartment_theta(compi_above) - deficit, ThetaTresholdAbove)
+                    deficit_new = deficit - (GetCompartment_theta(compi_above) - newabove)
+                    call SetCompartment_theta(compi_above, newabove)
+                    call SetCompartment_theta(compi, GetCompartment_theta(compi) + deficit - deficit_new)
+                    deficit = deficit_new
+                    compi_above = compi_above -1 ! go further up to search for water if needed
+                    ! water cannot be taken from the first two compartments  
+                    if ((deficit <= 0._sp) .or. (compi_above == 2)) exit
+                end do
+            if (deficit > 0._sp) then
+                ! look below for water
+                compi_below = compi+1  ! go further down to search for water if needed
+                do
+                    newbelow = max(GetCompartment_theta(compi_below) - deficit, ThetaTresholdBelow)
+                    deficit_new = deficit - (GetCompartment_theta(compi_below) - newbelow)
+                    call SetCompartment_theta(compi_below, newbelow)
+                    call SetCompartment_theta(compi, GetCompartment_theta(compi) + deficit - deficit_new)
+                    deficit = deficit_new
+                    compi_below = compi_below + 1 
+                    if ((deficit <= 0._sp) .or. (compi_below == GetNrCompartments()+1)) exit
+                end do
+            end if
+        end if
+    end do
+end subroutine CalculateSoftSWCReset
+
+
 subroutine CalculateAdjustedFC(DepthAquifer, CompartAdj)
     real(sp), intent(in) :: DepthAquifer
     type(CompartmentIndividual), dimension(max_No_compartments), &
