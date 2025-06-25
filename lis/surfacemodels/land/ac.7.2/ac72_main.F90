@@ -20,6 +20,8 @@ subroutine AC72_main(n)
   ! !USES:
 !!! MB_AC70
   use ac_global, only:    DegreesDay,&
+       CalculateSoftSWCReset,&
+       CompartmentIndividual,&
        GetCCiActual,&
        GetCCiprev,&
        GetCCiTopEarlySen,&
@@ -142,6 +144,7 @@ subroutine AC72_main(n)
        IrriMode_Inet,&
        IrriMode_Manual,&
        IrriMode_NoIrri,&
+       max_No_compartments, &
        ModeCycle_GDDays,&
        SetCCiActual,&
        SetCCiprev,&
@@ -487,6 +490,9 @@ subroutine AC72_main(n)
 
   real                 :: tmp_pres, tmp_precip, tmp_tmax, tmp_tmin   ! Weather Forcing
   real                 :: tmp_tdew, tmp_swrad, tmp_wind, tmp_eto     ! Weather Forcing
+
+  type(CompartmentIndividual), &
+          dimension(max_No_compartments) :: Comp_temp
 
   ! For AdvanceOneTimeStep
   real                 :: tmp_wpi
@@ -894,6 +900,10 @@ subroutine AC72_main(n)
            do l=1, AC72_struc(n)%ac72(t)%NrCompartments
               call SetCompartment_theta(l,AC72_struc(n)%ac72(t)%smc(l))
            enddo
+
+           Comp_temp = GetCompartment()
+           call CalculateSoftSWCReset(Comp_temp)
+           call SetCompartment(Comp_temp)
 
            ! Irrigaton file management after InitializeRun
            if(GetIrriMode().ne.IrriMode_NoIrri) then
