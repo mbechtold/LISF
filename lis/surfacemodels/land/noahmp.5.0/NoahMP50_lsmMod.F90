@@ -221,6 +221,7 @@ module NoahMP50_lsmMod
         integer            :: btr_opt
         integer            :: runsfc_opt
         integer            :: runsub_opt
+        integer            :: peat_opt ! Chakraborty et al., (2025)
         integer            :: sfc_opt
         integer            :: frz_opt
         integer            :: inf_opt

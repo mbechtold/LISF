@@ -241,6 +241,17 @@ subroutine NoahMP50_readcrd()
                                Noahmp50_struc(n)%runsub_opt
     enddo
 
+    ! Peatland physics option (0->Off; 1->On); Chakraborty et al., (2025)
+    call ESMF_ConfigFindLabel(LIS_config, &
+         "Noah-MP.5.0 peatland physics option:", rc = rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, Noahmp50_struc(n)%peat_opt, rc=rc)
+        call LIS_verify(rc, &
+             "Noah-MP.5.0 peatland physics option: not defined")
+        write(LIS_logunit,33) "peatland physics option:", &
+                               Noahmp50_struc(n)%peat_opt
+    enddo
+    
     ! infiltration options for dynamic VIC (1->Philip; 2-> Green-Ampt;3->Smith-Parlange)
     call ESMF_ConfigFindLabel(LIS_config, &
          "Noah-MP.5.0 dynamic VIC infiltration option:", rc = rc)
