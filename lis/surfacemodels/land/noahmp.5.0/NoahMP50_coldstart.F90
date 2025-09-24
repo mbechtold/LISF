@@ -142,6 +142,8 @@ subroutine NoahMP50_coldstart(mtype)
              NoahmpIO%t2mvxy(1,1)      = 0.0 
              NoahmpIO%t2mbxy(1,1)      = 0.0 
              NoahmpIO%IOPT_RUNSUB      = Noahmp50_struc(n)%runsub_opt
+             NoahmpIO%IOPT_PEAT        = Noahmp50_struc(n)%peat_opt   ! Chakraborty et al., (2025)
+             NoahmpIO%IOPT_BTR         = NoahMP50_struc(n)%btr_opt    ! Chakraborty et al., (2025)
              NoahmpIO%IOPT_CROP        = Noahmp50_struc(n)%crop_opt
              NoahmpIO%sf_urban_physics = Noahmp50_struc(n)%urban_opt
              NoahmpIO%IOPT_IRR         = Noahmp50_struc(n)%irr_opt
@@ -240,6 +242,13 @@ subroutine NoahMP50_coldstart(mtype)
              Noahmp50_struc(n)%noahmp50(t)%isnow = NoahmpIO%isnowxy(1,1) 
              Noahmp50_struc(n)%noahmp50(t)%tsno(1:Noahmp50_struc(n)%nsnow) = &
                                                         NoahmpIO%tsnoxy(1,-Noahmp50_struc(n)%nsnow+1:0,1)
+             
+             ! --- Assign PEAT physics only if soiltype == 17 and peat_opt == 1, Chakraborty et al., (2025)---
+             if ( Noahmp50_struc(n)%peat_opt == 1 .and. NoahmpIO%ISLTYP(1,1) == 17 ) then
+                NoahmpIO%IOPT_PEAT = 1
+             else 
+                NoahmpIO%IOPT_PEAT = 0
+             endif
 !-----------------------------------------------------------------------
             enddo   ! t=1,1
         endif       ! coldstart

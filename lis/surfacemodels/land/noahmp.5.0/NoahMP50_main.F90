@@ -210,7 +210,7 @@ subroutine NoahMP50_main(n)
             NoahmpIO%dx                 = NoahMP50_struc(n)%dx
             NoahmpIO%dy                 = NoahMP50_struc(n)%dy
             NoahmpIO%ivgtyp(1,1)        = NoahMP50_struc(n)%noahmp50(t)%vegetype
-            NoahmpIO%isltyp(1,1)        = NoahMP50_struc(n)%noahmp50(t)%soiltype
+            NoahmpIO%isltyp(1,1)        = Noahmp50_struc(n)%noahmp50(t)%soiltype
             ! Multiply shdfac by 100.0 because noahmpdrv.f90, expects it in units of percentage, not fraction.
             NoahmpIO%shdfac_monthly(1,:,1) = NoahMP50_struc(n)%noahmp50(t)%shdfac_monthly(:) * 100.0
             NoahmpIO%tmn(1,1)           = NoahMP50_struc(n)%noahmp50(t)%tbot
@@ -221,6 +221,7 @@ subroutine NoahMP50_main(n)
             NoahmpIO%IOPT_BTR           = NoahMP50_struc(n)%btr_opt
             NoahmpIO%IOPT_RUNSRF        = NoahMP50_struc(n)%runsfc_opt
             NoahmpIO%IOPT_RUNSUB        = NoahMP50_struc(n)%runsub_opt
+            NoahmpIO%IOPT_PEAT          = NoahMP50_struc(n)%peat_opt    ! Chakraborty et al., (2025) 
             NoahmpIO%IOPT_SFC           = NoahMP50_struc(n)%sfc_opt
             NoahmpIO%IOPT_FRZ           = NoahMP50_struc(n)%frz_opt
             NoahmpIO%IOPT_INF           = NoahMP50_struc(n)%inf_opt
@@ -314,7 +315,31 @@ subroutine NoahMP50_main(n)
                NoahmpIO%rivermask(1,1)   = NoahMP50_struc(n)%noahmp50(t)%rivermask
                NoahmpIO%nonriverxy(1,1)  = NoahMP50_struc(n)%noahmp50(t)%nonriver 
             endif
+            
+            ! for peatland physics option (Chakraborty et al., 2025)
+            ! --- Apply PEAT physics only if soiltype == 17 and peat_opt == 1 ---
+            !if ( NoahMP50_struc(n)%peat_opt == 1 .and. NoahmpIO%isltyp(1,1) == 17 ) then
+            !    NoahmpIO%IOPT_PEAT = 1
+            !    write(LIS_logunit, *) "[INFO] PEAT physics applied for tile ", t, &
+            !              " (lat=", lat, ", lon=", lon, "), soiltype = 17"
+            !else 
+            !    NoahmpIO%IOPT_PEAT = 0
+            !endif
+            
+            
+            
+            if ( NoahMP50_struc(n)%peat_opt == 1 .and. NoahmpIO%isltyp(1,1) == 17 ) then
+                NoahmpIO%IOPT_PEAT = 1
+                write(LIS_logunit, *) "[INFO] PEAT physics applied for tile ", t, &
+                          " (lat=", lat, ", lon=", lon, "), soiltype = 17"
+                write(LIS_logunit, *) "NoahmpIO%isltyp(1,1)", NoahmpIO%isltyp(1,1)
+                write(LIS_logunit, *) "NoahmpIO%IOPT_PEAT", NoahmpIO%IOPT_PEAT
+                
+            else
+                NoahmpIO%IOPT_PEAT = 0
+            endif
 
+            
             ! get state variables
             NoahmpIO%sfcrunoff(1,1)   = NoahMP50_struc(n)%noahmp50(t)%sfcrunoff
             NoahmpIO%udrunoff(1,1)    = NoahMP50_struc(n)%noahmp50(t)%udrrunoff
