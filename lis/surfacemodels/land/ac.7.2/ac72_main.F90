@@ -903,7 +903,7 @@ subroutine AC72_main(n)
 
            Comp_temp = GetCompartment()
            call CalculateSoftSWCReset(Comp_temp)
-           call SetCompartment(Comp_temp)
+           !call SetCompartment(Comp_temp)
 
            ! Irrigaton file management after InitializeRun
            if(GetIrriMode().ne.IrriMode_NoIrri) then

@@ -6615,7 +6615,7 @@ subroutine InitializeRunPart1(NrRun, TheProjectType)
             end if
             Comp_temp = GetCompartment()
             call CalculateSoftSWCReset(Comp_temp)
-            call SetCompartment(Comp_temp)
+            !call SetCompartment(Comp_temp)
         else
             if (roundc(GetCrop_RootMax()*1000._sp, mold=1) &
                 > roundc(TotDepth*1000._sp, mold=1)) then
