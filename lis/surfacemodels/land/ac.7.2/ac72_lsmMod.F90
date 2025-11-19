@@ -150,6 +150,7 @@ module AC72_lsmMod
      integer            :: InitializeRun
      integer            :: read_Trecord
      integer            :: irun
+     logical            :: QC_opt
      type(AC72dec), pointer :: ac72(:)
   end type AC72_type_dec
 

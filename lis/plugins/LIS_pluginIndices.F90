@@ -262,26 +262,18 @@ module LIS_pluginIndices
 ! DA variable being updated with observations
 !-------------------------------------------------------------------------
    character*50, public,  parameter :: LIS_noobsId             = "none"
-   character*50, public,  parameter :: LIS_synsmId             = &
-        "Synthetic SM"
-   character*50, public,  parameter :: LIS_synsweId            = &
-        "Synthetic SWE"
-   character*50, public,  parameter :: LIS_synlstId            = &
-        "Synthetic LST"
-   character*50, public,  parameter :: LIS_synsndId            = &
-        "Synthetic SND"
-   character*50, public,  parameter :: LIS_synSnowTbID         = &
-        "Synthetic Snow TB"
-   character*50, public,  parameter :: LIS_multisynsmobsId     = &
-        "Synthetic(Multilayer) sm"
-   character*50, public,  parameter :: LIS_isccpTskinId        = &
-        "ISCCP LST"
-   character*50, public,  parameter :: LIS_NASA_AMSREsmobsId   = &
-        "AMSR-E(NASA) soil moisture"
-   character*50, public,  parameter :: LIS_LPRM_AMSREsmobsId   = &
-        "AMSR-E(LPRM) soil moisture"
-   character*50, public,  parameter :: LIS_ESACCIsmobsId       = &
-        "ESA CCI soil moisture"
+   character*50, public,  parameter :: LIS_synsmId             = "Synthetic SM"
+   character*50, public,  parameter :: LIS_synsweId            = "Synthetic SWE"
+   character*50, public,  parameter :: LIS_synlstId            = "Synthetic LST"
+   character*50, public,  parameter :: LIS_synsndId            = "Synthetic SND"
+   character*50, public,  parameter :: LIS_synSnowTbID         = "Synthetic Snow TB"              
+
+   character*50, public,  parameter :: LIS_multisynsmobsId     = "Synthetic(Multilayer) sm"
+   character*50, public,  parameter :: LIS_isccpTskinId        = "ISCCP LST"
+   character*50, public,  parameter :: LIS_NASA_AMSREsmobsId   = "AMSR-E(NASA) soil moisture"
+   character*50, public,  parameter :: LIS_LPRM_AMSREsmobsId   = "AMSR-E(LPRM) soil moisture"
+   character*50, public,  parameter :: LIS_ESACCIsmobsId       = "ESA CCI soil moisture"
+   character*50, public,  parameter :: LIS_SMAP_AC72rzmcobsId  = "SMAP AC72 root zone soil moisture"
    character*50, public,  parameter :: LIS_WindSatsmobsId      = "Windsat"
    character*50, public,  parameter :: LIS_WindSatCsmobsId     = &
         "Windsat C-band"

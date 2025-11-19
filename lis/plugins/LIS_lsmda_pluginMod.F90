@@ -211,6 +211,9 @@ subroutine LIS_lsmda_plugin
    use noahmp401_daveg_Mod
 #endif
 
+#if ( defined SM_AC_7_2 )
+   use ac72_dasoilm_Mod 
+#endif
 
 #if ( defined SM_CLSM_F2_5 )
    use clsmf25_tws_DAlogMod, only : clsmf25_tws_DAlog
@@ -567,6 +570,18 @@ subroutine LIS_lsmda_plugin
    external noahmp401_qc_snipobs
 #endif
 
+#endif
+
+#if ( defined SM_AC_7_2 )
+! MB: ac72 soil moisture
+   external ac72_getsoilm           
+   external ac72_setsoilm              
+   external ac72_getsmpred
+   external ac72_qcsoilm
+   external ac72_qc_soilmobs
+   external ac72_scale_soilm
+   external ac72_descale_soilm
+   external ac72_updatesoilm
 #endif
 
 #if ( defined SM_CLSM_F2_5 )
@@ -2699,6 +2714,49 @@ subroutine LIS_lsmda_plugin
 
 #endif
 
+#if ( defined SM_AC_7_2 )
+
+! aquacrop.7.2 SMAP(NASA) soil moisture
+   call registerlsmdainit(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_dasoilm_init)
+   call registerlsmdagetstatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_getsoilm)
+   call registerlsmdasetstatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_setsoilm)
+   call registerlsmdagetobspred(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_getsmpred)
+   call registerlsmdaqcstate(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_qcsoilm)
+   call registerlsmdaqcobsstate(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_qc_soilmobs)
+   call registerlsmdascalestatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_scale_soilm)
+   call registerlsmdadescalestatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_descale_soilm)
+   call registerlsmdaupdatestate(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_NASASMAPsmobsId )//char(0),ac72_updatesoilm)
+
+! aquacrop.7.2 SMAP(NASA) root zone soil moisture
+   call registerlsmdainit(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_dasoilm_init)
+   call registerlsmdagetstatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_getsoilm)
+   call registerlsmdasetstatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_setsoilm)
+   call registerlsmdagetobspred(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_getsmpred)
+   call registerlsmdaqcstate(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_qcsoilm)
+   call registerlsmdaqcobsstate(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_qc_soilmobs)
+   call registerlsmdascalestatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_scale_soilm)
+   call registerlsmdadescalestatevar(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_descale_soilm)
+   call registerlsmdaupdatestate(trim(LIS_ac72Id)//"+"//&
+        trim(LIS_SMAP_AC72rzmcobsId )//char(0),ac72_updatesoilm)
+
+#endif
 
 #if ( defined SM_NOAHMP_4_0_1 )
 ! MN

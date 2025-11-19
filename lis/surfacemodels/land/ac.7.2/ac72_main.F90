@@ -44,6 +44,7 @@ subroutine AC72_main(n)
        GetCrop_GDDaysToHarvest,&
        GetCrop_GDDaysToMaxRooting,&
        GetCrop_GDDaysToSenescence,&
+       GetCrop_KcTop,&
        GetCrop_ModeCycle,&
        GetCRsalt,&
        GetCRwater,&
