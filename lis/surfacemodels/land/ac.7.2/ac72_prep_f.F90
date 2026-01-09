@@ -142,6 +142,7 @@ contains
     type(lisrcdec)        :: LIS_rc_saved
     integer               :: i, j, t, status, met_ts, m, tid
     integer               :: yr_start
+    real, parameter :: lapse = -0.0065
 
     ! Near Surface Air Temperature [K]
     type(ESMF_Field)  :: tmpField
@@ -165,6 +166,8 @@ contains
     allocate(daily_tmax_arr(LIS_rc%npatch(n,LIS_rc%lsm_index),366))
     allocate(daily_tmin_arr(LIS_rc%npatch(n,LIS_rc%lsm_index),366))
     allocate(subdaily_arr(LIS_rc%npatch(n,LIS_rc%lsm_index),met_ts))
+    daily_tmax_arr = 0
+    daily_tmin_arr = 0
 
     ! Set LIS_rc time to beginning of simulation period (in case of restart)
     ! Check in which year the simulation did start (assuming a 365-366 sim period)
@@ -210,6 +213,9 @@ contains
 
     deallocate(subdaily_arr)
 
+    ! lapse-rate correct the temperature records
+    daily_tmax_arr(:,:) = daily_tmax_arr(:,:) + (lapse * (2 -AC72_struc(n)%forchgt_tq))
+    daily_tmin_arr(:,:) = daily_tmin_arr(:,:) + (lapse * (2 -AC72_struc(n)%forchgt_tq))
     ! Assign Tmax and Tmin arrays to AC72_struc
     do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
        tid = LIS_surface(n, LIS_rc%lsm_index)%tile(t)%tile_id
