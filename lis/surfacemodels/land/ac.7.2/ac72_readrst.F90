@@ -222,6 +222,14 @@ subroutine AC72_readrst()
         call LIS_readvar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%alfaHIAdj, &
              varname="alfaHIAdj", wformat=wformat)
 
+        ! read: tDaysZmin
+        call LIS_readvar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%tDaysZmin, &
+             varname="tDaysZmin", wformat=wformat)
+
+        ! read: tGDDZmin
+        call LIS_readvar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%tGDDZmin, &
+             varname="tGDDZmin", wformat=wformat)
+
         ! read: Bin
         call LIS_readvar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%Bin, &
              varname="Bin", wformat=wformat)

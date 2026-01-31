@@ -180,6 +180,8 @@ subroutine AC72_dump_restart(n, ftn, wformat)
   !! reals
   integer :: alfaHI_ID
   integer :: alfaHIAdj_ID
+  integer :: tDaysZmin_ID
+  integer :: tGDDZmin_ID
   integer :: Bin_ID
   integer :: Bout_ID
   integer :: CCiActual_ID
@@ -309,6 +311,14 @@ subroutine AC72_dump_restart(n, ftn, wformat)
   ! write the header for state variable alfaHIAdj
   call LIS_writeHeader_restart(ftn, n, dimID, alfaHIAdj_ID, "alfaHIAdj", &
        "alfaHIAdj at last time step", &
+       "-", vlevels=1, valid_min=-99999.0, valid_max=99999.0)
+  ! write the header for state variable tDaysZmin
+  call LIS_writeHeader_restart(ftn, n, dimID, tDaysZmin_ID, "tDaysZmin", &
+       "tDaysZmin at last time step", &
+       "-", vlevels=1, valid_min=-99999.0, valid_max=99999.0)
+  ! write the header for state variable tGDDZmin
+  call LIS_writeHeader_restart(ftn, n, dimID, tGDDZmin_ID, "tGDDZmin", &
+       "tGDDZmin at last time step", &
        "-", vlevels=1, valid_min=-99999.0, valid_max=99999.0)
   ! write the header for state variable Bin
   call LIS_writeHeader_restart(ftn, n, dimID, Bin_ID, "Bin", &
@@ -790,6 +800,14 @@ subroutine AC72_dump_restart(n, ftn, wformat)
   ! alfaHIAdj
   call LIS_writevar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%alfaHIAdj, &
        varid=alfaHIAdj_ID, dim=1, wformat=wformat)
+
+  ! tDaysZmin
+  call LIS_writevar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%tDaysZmin, &
+       varid=tDaysZmin_ID, dim=1, wformat=wformat)
+
+  ! tGDDZmin
+  call LIS_writevar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%tGDDZmin, &
+       varid=tGDDZmin_ID, dim=1, wformat=wformat)
 
   ! Bin
   call LIS_writevar_restart(ftn, n, LIS_rc%lsm_index, AC72_struc(n)%ac72%Bin, &

@@ -197,6 +197,10 @@ type CompartmentIndividual
         !! - relative wetness (RUNOFF)
         !! - evaporation process
         !! - transpiration process *)
+    real(sp) :: SinkMajor 
+        !! maximum possible water extraction (with current water stress)
+    real(sp) :: SinkMinor 
+        !! required extraction considering root distribution (no water stress)
     !! salinity factors
     real(sp), dimension(11) :: Salt
         !! salt content in solution in cells (g/m2)
@@ -15134,6 +15138,24 @@ function GetCompartment_WFactor(i) result(WFactor)
 end function GetCompartment_WFactor
 
 
+function GetCompartment_SinkMajor(i) result(SinkMajor)
+    !! Getter for the "SinkMajor" attribute of the "compartment" global variable.
+    integer(int32), intent(in) :: i
+    real(sp) :: SinkMajor
+
+    SinkMajor = compartment(i)%SinkMajor
+end function GetCompartment_SinkMajor
+
+
+function GetCompartment_SinkMinor(i) result(SinkMinor)
+    !! Getter for the "SinkMinor" attribute of the "compartment" global variable.
+    integer(int32), intent(in) :: i
+    real(sp) :: SinkMinor
+
+    SinkMinor = compartment(i)%SinkMinor
+end function GetCompartment_SinkMinor
+
+
 function GetCompartment_Salt(i1, i2) result(Salt)
     !! Getter for individual elements of "Salt" attribute of the "compartment" global variable.
     integer(int32), intent(in) :: i1
@@ -15233,6 +15255,24 @@ subroutine SetCompartment_WFactor(i, WFactor)
 
     compartment(i)%WFactor = WFactor
 end subroutine SetCompartment_WFactor
+
+
+subroutine SetCompartment_SinkMajor(i, SinkMajor)
+    !! Setter for the "SinkMajor" attribute of the "compartment" global variable.
+    integer(int32), intent(in) :: i
+    real(sp), intent(in) :: SinkMajor
+
+    compartment(i)%SinkMajor = SinkMajor
+end subroutine SetCompartment_SinkMajor
+
+
+subroutine SetCompartment_SinkMinor(i, SinkMinor)
+    !! Setter for the "SinkMinor" attribute of the "compartment" global variable.
+    integer(int32), intent(in) :: i
+    real(sp), intent(in) :: SinkMinor
+
+    compartment(i)%SinkMinor = SinkMinor
+end subroutine SetCompartment_SinkMinor
 
 
 subroutine SetCompartment_Salt(i1, i2, Salt)
