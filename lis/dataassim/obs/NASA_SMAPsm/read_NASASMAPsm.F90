@@ -106,7 +106,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
    integer                :: rc
    character(len=3)       :: CRID
    integer, external      :: create_filelist ! C function
-
+   integer :: hr_file    ! add this integer declaration near other locals
 
    call ESMF_AttributeGet(OBS_State, "Data Directory", &
                           smobsdir, rc=status)
@@ -212,7 +212,6 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             else
                 mn_ind = index(fname,trim(yyyymmdd)//'T')+11
             end if 
-            integer :: hr_file    ! add this integer declaration near other locals
             read(fname(mn_ind-2:mn_ind-1),'(i2.2)') hr_file   ! NEW: UTC hour from filename
             read(fname(mn_ind:mn_ind+1),'(i2.2)') mn
             ss=0
