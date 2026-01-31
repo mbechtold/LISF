@@ -783,6 +783,11 @@ subroutine read_SMAPL2sm_data(n, k, fname, smobs_inp, time, hr_utc, mn_utc)
 
   integer                        :: status,ios,iret
 
+  integer :: idx
+  real    :: lon, utc_h, local_h
+  real    :: d6, d18
+  logical :: new_isAM
+
   call h5open_f(status)
   call LIS_verify(status, 'Error opening HDF fortran interface')
 
@@ -961,11 +966,6 @@ subroutine read_SMAPL2sm_data(n, k, fname, smobs_inp, time, hr_utc, mn_utc)
 ! overwrite the input data with AM-first and PM-fallback (one value per day per pixel)
   do r=1,LIS_rc%obs_lnr(k)
      do c=1,LIS_rc%obs_lnc(k)
-
-        integer :: idx
-        real    :: lon, utc_h, local_h
-        real    :: d6, d18
-        logical :: new_isAM
 
         idx = c + (r-1)*LIS_rc%obs_lnc(k)
 
