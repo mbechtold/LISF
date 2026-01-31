@@ -51,6 +51,7 @@ module NASASMAPsm_Mod
      integer                :: nr
      real,     allocatable      :: smobs(:,:)
      real*8,     allocatable    :: smtime(:,:)
+     logical,    allocatable    :: isAM(:,:)     ! NEW: per-pixel AM/PM category
 
      real                       :: ssdev_inp
      integer, allocatable       :: n11(:)
@@ -387,8 +388,10 @@ contains
 
        allocate(NASASMAPsm_struc(n)%smobs(LIS_rc%obs_lnc(k),LIS_rc%obs_lnr(k)))
        allocate(NASASMAPsm_struc(n)%smtime(LIS_rc%obs_lnc(k),LIS_rc%obs_lnr(k)))
+       allocate(NASASMAPsm_struc(n)%isAM (LIS_rc%obs_lnc(k),LIS_rc%obs_lnr(k)))  
        
        NASASMAPsm_struc(n)%smtime = -1
+       NASASMAPsm_struc(n)%isAM   = .false.                                   
       
     enddo
 

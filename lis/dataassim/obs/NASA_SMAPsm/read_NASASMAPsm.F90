@@ -155,6 +155,7 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
 
          NASASMAPsm_struc(n)%smobs = LIS_rc%udef
          NASASMAPsm_struc(n)%smtime = -1.0
+         NASASMAPsm_struc(n)%isAM = .false.   ! NEW: reset AM/PM category daily
  
          write(yyyymmdd,'(i4.4,2i2.2)') LIS_rc%yr, LIS_rc%mo, LIS_rc%da
          write(yyyy,'(i4.4)') LIS_rc%yr
@@ -211,6 +212,8 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             else
                 mn_ind = index(fname,trim(yyyymmdd)//'T')+11
             end if 
+            integer :: hr_file    ! add this integer declaration near other locals
+            read(fname(mn_ind-2:mn_ind-1),'(i2.2)') hr_file   ! NEW: UTC hour from filename
             read(fname(mn_ind:mn_ind+1),'(i2.2)') mn
             ss=0
             call LIS_tick(timenow,doy,gmt,LIS_rc%yr, LIS_rc%mo, LIS_rc%da, &
@@ -219,7 +222,8 @@ subroutine read_NASASMAPsm(n, k, OBS_State, OBS_Pert_State)
             write(LIS_logunit,*) '[INFO] reading ',trim(fname)
 
             call read_SMAPL2sm_data(n,k,fname,&
-                 NASASMAPsm_struc(n)%smobs,timenow)
+                 NASASMAPsm_struc(n)%smobs,timenow, hr_file, mn)   ! NEW args
+
          enddo
          call LIS_releaseUnitNumber(ftn)
 #if (defined SPMD)
@@ -715,7 +719,7 @@ end subroutine read_NASASMAPsm
 ! \label{read_SMAPL2sm_data}
 !
 ! !INTERFACE:
-subroutine read_SMAPL2sm_data(n, k,fname, smobs_inp, time)
+subroutine read_SMAPL2sm_data(n, k, fname, smobs_inp, time, hr_utc, mn_utc)
 ! 
 ! !USES:   
 
@@ -737,6 +741,8 @@ subroutine read_SMAPL2sm_data(n, k,fname, smobs_inp, time)
   character (len=*)        :: fname
   real                     :: smobs_inp(LIS_rc%obs_lnc(k),LIS_rc%obs_lnr(k))
   real*8                   :: time
+  integer                  :: hr_utc      
+  integer                  :: mn_utc      
 
 ! !OUTPUT PARAMETERS:
 !
@@ -953,18 +959,49 @@ subroutine read_SMAPL2sm_data(n, k,fname, smobs_inp, time)
   deallocate(ease_row)
   deallocate(ease_col)
 
-!overwrite the input data 
+! overwrite the input data with AM-first and PM-fallback (one value per day per pixel)
   do r=1,LIS_rc%obs_lnr(k)
      do c=1,LIS_rc%obs_lnc(k)
-        if(smobs_ip(c+(r-1)*LIS_rc%obs_lnc(k)).ne.-9999.0) then
-           smobs_inp(c,r) = &
-                smobs_ip(c+(r-1)*LIS_rc%obs_lnc(k))
 
-           NASASMAPsm_struc(n)%smtime(c,r) = &
-                time
+        integer :: idx
+        real    :: lon, utc_h, local_h
+        real    :: d6, d18
+        logical :: new_isAM
+
+        idx = c + (r-1)*LIS_rc%obs_lnc(k)
+
+        if (smobs_ip(idx) .ne. -9999.0) then
+
+           ! classify this retrieval as AM/PM using local solar time
+           lon   = NASASMAPsm_struc(n)%rlon(idx)
+           utc_h = real(hr_utc) + real(mn_utc)/60.0
+           local_h = modulo(utc_h + lon/15.0, 24.0)
+
+           d6  = abs(local_h - 6.0);  if (d6  .gt. 12.0) d6  = 24.0 - d6
+           d18 = abs(local_h - 18.0); if (d18 .gt. 12.0) d18 = 24.0 - d18
+           new_isAM = (d6 .le. d18)
+
+           ! store first valid; allow AM to replace an already-stored PM; never overwrite AM
+           if (smobs_inp(c,r) .eq. LIS_rc%udef .or. smobs_inp(c,r) .eq. -9999.0) then
+
+              smobs_inp(c,r) = smobs_ip(idx)
+              NASASMAPsm_struc(n)%smtime(c,r) = time
+              NASASMAPsm_struc(n)%isAM(c,r)   = new_isAM
+
+           else
+              if ((.not. NASASMAPsm_struc(n)%isAM(c,r)) .and. new_isAM) then
+                 ! existing is PM, new is AM -> replace
+                 smobs_inp(c,r) = smobs_ip(idx)
+                 NASASMAPsm_struc(n)%smtime(c,r) = time
+                 NASASMAPsm_struc(n)%isAM(c,r)   = .true.
+              endif
+              ! else keep existing (AM stays, PM stays if only PM seen)
+           endif
+
         endif
      enddo
   enddo
+
 #endif
 
 end subroutine read_SMAPL2sm_data
