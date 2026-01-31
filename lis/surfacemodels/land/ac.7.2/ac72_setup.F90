@@ -328,6 +328,8 @@ subroutine AC72_setup()
        fIrri_close,&
        GetalfaHI,&
        GetalfaHIAdj,&
+       GettDaysZmin,&
+       GettGDDZmin,&
        GetBin,&
        GetBout,&
        GetBprevSum,&
@@ -417,6 +419,8 @@ subroutine AC72_setup()
        ReadClimateNextDay,&
        SetalfaHI,&
        SetalfaHIAdj,&
+       SettDaysZmin,&
+       SettGDDZmin,&
        SetBin,&
        SetBout,&
        SetBprevSum,&
@@ -1266,6 +1270,8 @@ subroutine AC72_setup()
          AC72_struc(n)%AC72(t)%HItimesAT = GetHItimesAT()
          AC72_struc(n)%AC72(t)%alfaHI = GetalfaHI()
          AC72_struc(n)%AC72(t)%alfaHIAdj = GetalfaHIAdj()
+         AC72_struc(n)%AC72(t)%tDaysZmin = GettDaysZmin()
+         AC72_struc(n)%AC72(t)%tGDDZmin = GettGDDZmin()
          AC72_struc(n)%AC72(t)%NextSimFromDayNr = GetNextSimFromDayNr()
          AC72_struc(n)%AC72(t)%DayNr1Eval = GetDayNr1Eval()
          AC72_struc(n)%AC72(t)%DayNrEval = GetDayNrEval()

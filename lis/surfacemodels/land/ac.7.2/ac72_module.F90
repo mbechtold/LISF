@@ -216,6 +216,7 @@ module AC72_module
      real :: BprevSum, YprevSum, SumGDDcuts, HItimesBEF
      real :: ScorAT1, ScorAT2, HItimesAT1, HItimesAT2, HItimesAT
      real :: alfaHI, alfaHIAdj
+     real :: tDaysZmin, tGDDZmin
      real :: WPi
      integer(int32) :: NextSimFromDayNr
 
