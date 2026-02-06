@@ -742,6 +742,8 @@ subroutine read_SMAPL2sm_data(n, k, fname, smobs_inp, time, hr_utc, mn_utc)
   real*8                   :: time
   integer                  :: hr_utc      
   integer                  :: mn_utc      
+  logical, parameter :: USE_PM_FALLBACK = .false.
+  ! Set to .false. to use AM-only (skip PM even if no AM exists that day)
 
 ! !OUTPUT PARAMETERS:
 !
@@ -979,6 +981,10 @@ subroutine read_SMAPL2sm_data(n, k, fname, smobs_inp, time, hr_utc, mn_utc)
            d6  = abs(local_h - 6.0);  if (d6  .gt. 12.0) d6  = 24.0 - d6
            d18 = abs(local_h - 18.0); if (d18 .gt. 12.0) d18 = 24.0 - d18
            new_isAM = (d6 .le. d18)
+
+           if (.not. USE_PM_FALLBACK) then
+              if (.not. new_isAM) cycle   ! AM-only: skip PM retrievals entirely
+           endif
 
            ! store first valid; allow AM to replace an already-stored PM; never overwrite AM
            if (smobs_inp(c,r) .eq. LIS_rc%udef .or. smobs_inp(c,r) .eq. -9999.0) then
