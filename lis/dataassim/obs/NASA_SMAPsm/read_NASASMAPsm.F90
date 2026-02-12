@@ -742,7 +742,7 @@ subroutine read_SMAPL2sm_data(n, k, fname, smobs_inp, time, hr_utc, mn_utc)
   real*8                   :: time
   integer                  :: hr_utc      
   integer                  :: mn_utc      
-  logical, parameter :: USE_PM_FALLBACK = .false.
+  logical, parameter :: USE_PM_FALLBACK = .true.
   ! Set to .false. to use AM-only (skip PM even if no AM exists that day)
 
 ! !OUTPUT PARAMETERS:
