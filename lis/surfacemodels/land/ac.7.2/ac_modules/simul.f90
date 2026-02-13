@@ -3535,42 +3535,6 @@ subroutine DetermineCCiGDD(CCxTotal, CCoTotal, &
             end if
 
             if (SumGDDadjCC < GetCrop_GDDaysToSenescence()) then ! mid-season
-                !     if (GetCrop_CCxAdjusted() > 0.97999_sp*CCxSF) then
-                !         call SetCCiActual(CanopyCoverNoStressSF(&
-                !                     (VirtualTimeCC+GetSimulation_DelayedDays()+1), &
-                !                     GetCrop_DaysToGermination(), &
-                !                     GetCrop_DaysToSenescence(), &
-                !                     GetCrop_DaysToHarvest(), &
-                !                     GetCrop_GDDaysToGermination(), &
-                !                     GetCrop_GDDaysToSenescence(), &
-                !                     GetCrop_GDDaysToHarvest(), &
-                !                     CCoTotal, CCxTotal, GetCrop_CGC(), &
-                !                     CDCTotal, GetCrop_GDDCGC(), &
-                !                     GDDCDCadjusted, SumGDDadjCC, &
-                !                     GetCrop_ModeCycle(), &
-                !                     GetSimulation_EffectStress_RedCGC(), &
-                !                     GetSimulation_EffectStress_RedCCX()))
-                !         call SetCrop_CCxAdjusted(GetCCiActual())
-                !     else
-                !         call SetCCiActual(CanopyCoverNoStressSF(&
-                !                     (VirtualTimeCC+GetSimulation_DelayedDays()+1), &
-                !                     GetCrop_DaysToGermination(), &
-                !                     GetCrop_DaysToSenescence(), &
-                !                     GetCrop_DaysToHarvest(), &
-                !                     GetCrop_GDDaysToGermination(), &
-                !                     GetCrop_GDDaysToSenescence(), &
-                !                     GetCrop_GDDaysToHarvest(), &
-                !                     CCoTotal, &
-                !                     (GetCrop_CCxAdjusted() &
-                !                         /(1._sp &
-                !                            - GetSimulation_EffectStress_RedCCx() &
-                !                                                        /100._sp)), &
-                !                     GetCrop_CGC(), CDCTotal, GetCrop_GDDCGC(), &
-                !                     GDDCDCadjusted, SumGDDadjCC, &
-                !                     GetCrop_ModeCycle(), &
-                !                     GetSimulation_EffectStress_RedCGC(), &
-                !                     GetSimulation_EffectStress_RedCCX()))
-                !     end if
                 call SetCCiActual(GetCrop_CCxAdjusted())
                 if (GetCCiActual() > CCxSFCD) then
                     call SetCCiActual(CCxSFCD)
@@ -3636,7 +3600,9 @@ subroutine DetermineCCiGDD(CCxTotal, CCoTotal, &
             ! 3. Canopy can no longer develop (Mid-season (from tFinalCCx)
             ! or Late season stage)
         end if
-
+        
+        ! Adjustment for plant recovery upon rewatering (dormant period) ONLY when crop has still the potential for vegetative
+        ! growth
         ! 4. Canopy senescence due to water stress ?
         if ((SumGDDadjCC < GetCrop_GDDaysToSenescence()) &
                             ! not yet late season stage
@@ -4911,40 +4877,7 @@ subroutine DetermineCCi(CCxTotal, CCoTotal, StressLeaf, FracAssim, &
             end if
 
             if (VirtualTimeCC < GetCrop_DaysToSenescence()) then ! mid-season
-                !if (GetCrop_CCxAdjusted() > 0.97999_sp*CCxSF) then
-                !    call SetCCiActual(CanopyCoverNoStressSF(&
-                !            (VirtualTimeCC+GetSimulation_DelayedDays()+1), &
-                !            GetCrop_DaysToGermination(), &
-                !            GetCrop_DaysToSenescence(), &
-                !            GetCrop_DaysToHarvest(), &
-                !            GetCrop_GDDaysToGermination(), &
-                !            GetCrop_GDDaysToSenescence(), &
-                !            GetCrop_GDDaysToHarvest(), &
-                !            CCoTotal, CCxTotal, GetCrop_CGC(), &
-                !            CDCTotal, GetCrop_GDDCGC(), GDDCDCTotal, &
-                !            GetSimulation_SumGDD(), GetCrop_ModeCycle(), &
-                !            GetSimulation_EffectStress_RedCGC(), &
-                !            GetSimulation_EffectStress_RedCCX()))
-                !    call SetCrop_CCxAdjusted(GetCCiActual())
-                !else
-                !    call SetCCiActual(CanopyCoverNoStressSF(&
-                !            (VirtualTimeCC+GetSimulation_DelayedDays()+1), &
-                !            GetCrop_DaysToGermination(), &
-                !            GetCrop_DaysToSenescence(), &
-                !            GetCrop_DaysToHarvest(), &
-                !            GetCrop_GDDaysToGermination(), &
-                !            GetCrop_GDDaysToSenescence(), &
-                !            GetCrop_GDDaysToHarvest(), &
-                !            CCoTotal, &
-                !            (GetCrop_CCxAdjusted() &
-                !                /(1._sp - GetSimulation_EffectStress_RedCCx() &
-                !                                                  /100._sp)), &
-                !            GetCrop_CGC(), CDCTotal, GetCrop_GDDCGC(), &
-                !            GDDCDCTotal, GetSimulation_SumGDD(), &
-                !            GetCrop_ModeCycle(), &
-                !            GetSimulation_EffectStress_RedCGC(), &
-                !            GetSimulation_EffectStress_RedCCX()))
-                !end if
+                ! adjusted in 7.3 - 18 June 2025
                 call SetCCiActual(GetCrop_CCxAdjusted())
                 if (GetCCiActual() > CCxSFCD) then
                     call SetCCiActual(CCxSFCD)
@@ -5003,7 +4936,9 @@ subroutine DetermineCCi(CCxTotal, CCoTotal, StressLeaf, FracAssim, &
                 ! (Mid-season (from tFinalCCx) or Late season stage)
             end if
         end if
-
+        
+        ! Adjustment for plant recovery upon rewatering (dormant period) 
+        ! ONLY when crop has still the potential for vegetative growth
         ! 4. Canopy senescence due to water stress ?
         if ((VirtualTimeCC < GetCrop_DaysToSenescence()) &
                                 ! not yet late season stage
