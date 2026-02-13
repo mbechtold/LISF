@@ -396,7 +396,6 @@ use ac_global, only:    AdjustSizeCompartments, &
                         GetGenerateDepthMode, &
                         GetSurfaceStorage, &
                         SetIrrigation, &
-                        SetIrriInfoLastDay, &
                         GetSoilLayer_WP, &
                         GetSoilLayer_FC, &
                         GetSimulParam_PercRAW, &
@@ -4465,14 +4464,6 @@ subroutine OpenIrrigationFile()
         do i = 1, 6
             TempString = fIrri_read()  ! irrigation info (already loaded)
         end do
-
-        if ((roundc(VersionNr*10, mold=1) >= 73) &
-            .and. (GetIrriMode() == IrriMode_Generate)) then
-            TempString = fIrri_read() ! just skipping, already set in global.f90
-        else
-            call SetIrriInfoLastDay(undef_int)
-        end if
-
         select case (GetIrriMode())
         case (IrriMode_Manual)
             if (GetIrriFirstDayNr() == undef_int) then
