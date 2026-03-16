@@ -28,6 +28,7 @@ subroutine NoahMP50_main(n)
     use LIS_FORC_AttributesMod
     use NoahMP50_lsmMod
     use NoahmpIOVarType
+    use MicroTopoCorrectionMod, only : CalcSurfaceWaterStorage_mm
 
     implicit none
 ! !ARGUMENTS:
@@ -58,7 +59,8 @@ subroutine NoahMP50_main(n)
     real                 :: AvgSurfT_out           ! average surface temperature [K]
     real                 :: TWS_out                ! terrestrial water storage [mm]
     real                 :: startsm, startswe, startint, startgw, endsm
-   
+    real                 :: sfc_storage_mm
+
     ! for 557WW
     real :: tmp_q2sat, tmp_es
     character*3 :: fnest
@@ -1071,6 +1073,11 @@ subroutine NoahMP50_main(n)
             if (NoahMP50_struc(n)%noahmp50(t)%wa.ge.0.0) then
                TWS_out = TWS_out + NoahMP50_struc(n)%noahmp50(t)%wa
             endif
+            ! add surface water storage for peatland option:
+            if ( NoahMP50_struc(n)%peat_opt == 1 .and. NoahmpIO%isltyp(1,1) == 17 ) then
+               call CalcSurfaceWaterStorage_mm(NoahMP50_struc(n)%noahmp50(t)%zwt, sfc_storage_mm)
+               TWS_out = TWS_out + sfc_storage_mm
+            end if
             call LIS_diagnoseSurfaceOutputVar(n, t, LIS_MOC_TWS, value = TWS_out, &
                    vlevel=1, unit="mm", direction="-", surface_type = LIS_rc%lsm_index)
 
