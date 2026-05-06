@@ -2098,6 +2098,27 @@ subroutine LIS_lsmda_plugin
         trim(LIS_NASASMAPsmobsId)//char(0),noahmp36_descale_soilm)
    call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
         trim(LIS_NASASMAPsmobsId)//char(0),noahmp36_updatesoilm)
+!SM
+! Noahmp-3.6 SMOS L2 soil moisture
+   call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_dasoilm_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_getsoilm)
+   call registerlsmdasetstatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_setsoilm)
+   call registerlsmdagetobspred(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_getsmpred)
+   call registerlsmdaqcstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_qcsoilm)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_qc_soilmobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_scale_soilm)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_descale_soilm)
+   call registerlsmdaupdatestate(trim(LIS_noahmp36Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),noahmp36_updatesoilm)
+
 
    call registerlsmdainit(trim(LIS_noahmp36Id)//"+"//&
         trim(LIS_synsndId)//char(0),noahmp36_dasnow_init)
@@ -2781,6 +2802,47 @@ subroutine LIS_lsmda_plugin
         trim(LIS_CDFTRANSFERNASASMAPsmobsId )//char(0),NoahMP401_descale_soilm)
    call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
         trim(LIS_CDFTRANSFERNASASMAPsmobsId )//char(0),NoahMP401_updatesoilm)
+
+!SM
+! Noah-MP.4.0.1 SMOS L2 soil moisture
+   call registerlsmdainit(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_dasoilm_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_getsoilm)
+   call registerlsmdasetstatevar(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_setsoilm)
+   call registerlsmdagetobspred(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_getsmpred)
+   call registerlsmdaqcstate(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_qcsoilm)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_qc_soilmobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_scale_soilm)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_descale_soilm)
+   call registerlsmdaupdatestate(trim(LIS_noahmp401Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP401_updatesoilm)
+
+! Noah-MP.5.0 SMOS L2 soil moisture
+   call registerlsmdainit(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_dasoilm_init)
+   call registerlsmdagetstatevar(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_getsoilm)
+   call registerlsmdasetstatevar(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_setsoilm)
+   call registerlsmdagetobspred(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_getsmpred)
+   call registerlsmdaqcstate(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_qcsoilm)
+   call registerlsmdaqcobsstate(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_qc_soilmobs)
+   call registerlsmdascalestatevar(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_scale_soilm)
+   call registerlsmdadescalestatevar(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_descale_soilm)
+   call registerlsmdaupdatestate(trim(LIS_noahmp50Id)//"+"//&
+        trim(LIS_SMOSL2smobsId)//char(0),NoahMP50_updatesoilm)
 
 !YK
 ! Noah-MP.4.0.1 SMOS NRT NN soil moisture
