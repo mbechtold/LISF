@@ -41,17 +41,19 @@ contains
     use LIS_timeMgrMod
     use noahmp50_lsmMod
     use LIS_logMod, only : LIS_logunit, LIS_verify
+    use MicroTopoCorrectionMod, only : CalcSurfaceWaterStorage_mm
     !      use smootherDA_runMod, only : smootherDA_increments_mode
-      
-    ! ARGUMENTS:  
-    integer, intent(in)    :: n 
-      
+
+    ! ARGUMENTS:
+    integer, intent(in)    :: n
+
     ! DESCRIPTION:
     ! Calculates total column water storage three times per month, to
     ! approximate the GRACE return frequency
-    
+
     !integer                  :: i,m,t,gid,d
     integer                  :: t,d
+    real                     :: sfc_storage_mm
     integer                  :: yr,mo,da,hr,mn,ss
     integer                  :: yr1, mo1, da1
     integer                  :: yr2, mo2, da2
@@ -95,10 +97,17 @@ contains
                      NoahMP50_struc(n)%sldpth(3)*LIS_CONST_RHOFW)        +         &
                      (NoahMP50_struc(n)%noahmp50(t)%smc(4)  *         &
                      NoahMP50_struc(n)%sldpth(4)*LIS_CONST_RHOFW)        +         &
-                     NoahMP50_struc(n)%noahmp50(t)%wa                   
+                     NoahMP50_struc(n)%noahmp50(t)%wa
+                if (NoahMP50_struc(n)%peat_opt == 1 .and. &
+                     NoahMP50_struc(n)%noahmp50(t)%soiltype == 17) then
+                   call CalcSurfaceWaterStorage_mm( &
+                        NoahMP50_struc(n)%noahmp50(t)%zwt, sfc_storage_mm)
+                   NOAHMPpred_struc(n)%clmnwater(d,t) = &
+                        NOAHMPpred_struc(n)%clmnwater(d,t) + sfc_storage_mm
+                end if
              enddo
           endif
-       
+
        else
           call ESMF_TimeGet(LIS_twMidTime, yy = yr, &
                mm = mo, &
@@ -172,10 +181,16 @@ contains
                      NoahMP50_struc(n)%sldpth(3)*LIS_CONST_RHOFW)        +         &
                      (NoahMP50_struc(n)%noahmp50(t)%smc(4)  *         &
                      NoahMP50_struc(n)%sldpth(4)*LIS_CONST_RHOFW)        +         &
-                     NoahMP50_struc(n)%noahmp50(t)%wa                   
-
+                     NoahMP50_struc(n)%noahmp50(t)%wa
+                if (NoahMP50_struc(n)%peat_opt == 1 .and. &
+                     NoahMP50_struc(n)%noahmp50(t)%soiltype == 17) then
+                   call CalcSurfaceWaterStorage_mm( &
+                        NoahMP50_struc(n)%noahmp50(t)%zwt, sfc_storage_mm)
+                   NOAHMPpred_struc(n)%clmnwater(d,t) = &
+                        NOAHMPpred_struc(n)%clmnwater(d,t) + sfc_storage_mm
+                end if
              enddo
-          
+
           endif
           
        endif

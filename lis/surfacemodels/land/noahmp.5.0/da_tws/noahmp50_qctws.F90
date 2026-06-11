@@ -76,7 +76,7 @@ subroutine noahmp50_qctws(n, LSM_State)
   call LIS_verify(status,&
        "ESMF_StateGet for Soil Moisture Layer 2 failed in noahmp50_qctws")
 
-  call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm2,rc=status)
+  call ESMF_FieldGet(sm2Field,localDE=0,farrayPtr=soilm2,rc=status)
   call LIS_verify(status,&
        "ESMF_FieldGet for Soil Moisture Layer 2 failed in noahmp50_qctws")
 
@@ -84,15 +84,15 @@ subroutine noahmp50_qctws(n, LSM_State)
   call LIS_verify(status,&
        "ESMF_StateGet for Soil Moisture Layer 3 failed in noahmp50_qctws")
 
-  call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm3,rc=status)
+  call ESMF_FieldGet(sm3Field,localDE=0,farrayPtr=soilm3,rc=status)
   call LIS_verify(status,&
        "ESMF_FieldGet for Soil Moisture Layer 3 failed in noahmp50_qctws")
-  
+
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 4",sm4Field,rc=status)
   call LIS_verify(status,&
        "ESMF_StateGet for Soil Moisture Layer 4 failed in noahmp50_qctws")
 
-  call ESMF_FieldGet(sm1Field,localDE=0,farrayPtr=soilm4,rc=status)
+  call ESMF_FieldGet(sm4Field,localDE=0,farrayPtr=soilm4,rc=status)
   call LIS_verify(status,&
        "ESMF_FieldGet for Soil Moisture Layer 4 failed in noahmp50_qctws")
 

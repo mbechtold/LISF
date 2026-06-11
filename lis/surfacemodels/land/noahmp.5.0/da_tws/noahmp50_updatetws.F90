@@ -20,10 +20,13 @@ subroutine noahmp50_updatetws(n, LSM_State, LSM_Incr_State)
   use ESMF
   use LIS_coreMod
   use LIS_logMod
+  use NoahMP50_lsmMod
 
   implicit none
 ! !ARGUMENTS: 
   integer, intent(in)    :: n
+  integer                :: soiltype
+  integer, parameter     :: PEAT_SOILTYPE = 17  ! PEAT in NoahMP5 20-type STAS
   type(ESMF_State)       :: LSM_State
   type(ESMF_State)       :: LSM_Incr_State
 !
@@ -144,13 +147,15 @@ subroutine noahmp50_updatetws(n, LSM_State, LSM_Incr_State)
 
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-
+   soiltype = Noahmp50_struc(n)%noahmp50(t)%soiltype
+   if(soiltype.ne.PEAT_SOILTYPE) then
      soilm1(t) = soilm1(t) + soilmIncr1(t)
      soilm2(t) = soilm2(t) + soilmIncr2(t)
      soilm3(t) = soilm3(t) + soilmIncr3(t)
      soilm4(t) = soilm4(t) + soilmIncr4(t)
      gws(t)    = gws(t)    + gwsIncr(t)
      swe(t)    = swe(t)    + sweIncr(t)
+   endif
   enddo
 
 end subroutine noahmp50_updatetws

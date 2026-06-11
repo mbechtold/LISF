@@ -332,10 +332,10 @@ subroutine NoahMP50_main(n)
             
             if ( NoahMP50_struc(n)%peat_opt == 1 .and. NoahmpIO%isltyp(1,1) == 17 ) then
                 NoahmpIO%IOPT_PEAT = 1
-                write(LIS_logunit, *) "[INFO] PEAT physics applied for tile ", t, &
-                          " (lat=", lat, ", lon=", lon, "), soiltype = 17"
-                write(LIS_logunit, *) "NoahmpIO%isltyp(1,1)", NoahmpIO%isltyp(1,1)
-                write(LIS_logunit, *) "NoahmpIO%IOPT_PEAT", NoahmpIO%IOPT_PEAT
+                !write(LIS_logunit, *) "[INFO] PEAT physics applied for tile ", t, &
+                !          " (lat=", lat, ", lon=", lon, "), soiltype = 17"
+                !write(LIS_logunit, *) "NoahmpIO%isltyp(1,1)", NoahmpIO%isltyp(1,1)
+                !write(LIS_logunit, *) "NoahmpIO%IOPT_PEAT", NoahmpIO%IOPT_PEAT
                 
             else
                 NoahmpIO%IOPT_PEAT = 0
