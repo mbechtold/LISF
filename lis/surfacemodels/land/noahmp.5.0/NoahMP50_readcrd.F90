@@ -457,6 +457,27 @@ subroutine NoahMP50_readcrd()
         write(LIS_logunit,33) "irrigation trigger:",Noahmp50_struc(n)%irr_opt
     enddo
 
+    ! ZH: not applying the recommended QC to avoid out of bounds soil moisture;
+    ! can be useful when performing a run excluding the increment updates (e.g., before CDF matching)
+    call ESMF_ConfigFindLabel(LIS_config, &
+         "Noah-MP.5.0 apply soil moisture observation QC:", rc=rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, NOAHMP50_struc(n)%QC_opt, &
+             default=.true., rc=rc)
+        write(LIS_logunit,33) "applying QC:", &
+                              NOAHMP50_struc(n)%QC_opt
+    enddo
+
+    ! ZH: option to allow assimilation of soil moisture over forests
+    call ESMF_ConfigFindLabel(LIS_config, &
+         "Noah-MP.5.0 apply soil moisture DA over forests:", rc=rc)
+    do n=1, LIS_rc%nnest
+        call ESMF_ConfigGetAttribute(LIS_config, NOAHMP50_struc(n)%forestDA_opt, &
+             default=.false., rc=rc)
+        write(LIS_logunit,33) "soil moisture DA over forests:", &
+                              NOAHMP50_struc(n)%forestDA_opt
+    enddo
+
     ! irrigation method option (0->fraction from input; 1->sprinkler; 2->micro/drip; 3->flood)
     call ESMF_ConfigFindLabel(LIS_config, &
          "Noah-MP.5.0 irrigation method option:", rc = rc)

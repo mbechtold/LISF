@@ -241,6 +241,8 @@ module NoahMP50_lsmMod
         integer            :: tdrn_opt
         integer            :: infdv_opt
         integer            :: urban_opt
+        logical            :: QC_opt
+        logical            :: forestDA_opt
         !integer            :: sndpth_gla_opt
         type(NoahMP50dec), pointer :: noahmp50(:)
     end type NoahMP50_type_dec
