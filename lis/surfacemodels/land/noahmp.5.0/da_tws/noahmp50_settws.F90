@@ -34,6 +34,7 @@ subroutine noahmp50_settws(n, LSM_State)
 !  to NoahMP's model space.
 ! 
 !EOP
+  integer, parameter     :: PEAT_SOILTYPE = 17
   real, parameter        :: MIN_GWS_THRESHOLD = 0.00
   real, parameter        :: MAX_GWS_THRESHOLD = 7000.0
   real, parameter        :: MAX_WA = 7000.0
@@ -122,14 +123,19 @@ subroutine noahmp50_settws(n, LSM_State)
      r = LIS_domain(n)%tile(t)%row
      i = LIS_domain(n)%gindex(c,r)
 
-     SOILTYP = NoahMP50_struc(n)%noahmp50(t)%soiltype        
-     MAX_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)  !SMCMAX_TABLE(SOILTYP) 
+     SOILTYP = NoahMP50_struc(n)%noahmp50(t)%soiltype
+     MAX_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)  !SMCMAX_TABLE(SOILTYP)
 
      !locations with large soil moisture values are ice points.
      !we turn off the increments in such locations.
-     if(NoahMP50_struc(n)%noahmp50(t)%smc(1).gt.MAX_THRESHOLD.or.&
-        NoahMP50_struc(n)%noahmp50(t)%smc(1).gt.0.50) then 
-        largeSM(i) = .true.
+     !For peat, SM routinely exceeds 0.50 (high porosity), so only check against SMCMAX.
+     if(SOILTYP.eq.PEAT_SOILTYPE) then
+        if(NoahMP50_struc(n)%noahmp50(t)%smc(1).gt.MAX_THRESHOLD) &
+             largeSM(i) = .true.
+     else
+        if(NoahMP50_struc(n)%noahmp50(t)%smc(1).gt.MAX_THRESHOLD.or.&
+             NoahMP50_struc(n)%noahmp50(t)%smc(1).gt.0.50) &
+             largeSM(i) = .true.
      endif
 
      if(NoahMP50_struc(n)%noahmp50(t)%snowh.gt.0) then
@@ -363,7 +369,9 @@ subroutine noahmp50_settws(n, LSM_State)
 
      endif
 
-     NoahMP50_struc(n)%noahmp50(t)%wa=gws(t)
+     if(NoahMP50_struc(n)%noahmp50(t)%soiltype.ne.PEAT_SOILTYPE) then
+        NoahMP50_struc(n)%noahmp50(t)%wa = gws(t)
+     endif
 
   enddo
 

@@ -148,13 +148,13 @@ subroutine noahmp50_updatetws(n, LSM_State, LSM_Incr_State)
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
    soiltype = Noahmp50_struc(n)%noahmp50(t)%soiltype
+   soilm1(t) = soilm1(t) + soilmIncr1(t)
+   soilm2(t) = soilm2(t) + soilmIncr2(t)
+   soilm3(t) = soilm3(t) + soilmIncr3(t)
+   soilm4(t) = soilm4(t) + soilmIncr4(t)
+   swe(t)    = swe(t)    + sweIncr(t)
    if(soiltype.ne.PEAT_SOILTYPE) then
-     soilm1(t) = soilm1(t) + soilmIncr1(t)
-     soilm2(t) = soilm2(t) + soilmIncr2(t)
-     soilm3(t) = soilm3(t) + soilmIncr3(t)
-     soilm4(t) = soilm4(t) + soilmIncr4(t)
-     gws(t)    = gws(t)    + gwsIncr(t)
-     swe(t)    = swe(t)    + sweIncr(t)
+     gws(t)  = gws(t)    + gwsIncr(t)
    endif
   enddo
 

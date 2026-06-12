@@ -109,13 +109,10 @@ subroutine NoahMP50_updatesoilm(n, LSM_State, LSM_Incr_State)
   call LIS_verify(status,&
        "ESMF_FieldGet: Soil Moisture Layer 4 failed in NoahMP50_updatesoilm")
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
-     soiltype = Noahmp50_struc(n)%noahmp50(t)%soiltype
-     if(soiltype.ne.PEAT_SOILTYPE) then
-       soilm1(t) = soilm1(t) + soilmIncr1(t)
-       soilm2(t) = soilm2(t) + soilmIncr2(t)
-       soilm3(t) = soilm3(t) + soilmIncr3(t)
-       soilm4(t) = soilm4(t) + soilmIncr4(t)
-     endif
+     soilm1(t) = soilm1(t) + soilmIncr1(t)
+     soilm2(t) = soilm2(t) + soilmIncr2(t)
+     soilm3(t) = soilm3(t) + soilmIncr3(t)
+     soilm4(t) = soilm4(t) + soilmIncr4(t)
   enddo
 end subroutine NoahMP50_updatesoilm
 
