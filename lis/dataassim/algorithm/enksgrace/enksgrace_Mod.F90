@@ -64,6 +64,7 @@ module enksgrace_Mod
      real, allocatable :: forecast_var(:) !HPHt
      real, allocatable :: norm_innov(:)
      real, allocatable :: k_gain(:,:)
+     real, allocatable :: anlys_incr(:,:)
 
   end type enksgrace_dec
 !EOP  
@@ -142,6 +143,9 @@ contains
           allocate(enksgrace_struc(n,k)%k_gain(LIS_rc%npatch(n,LIS_rc%lsm_index), &
                LIS_rc%nstvars(k)))
        endif
+       allocate(enksgrace_struc(n,k)%anlys_incr(LIS_rc%nstvars(k), &
+            LIS_rc%npatch(n,LIS_rc%lsm_index)))
+       enksgrace_struc(n,k)%anlys_incr = 0.0
     enddo
   end subroutine enksgrace_setup
 
@@ -474,6 +478,10 @@ contains
 !             stincrdata(t) = state_incr(v,t)/days(mindex)  ! BZ simple smoother
              stincrdata(t) = state_incr(v,t)/avg_factor
 
+             ! store the full-monthly analysis increment for diagnostic output
+             ! (stincrdata above is the per-day fraction actually applied)
+             enksgrace_struc(n,k)%anlys_incr(v,t) = state_incr(v,t)
+
           enddo
        enddo
        call lsmdadescalestateVar(trim(LIS_rc%lsm)//"+"&
@@ -639,9 +647,11 @@ end subroutine enksgrace_update
        
        call writeInnovationOutput(n,k)
 
+       call writeAnalysisIncr(n,k)
+
     endif
 
-    if(alarmCheck) then 
+    if(alarmCheck) then
        if(.not.enksgrace_struc(n,k)%fileopen.and.LIS_masterproc) then
           
           call LIS_create_output_directory("EnKF")
@@ -794,7 +804,140 @@ end subroutine enksgrace_update
 
 
 !BOP
-! 
+!
+! !ROUTINE: writeAnalysisIncr
+! \label{writeAnalysisIncr_enksgrace}
+!
+! !INTERFACE:
+  subroutine writeAnalysisIncr(n,k)
+!
+! !DESCRIPTION:
+!  This routine writes the analysis increments from the EnKS to a
+!  gridded file. The full-monthly increment is written (the value
+!  stored in enksgrace_struc%anlys_incr); note that the smoother
+!  applies only a per-day fraction (full increment divided by the
+!  number of days in the month) at each daily update step.
+!
+!  The arguments and variables are:
+!  \begin{description}
+!   \item[n]    index of the nest
+!   \item[k]    index of the observation datastream
+!  \end{description}
+!
+!EOP
+    integer,  intent(in)    :: n
+    integer,  intent(in)    :: k
+
+    integer                :: ftn
+    integer                :: v
+    character(len=LIS_CONST_PATH_LEN) :: incrfile
+    integer                :: shuffle, deflate, deflate_level
+    integer                :: dimID(3)
+    integer                :: incr_id(LIS_rc%nstvars(k))
+    character*100          :: varname, vardimname, standard_name
+    character*2            :: finst
+    integer                :: status
+    character*100,    allocatable     :: state_objs(:)
+
+    if(LIS_rc%wensems(k).eq.1) then
+
+       shuffle = 1
+       deflate = 1
+       deflate_level =9
+
+       if(LIS_masterproc) then
+          call LIS_create_incr_filename(n,k,incrfile,&
+               'EnKF')
+
+#if (defined USE_NETCDF4)
+          status = nf90_create(path=incrfile,cmode=nf90_hdf5,&
+               ncid = ftn)
+          call LIS_verify(status,&
+               'creating netcdf file '//trim(incrfile)//&
+               ' failed in enksgrace_Mod')
+#endif
+#if (defined USE_NETCDF3)
+          status = nf90_create(path=incrfile,cmode=nf90_clobber,&
+               ncid = ftn)
+          call LIS_verify(status,&
+               'creating netcdf file '//trim(incrfile)//&
+               ' failed in enksgrace_Mod')
+#endif
+
+          if(LIS_rc%wopt.eq."1d gridspace") then
+             call LIS_verify(nf90_def_dim(ftn,'ngrid',&
+                  LIS_rc%glbngrid_red(n),&
+                  dimID(1)),'nf90_def_dim for ngrid failed in enksgrace_mod')
+          elseif(LIS_rc%wopt.eq."2d gridspace") then
+             call LIS_verify(nf90_def_dim(ftn,'east_west',LIS_rc%gnc(n),&
+                  dimID(1)),'nf90_def_dim for east_west failed in enksgrace_mod')
+             call LIS_verify(nf90_def_dim(ftn,'north_south',LIS_rc%gnr(n),&
+                  dimID(2)),'nf90_def_dim for north_south failed in enksgrace_mod')
+          endif
+
+          call LIS_verify(nf90_put_att(ftn,&
+               NF90_GLOBAL,"missing_value", LIS_rc%udef),&
+               'nf90_put_att for missing_value failed in enksgrace_mod')
+
+!--------------------------------------------------------------------------
+!  Analysis increment -meta data
+!--------------------------------------------------------------------------
+          allocate(state_objs(LIS_rc%nstvars(k)))
+          call LIS_lsm_DAgetStateVarNames(n,k,state_objs)
+
+          do v = 1, LIS_rc%nstvars(k)
+             write(unit=finst, fmt='(i2.2)') k
+             varname = "anlys_incr_"//trim(state_objs(v))//"_"//trim(finst)
+             vardimname = "anlys_incr_"//trim(state_objs(v))//&
+                  "_"//trim(finst)//"_levels"
+             standard_name = "Analysis_incr_for_DA_instance_"//&
+                  trim(state_objs(v))//"_"//&
+                  trim(finst)
+
+             if(LIS_rc%wopt.eq."1d gridspace") then
+                call LIS_verify(nf90_def_var(ftn,varname,&
+                     nf90_float,&
+                     dimids = dimID(1), varID=incr_Id(v)),&
+                     'nf90_def_var for incr failed in enksgrace_mod')
+
+             elseif(LIS_rc%wopt.eq."2d gridspace") then
+                call LIS_verify(nf90_def_var(ftn,varname,&
+                     nf90_float,&
+                     dimids = dimID(1:2), varID=incr_Id(v)),&
+                     'nf90_def_var for incr failed in enksgrace_mod')
+             endif
+
+#if(defined USE_NETCDF4)
+             call LIS_verify(nf90_def_var_deflate(ftn,&
+                  incr_Id(v),&
+                  shuffle, deflate, deflate_level),&
+                  'nf90_def_var_deflate for incr failed in enksgrace_mod')
+#endif
+             call LIS_verify(nf90_put_att(ftn,incr_Id(v),&
+                  "standard_name",standard_name),&
+                  'nf90_put_att for incr failed in enksgrace_mod')
+             call LIS_verify(nf90_enddef(ftn),&
+                  'nf90_enddef failed in enksgrace_mod')
+          end do
+          deallocate(state_objs)
+       endif
+
+       do v=1,LIS_rc%nstvars(k)
+          call LIS_writevar_incr(ftn,n,k,incr_id(v), &
+               enksgrace_struc(n,k)%anlys_incr(v,:),v)
+       enddo
+
+       if(LIS_masterproc) then
+          call LIS_verify(nf90_close(ftn),&
+               'nf90_close failed in enksgrace_mod')
+       endif
+    endif
+
+  end subroutine writeAnalysisIncr
+
+
+!BOP
+!
 ! !ROUTINE: writeEnsembleSpread
 ! \label{writeEnsembleSpread}
 !
@@ -922,7 +1065,7 @@ end subroutine enksgrace_update
        
        do v=1,LIS_rc%nstvars(k)
           call LIS_writevar_spread(ftn,n,k,ensspread_id(v), &
-               stvar(v,:),v)
+               stvar(v,:),v,LIS_rc%ensemstype(k))
        enddo
        
        deallocate(stvar)

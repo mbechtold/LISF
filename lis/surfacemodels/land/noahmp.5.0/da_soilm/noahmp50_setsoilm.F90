@@ -34,19 +34,21 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
   use LIS_coreMod
   use LIS_logMod
   use NoahMP50_lsmMod
+  use MicroTopoCorrectionMod, only : CalcWaterTableFromSoil_m, CalcEquilibriumProfile_m
 
   implicit none
-! !ARGUMENTS: 
+! !ARGUMENTS:
   integer, intent(in)    :: n
   type(ESMF_State)       :: LSM_State
 !
 ! !DESCRIPTION:
-!  
+!
 !  This routine assigns the soil moisture prognostic variables to noah's
-!  model space. 
-! 
+!  model space.
+!
 !EOP
-  real, parameter        :: MIN_THRESHOLD = 0.02 
+  integer, parameter     :: PEAT_SOILTYPE = 17
+  real, parameter        :: MIN_THRESHOLD = 0.02
   real                   :: MAX_threshold
   real                   :: sm_threshold
   type(ESMF_Field)       :: sm1Field
@@ -76,8 +78,14 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
   integer                :: pcount
   !integer                :: icount
   real                   :: MaxEnsSM1 ,MaxEnsSM2 ,MaxEnsSM3 ,MaxEnsSM4
-  real                   :: MinEnsSM1 ,MinEnsSM2 ,MinEnsSM3 ,MinEnsSM4 
-  real                   :: smc_tmp 
+  real                   :: MinEnsSM1 ,MinEnsSM2 ,MinEnsSM3 ,MinEnsSM4
+  real                   :: smc_tmp
+  real                   :: W_soil, z_col_bot, wtd_bg, wtd_an
+  real                   :: thetas_l, he_l, b_l
+  real                   :: bgWsoil(LIS_rc%npatch(n,LIS_rc%lsm_index))
+  real                   :: ice
+  real                   :: sm_eq_arr(NoahMP50_struc(n)%nsoil)
+  real, parameter        :: WTD_EQUIL_THRESHOLD = 0.5  ! [m] Richards/equil split (peat physics)
 
   call ESMF_StateGet(LSM_State,"Soil Moisture Layer 1",sm1Field,rc=status)
   call LIS_verify(status,&
@@ -105,14 +113,28 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
   call LIS_verify(status,&
        "ESMF_FieldGet: Soil Moisture Layer 4 failed in NoahMP50_setsoilm")
 
-  update_flag = .true. 
+  ! Peatland: snapshot background column soil water [m] (pre-analysis) so the
+  ! water-table update at the end carries only the applied DA increment.
+  if(NoahMP50_struc(n)%peat_opt.eq.1) then
+     do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+        bgWsoil(t) = 0.0
+        if(NoahMP50_struc(n)%noahmp50(t)%soiltype.eq.PEAT_SOILTYPE) then
+           do j=1,NoahMP50_struc(n)%nsoil
+              bgWsoil(t) = bgWsoil(t) + NoahMP50_struc(n)%noahmp50(t)%smc(j)*&
+                   NoahMP50_struc(n)%sldpth(j)
+           enddo
+        endif
+     enddo
+  endif
+
+  update_flag = .true.
   update_flag_tile= .true. 
 
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
   
      SOILTYP       = NoahMP50_struc(n)%noahmp50(t)%soiltype        
      MAX_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)   ! MAXSMC (SOILTYP)
-     sm_threshold  = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1) - 0.02  ! MAXSMC (SOILTYP) - 0.02
+     sm_threshold  = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)         ! MAXSMC (SOILTYP)
      
      gid = LIS_domain(n)%gindex(&
           LIS_surface(n,LIS_rc%lsm_index)%tile(t)%col,&
@@ -125,10 +147,10 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
      delta3 = soilm3(t)-NoahMP50_struc(n)%noahmp50(t)%smc(3)
      delta4 = soilm4(t)-NoahMP50_struc(n)%noahmp50(t)%smc(4)
 
-     ! MN: check    MIN_THRESHOLD < volumetric liquid soil moisture < threshold 
+     ! MN: check    MIN_THRESHOLD < volumetric liquid soil moisture <= SMCMAX
      if(NoahMP50_struc(n)%noahmp50(t)%sh2o(1)+delta1.gt.MIN_THRESHOLD .and.&
-          NoahMP50_struc(n)%noahmp50(t)%sh2o(1)+delta1.lt.&
-          sm_threshold) then 
+          NoahMP50_struc(n)%noahmp50(t)%sh2o(1)+delta1.le.&
+          sm_threshold) then
         update_flag(gid) = update_flag(gid).and.(.true.)
         ! MN save the flag for each tile (col*row*ens)   (64*44)*20
         update_flag_tile(t) = update_flag_tile(t).and.(.true.)
@@ -137,7 +159,7 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
         update_flag_tile(t) = update_flag_tile(t).and.(.false.)
      endif
      if(NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+delta2.gt.MIN_THRESHOLD .and.&
-          NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+delta2.lt.sm_threshold) then 
+          NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+delta2.le.sm_threshold) then
         update_flag(gid) = update_flag(gid).and.(.true.)
         update_flag_tile(t) = update_flag_tile(t).and.(.true.)
      else
@@ -145,7 +167,7 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
         update_flag_tile(t) = update_flag_tile(t).and.(.false.)
      endif
      if(NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+delta3.gt.MIN_THRESHOLD .and.&
-          NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+delta3.lt.sm_threshold) then 
+          NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+delta3.le.sm_threshold) then
         update_flag(gid) = update_flag(gid).and.(.true.)
         update_flag_tile(t) = update_flag_tile(t).and.(.true.)
      else
@@ -153,7 +175,7 @@ subroutine NoahMP50_setsoilm(n, LSM_State)
         update_flag_tile(t) = update_flag_tile(t).and.(.false.)
      endif
      if(NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+delta4.gt.MIN_THRESHOLD .and.&
-          NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+delta4.lt.sm_threshold) then 
+          NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+delta4.le.sm_threshold) then
         update_flag(gid) = update_flag(gid).and.(.true.)
         update_flag_tile(t) = update_flag_tile(t).and.(.true.)
      else
@@ -277,7 +299,7 @@ if(i.eq.66) then !i=66  ! --> domain's center  1376
                  stop
               endif
               if(NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+delta2.gt.MIN_THRESHOLD .and.&
-                   NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+delta2.lt.sm_threshold) then 
+                   NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+delta2.le.sm_threshold) then
                  NoahMP50_struc(n)%noahmp50(t)%sh2o(2) = NoahMP50_struc(n)%noahmp50(t)%sh2o(2)+&
                       soilm2(t)-NoahMP50_struc(n)%noahmp50(t)%smc(2)
                  NoahMP50_struc(n)%noahmp50(t)%smc(2) = soilm2(t)
@@ -288,7 +310,7 @@ if(i.eq.66) then !i=66  ! --> domain's center  1376
               endif
   
               if(NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+delta3.gt.MIN_THRESHOLD .and.&
-                   NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+delta3.lt.sm_threshold) then 
+                   NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+delta3.le.sm_threshold) then
                  NoahMP50_struc(n)%noahmp50(t)%sh2o(3) = NoahMP50_struc(n)%noahmp50(t)%sh2o(3)+&
                       soilm3(t)-NoahMP50_struc(n)%noahmp50(t)%smc(3)
                  NoahMP50_struc(n)%noahmp50(t)%smc(3) = soilm3(t)
@@ -299,7 +321,7 @@ if(i.eq.66) then !i=66  ! --> domain's center  1376
               endif
 
               if(NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+delta4.gt.MIN_THRESHOLD .and.&
-                   NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+delta4.lt.sm_threshold) then 
+                   NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+delta4.le.sm_threshold) then
                  NoahMP50_struc(n)%noahmp50(t)%sh2o(4) = NoahMP50_struc(n)%noahmp50(t)%sh2o(4)+&
                       soilm4(t)-NoahMP50_struc(n)%noahmp50(t)%smc(4)
                  NoahMP50_struc(n)%noahmp50(t)%smc(4) = soilm4(t)
@@ -380,7 +402,7 @@ if(i.eq.66) then !i=66  ! --> domain's center  1376
                     !t = (i-1)*LIS_rc%nensem(n)+m
                     SOILTYP       = NoahMP50_struc(n)%noahmp50(t)%soiltype  
                     MAX_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)        !SMCMAX_TABLE(SOILTYP) 
-                    sm_threshold  = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1) - 0.02 !SMCMAX_TABLE(SOILTYP) - 0.02
+                    sm_threshold  = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)        !SMCMAX_TABLE(SOILTYP)
                     
                     tmpval = NoahMP50_struc(n)%noahmp50(t)%sh2o(j) - delta(j)
                     if(tmpval.le.MIN_THRESHOLD) then 
@@ -491,10 +513,63 @@ if(i.eq.66) then !i=66  ! --> domain's center  1376
                  enddo
               endif          
            end do
-        endif        
+        endif
      endif
   enddo
 
+!-----------------------------------------------------------------------------------------
+! Peatland: route the APPLIED soil-moisture increment to the water table depth (zwt).
+! In the PEATCLSM/microtopography scheme zwt is the prognostic memory variable and smc is
+! reset to the hydrostatic-equilibrium profile every physics step, so an increment that is
+! not carried into zwt is erased.  We move zwt only by the equilibrium response to the
+! change in column soil water actually applied this analysis (anWsoil - bgWsoil), as a
+! difference of equilibrium inversions: a zero increment leaves zwt untouched (an OL run is
+! unaffected) and any systematic offset between the stored profile and the storage operator
+! cancels.  Surface (ponded) storage follows from zwt diagnostically.
+!-----------------------------------------------------------------------------------------
+  if(NoahMP50_struc(n)%peat_opt.eq.1) then
+     z_col_bot = sum(NoahMP50_struc(n)%sldpth(1:NoahMP50_struc(n)%nsoil))
+     do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
+        if(NoahMP50_struc(n)%noahmp50(t)%soiltype.eq.PEAT_SOILTYPE) then
+           W_soil = 0.0
+           do j=1,NoahMP50_struc(n)%nsoil
+              W_soil = W_soil + NoahMP50_struc(n)%noahmp50(t)%smc(j)*&
+                   NoahMP50_struc(n)%sldpth(j)
+           enddo
+           if(abs(W_soil-bgWsoil(t)).gt.0.0) then
+              ! copy Campbell params (kind_noahmp) into default-real locals for the call
+              thetas_l = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)
+              he_l     = abs(NoahMP50_struc(n)%noahmp50(t)%param%PSISAT(1))
+              b_l      = NoahMP50_struc(n)%noahmp50(t)%param%BEXP(1)
+              call CalcWaterTableFromSoil_m(bgWsoil(t), thetas_l, he_l, b_l,&
+                   z_col_bot, NoahMP50_struc(n)%noahmp50(t)%zwt, wtd_bg)
+              call CalcWaterTableFromSoil_m(W_soil, thetas_l, he_l, b_l,&
+                   z_col_bot, NoahMP50_struc(n)%noahmp50(t)%zwt, wtd_an)
+              NoahMP50_struc(n)%noahmp50(t)%zwt = &
+                   NoahMP50_struc(n)%noahmp50(t)%zwt + (wtd_an - wtd_bg)
+
+              ! In the wet/equilibrium regime (water table shallower than the
+              ! equilibrium threshold) the peat physics assumes hydrostatic
+              ! equilibrium, so reset the profile here to the equilibrium for the
+              ! new zwt -- keeping smc and zwt mutually consistent and removing
+              ! the soil<->surface double-representation that otherwise lets them
+              ! diverge.  In the deeper Richards regime smc is a genuine
+              ! prognostic and is left as is.
+              if(NoahMP50_struc(n)%noahmp50(t)%zwt.lt.WTD_EQUIL_THRESHOLD) then
+                 call CalcEquilibriumProfile_m(NoahMP50_struc(n)%noahmp50(t)%zwt,&
+                      thetas_l, he_l, b_l, z_col_bot,&
+                      NoahMP50_struc(n)%nsoil, NoahMP50_struc(n)%sldpth, sm_eq_arr)
+                 do j=1,NoahMP50_struc(n)%nsoil
+                    ice = NoahMP50_struc(n)%noahmp50(t)%smc(j) - &
+                          NoahMP50_struc(n)%noahmp50(t)%sh2o(j)
+                    NoahMP50_struc(n)%noahmp50(t)%sh2o(j) = sm_eq_arr(j)
+                    NoahMP50_struc(n)%noahmp50(t)%smc(j)  = sm_eq_arr(j) + ice
+                 enddo
+              endif
+           endif
+        endif
+     enddo
+  endif
 
 end subroutine NoahMP50_setsoilm
 

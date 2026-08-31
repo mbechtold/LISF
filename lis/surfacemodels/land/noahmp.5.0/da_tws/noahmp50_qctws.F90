@@ -56,6 +56,11 @@ subroutine noahmp50_qctws(n, LSM_State)
   real                   :: gwsmax, gwsmin
   real                   :: MIN_THRESHOLD,MAX_threshold,sm_threshold
   integer                :: SOILTYP
+  integer, parameter     :: PEAT_SOILTYPE  = 17
+  real,    parameter     :: WTD_TAPER_LO   = -0.05   ! [m] water table at/above this -> no perturbation
+  real,    parameter     :: WTD_TAPER_HI   = 0.3   ! [m] water table at/below this -> full perturbation
+  real,    parameter     :: PI_LOCAL       = 3.14159265358979
+  real                   :: f_taper, x_taper
 
   real, pointer          :: swe(:)
 
@@ -127,10 +132,32 @@ subroutine noahmp50_qctws(n, LSM_State)
   do t=1,LIS_rc%npatch(n,LIS_rc%lsm_index)
   ! max min soil moisture should be retrieved based on soil type
      SOILTYP       = NoahMP50_struc(n)%noahmp50(t)%soiltype
-     MAX_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)  !SMCMAX_TABLE(SOILTYP) 
-     MIN_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCWLT(1)  !SMCWLT_TABLE(SOILTYP) 
-     sm_threshold  = MAX_THRESHOLD - 0.02
+     MAX_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCMAX(1)  !SMCMAX_TABLE(SOILTYP)
+     MIN_THRESHOLD = NoahMP50_struc(n)%noahmp50(t)%param%SMCWLT(1)  !SMCWLT_TABLE(SOILTYP)
+     sm_threshold  = MAX_THRESHOLD
 
+     ! Peatland: taper the state increment (state perturbation, and any analysis
+     ! increment) toward the model value as the water table approaches the
+     ! surface, where smc nears saturation.  This keeps the perturbation/update
+     ! out of the saturation-cap regime that otherwise rectifies a zero-mean
+     ! perturbation into a drier soil / higher water table.  f goes 0 at/above
+     ! the surface to 1 once the water table is at/below WTD_TAPER_HI.
+     ! (qctws runs in both the perturbation and analysis paths, so the analysis
+     !  increment is tapered near saturation as well.)
+     if(NoahMP50_struc(n)%peat_opt.eq.1 .and. SOILTYP.eq.PEAT_SOILTYPE) then
+        x_taper = max(0.0, min(1.0, &
+             (NoahMP50_struc(n)%noahmp50(t)%zwt - WTD_TAPER_LO) / &
+             (WTD_TAPER_HI - WTD_TAPER_LO)))
+        f_taper = 0.5*(1.0 - cos(PI_LOCAL*x_taper))     ! smooth 0 -> 1 ramp
+        soilm1(t) = NoahMP50_struc(n)%noahmp50(t)%smc(1) + &
+             f_taper*(soilm1(t) - NoahMP50_struc(n)%noahmp50(t)%smc(1))
+        soilm2(t) = NoahMP50_struc(n)%noahmp50(t)%smc(2) + &
+             f_taper*(soilm2(t) - NoahMP50_struc(n)%noahmp50(t)%smc(2))
+        soilm3(t) = NoahMP50_struc(n)%noahmp50(t)%smc(3) + &
+             f_taper*(soilm3(t) - NoahMP50_struc(n)%noahmp50(t)%smc(3))
+        soilm4(t) = NoahMP50_struc(n)%noahmp50(t)%smc(4) + &
+             f_taper*(soilm4(t) - NoahMP50_struc(n)%noahmp50(t)%smc(4))
+     endif
 
      if(soilm1(t).gt.sm_threshold) then
         soilm1(t) = sm_threshold
